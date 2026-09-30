@@ -82,30 +82,24 @@ export default function BookCard({ book, motivation, children }: BookCardProps) 
                         </ul>
                     )}
 
+                    {book.url && (
+                        <p className="mb-3">
+                            <a href={book.url} target="_blank" rel="noreferrer">
+                                Online lezen
+                                <i className="bi bi-box-arrow-up-right ms-1" aria-hidden="true" />
+                                <span className="visually-hidden">
+                                    {' '}
+                                    {book.title} (opent in een nieuw tabblad)
+                                </span>
+                            </a>
+                        </p>
+                    )}
+
                     <div className="mt-auto" />
                 </div>
-                {(book.url || children) && (
-                    <div className="card-footer bg-transparent border-top pt-3 pb-3">
-                        <div className="d-flex flex-wrap align-items-center gap-2 justify-content-between">
-                            {children && (
-                                <div className="d-flex flex-wrap align-items-center gap-2">
-                                    {children}
-                                </div>
-                            )}
-                            {book.url && (
-                                <a href={book.url} target="_blank" rel="noreferrer">
-                                    Online lezen
-                                    <i
-                                        className="bi bi-box-arrow-up-right ms-1"
-                                        aria-hidden="true"
-                                    />
-                                    <span className="visually-hidden">
-                                        {' '}
-                                        {book.title} (opent in een nieuw tabblad)
-                                    </span>
-                                </a>
-                            )}
-                        </div>
+                {children && (
+                    <div className="card-footer bg-transparent border-top py-3">
+                        <div className="card-actions">{children}</div>
                     </div>
                 )}
             </article>

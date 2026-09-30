@@ -15,8 +15,8 @@ export default function MissingBookCard({ children }: { children?: ReactNode }) 
                     </p>
                 </div>
                 {children && (
-                    <div className="card-footer bg-transparent border-top-0 pb-3">
-                        <div className="d-flex flex-wrap align-items-center gap-2">{children}</div>
+                    <div className="card-footer bg-transparent border-top py-3">
+                        <div className="card-actions">{children}</div>
                     </div>
                 )}
             </article>

@@ -1,7 +1,7 @@
 import type { ButtonHTMLAttributes } from 'react';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-    variant?: 'primary' | 'secondary' | 'danger';
+    variant?: 'primary' | 'secondary' | 'success' | 'danger' | 'outline-danger';
     size?: 'sm' | 'lg';
     icon?: string; // Bootstrap Icons class, for example "bi-search"
 }
@@ -9,7 +9,9 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 const VARIANTS = {
     primary: 'btn-primary',
     secondary: 'btn-outline-primary',
+    success: 'btn-success',
     danger: 'btn-danger',
+    'outline-danger': 'btn-outline-danger',
 } as const;
 
 export default function Button({

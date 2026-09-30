@@ -371,3 +371,54 @@ $navbar-light-active-color: $forest;
         animation: none;
     }
 }
+
+// Pagination: the "..." menu with the hidden pages.
+.page-gap-menu {
+    min-width: 8rem;
+    max-height: 15rem;
+    overflow-y: auto;
+    padding: 0.25rem;
+    background: $paper-card;
+    box-shadow: 0 0.5rem 1.25rem rgba($ink, 0.18);
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+// Small, equal-sized action buttons in card footers (add, read, remove).
+.card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+
+    .btn,
+    .status-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.35rem 0.8rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        line-height: 1.4;
+        border-radius: $border-radius;
+    }
+
+    .btn .bi {
+        margin: 0 !important;
+    }
+}
+
+.status-chip {
+    border: 1px solid transparent;
+
+    &.is-success {
+        background: var(--bs-success-bg-subtle);
+        border-color: var(--bs-success-border-subtle);
+        color: var(--bs-success-text-emphasis);
+    }
+
+    &.is-neutral {
+        background: var(--bs-secondary-bg);
+        color: var(--bs-body-color);
+    }
+}

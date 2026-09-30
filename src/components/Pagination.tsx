@@ -1,22 +1,102 @@
+import { useEffect, useId, useRef, useState } from 'react';
+
 interface PaginationProps {
     page: number;
     totalPages: number;
     onPageChange: (page: number) => void;
 }
 
-// First, last and the pages around the current one, with ellipses in between.
-function visiblePages(page: number, totalPages: number): (number | 'gap-start' | 'gap-end')[] {
-    const pages: (number | 'gap-start' | 'gap-end')[] = [];
-    for (let current = 1; current <= totalPages; current += 1) {
-        if (current === 1 || current === totalPages || Math.abs(current - page) <= 1) {
-            pages.push(current);
-        } else if (pages[pages.length - 1] !== 'gap-start' && current < page) {
-            pages.push('gap-start');
-        } else if (pages[pages.length - 1] !== 'gap-end' && current > page) {
-            pages.push('gap-end');
+interface Gap {
+    from: number;
+    to: number;
+}
+
+type PageItem = number | Gap;
+
+// First, last and the pages around the current one. Pages in between are grouped in a gap,
+// which the user can open to pick any of the hidden pages.
+function buildItems(page: number, totalPages: number): PageItem[] {
+    const shown = new Set([1, totalPages, page - 1, page, page + 1]);
+    const numbers = [...shown].filter((n) => n >= 1 && n <= totalPages).sort((a, b) => a - b);
+
+    const items: PageItem[] = [];
+    numbers.forEach((current, index) => {
+        const previous = numbers[index - 1];
+        if (previous !== undefined) {
+            const missing = current - previous - 1;
+            if (missing === 1) items.push(previous + 1);
+            else if (missing > 1) items.push({ from: previous + 1, to: current - 1 });
         }
-    }
-    return pages;
+        items.push(current);
+    });
+    return items;
+}
+
+interface GapDropdownProps extends Gap {
+    onPageChange: (page: number) => void;
+}
+
+// The "..." button. Opens a small menu (upwards, because pagination sits at the page bottom).
+function GapDropdown({ from, to, onPageChange }: GapDropdownProps) {
+    const [open, setOpen] = useState(false);
+    const ref = useRef<HTMLLIElement>(null);
+    const menuId = useId();
+
+    useEffect(() => {
+        if (!open) return undefined;
+        const onPointerDown = (event: MouseEvent) => {
+            if (!ref.current?.contains(event.target as Node)) setOpen(false);
+        };
+        const onKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') setOpen(false);
+        };
+        document.addEventListener('mousedown', onPointerDown);
+        document.addEventListener('keydown', onKeyDown);
+        return () => {
+            document.removeEventListener('mousedown', onPointerDown);
+            document.removeEventListener('keydown', onKeyDown);
+        };
+    }, [open]);
+
+    const pages = Array.from({ length: to - from + 1 }, (_, index) => from + index);
+
+    return (
+        <li ref={ref} className="page-item dropdown dropup">
+            <button
+                type="button"
+                className="page-link"
+                aria-haspopup="true"
+                aria-expanded={open}
+                aria-controls={menuId}
+                aria-label={`Kies een pagina van ${from} tot ${to}`}
+                onClick={() => setOpen((current) => !current)}
+            >
+                …
+            </button>
+            {open && (
+                <ul
+                    id={menuId}
+                    className="dropdown-menu show page-gap-menu"
+                    data-bs-popper="static"
+                >
+                    {pages.map((number) => (
+                        <li key={number}>
+                            <button
+                                type="button"
+                                className="dropdown-item"
+                                onClick={() => {
+                                    setOpen(false);
+                                    onPageChange(number);
+                                }}
+                            >
+                                Pagina {number}
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+            )}
+        </li>
+    );
 }
 
 export default function Pagination({ page, totalPages, onPageChange }: PaginationProps) {
@@ -34,12 +114,8 @@ export default function Pagination({ page, totalPages, onPageChange }: Paginatio
                         <i className="bi bi-chevron-left" aria-hidden="true" /> Vorige
                     </button>
                 </li>
-                {visiblePages(page, totalPages).map((item) =>
-                    typeof item === 'string' ? (
-                        <li key={item} className="page-item disabled" aria-hidden="true">
-                            <span className="page-link">…</span>
-                        </li>
-                    ) : (
+                {buildItems(page, totalPages).map((item) =>
+                    typeof item === 'number' ? (
                         <li key={item} className={`page-item ${item === page ? 'active' : ''}`}>
                             <button
                                 type="button"
@@ -51,6 +127,13 @@ export default function Pagination({ page, totalPages, onPageChange }: Paginatio
                                 {item}
                             </button>
                         </li>
+                    ) : (
+                        <GapDropdown
+                            key={`gap-${item.from}`}
+                            from={item.from}
+                            to={item.to}
+                            onPageChange={onPageChange}
+                        />
                     ),
                 )}
                 <li className={`page-item ${page >= totalPages ? 'disabled' : ''}`}>

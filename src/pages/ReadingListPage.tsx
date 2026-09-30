@@ -5,7 +5,6 @@ import BookGrid from '../components/BookGrid.tsx';
 import MissingBookCard from '../components/MissingBookCard.tsx';
 import Button from '../components/Button.tsx';
 import Skeleton from '../components/Skeleton.tsx';
-import StatusBadge from '../components/StatusBadge.tsx';
 import { useReadingList } from '../hooks/useReadingList.ts';
 import type { ReadingListItem, ReadingStatus } from '../types/api.ts';
 
@@ -20,24 +19,18 @@ function ItemActions({ item, title, onToggle, onRemove }: ItemActionsProps) {
     const isRead = item.status === 'read';
     return (
         <>
-            <StatusBadge status={item.status} />
-            <div className="form-check mb-0">
-                <input
-                    id={`read-${item.id}`}
-                    className="form-check-input"
-                    type="checkbox"
-                    checked={isRead}
-                    onChange={() => onToggle(item.id, isRead ? 'unread' : 'read')}
-                />
-                <label htmlFor={`read-${item.id}`} className="form-check-label">
-                    Ik heb <span className="visually-hidden">{title}</span>
-                    <span aria-hidden="true">dit</span> gelezen
-                </label>
-            </div>
             <Button
-                variant="secondary"
-                size="sm"
+                variant={isRead ? 'success' : 'secondary'}
+                icon={isRead ? 'bi-check-circle-fill' : 'bi-circle'}
+                aria-pressed={isRead}
+                onClick={() => onToggle(item.id, isRead ? 'unread' : 'read')}
+            >
+                Gelezen<span className="visually-hidden"> {title}</span>
+            </Button>
+            <Button
+                variant="outline-danger"
                 icon="bi-trash"
+                className="ms-auto"
                 aria-label={`Verwijder ${title} van je leeslijst`}
                 onClick={() => onRemove(item)}
             >
@@ -86,7 +79,7 @@ export default function ReadingListPage() {
                     <div className="card shadow-sm mb-4">
                         <div className="card-body">
                             <p role="status" className="fw-semibold mb-2">
-                                {readCount} van {items.length} titels gelezen
+                                {readCount} of {items.length} titels gelezen
                             </p>
                             <div
                                 className="progress"
@@ -117,8 +110,8 @@ export default function ReadingListPage() {
                             ) : (
                                 <MissingBookCard key={item.id}>
                                     <Button
-                                        variant="secondary"
-                                        size="sm"
+                                        variant="outline-danger"
+                                        icon="bi-trash"
                                         onClick={() => remove(item)}
                                     >
                                         Verwijderen
