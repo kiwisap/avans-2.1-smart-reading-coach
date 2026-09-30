@@ -422,3 +422,8 @@ $navbar-light-active-color: $forest;
         color: var(--bs-body-color);
     }
 }
+
+// Where the catalog scrolls to after switching page. Leaves room for the sticky navbar.
+.results-anchor {
+    scroll-margin-top: 5rem;
+}

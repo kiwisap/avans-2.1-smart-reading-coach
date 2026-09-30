@@ -1,4 +1,4 @@
-import { Link, Navigate, Route, Routes } from 'react-router-dom';
+import { Link, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import ProtectedRoute from './auth/ProtectedRoute.tsx';
 import Layout from './components/Layout.tsx';
 import AdvicePage from './pages/AdvicePage.tsx';
@@ -10,6 +10,12 @@ import RegisterPage from './pages/RegisterPage.tsx';
 import StudentDetailPage from './pages/StudentDetailPage.tsx';
 import StudentsPage from './pages/StudentsPage.tsx';
 import TeachersPage from './pages/TeachersPage.tsx';
+
+// The old /catalog address forwards to the home page and keeps the filters in the query.
+function CatalogRedirect() {
+    const { search } = useLocation();
+    return <Navigate to={{ pathname: '/', search }} replace />;
+}
 
 export default function App() {
     return (
@@ -25,7 +31,7 @@ export default function App() {
                         </ProtectedRoute>
                     }
                 />
-                <Route path="/catalog" element={<Navigate to="/" replace />} />
+                <Route path="/catalog" element={<CatalogRedirect />} />
                 <Route
                     path="/reading-list"
                     element={

@@ -1,4 +1,4 @@
-import { useEffect, useState, type ChangeEvent, type SubmitEvent } from 'react';
+import { useEffect, useRef, useState, type ChangeEvent, type SubmitEvent } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { apiFetch, errorMessage } from '../api/client.ts';
 import { useAuth } from '../auth/AuthContext.tsx';
@@ -12,19 +12,11 @@ import SelectField from '../components/SelectField.tsx';
 import ShelfIllustration from '../components/ShelfIllustration.tsx';
 import Skeleton from '../components/Skeleton.tsx';
 import { TYPE_LABELS } from '../constants/labels.ts';
+import { EMPTY_FILTERS, useCatalogQuery, type CatalogFilters } from '../hooks/useCatalogQuery.ts';
 import { useReadingList } from '../hooks/useReadingList.ts';
 import type { BookFacets, BookPage } from '../types/api.ts';
 
 const PAGE_SIZE = 12;
-
-interface Filters {
-    search: string;
-    type: string;
-    level: string;
-    theme: string;
-}
-
-const EMPTY_FILTERS: Filters = { search: '', type: '', level: '', theme: '' };
 
 export default function CatalogPage() {
     const { token, user } = useAuth();
@@ -32,12 +24,19 @@ export default function CatalogPage() {
     const accessNotice = (location.state as { notice?: string } | null)?.notice;
     const isStudent = user?.role === 'student';
     const readingList = useReadingList(isStudent);
-    const [draft, setDraft] = useState<Filters>(EMPTY_FILTERS); // what the user is typing
-    const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS); // what is applied
-    const [page, setPage] = useState(1);
+    const { filters, page, apply, changePage, reset } = useCatalogQuery(); // applied, from the URL
+    const [draft, setDraft] = useState<CatalogFilters>(filters); // what the user is typing
+    const resultsRef = useRef<HTMLDivElement>(null);
     const [options, setOptions] = useState<BookFacets>({ types: [], levels: [], themes: [] });
     const [result, setResult] = useState<BookPage | null>(null);
     const [error, setError] = useState<string | null>(null);
+
+    // When the URL changes (back button, a followed link) the form follows it.
+    const [syncedFilters, setSyncedFilters] = useState(filters);
+    if (syncedFilters !== filters) {
+        setSyncedFilters(filters);
+        setDraft(filters);
+    }
 
     useEffect(() => {
         apiFetch<BookFacets>('/books/filters', { token })
@@ -65,21 +64,19 @@ export default function CatalogPage() {
         };
     }, [token, filters, page]);
 
-    function updateDraft(field: keyof Filters) {
+    function updateDraft(field: keyof CatalogFilters) {
         return (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
             setDraft((current) => ({ ...current, [field]: event.target.value }));
     }
 
     function applyFilters(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault();
-        setPage(1);
-        setFilters(draft);
+        apply(draft);
     }
 
     function resetFilters() {
         setDraft(EMPTY_FILTERS);
-        setFilters(EMPTY_FILTERS);
-        setPage(1);
+        reset();
     }
 
     const totalPages = result ? Math.max(1, Math.ceil(result.total / PAGE_SIZE)) : 1;
@@ -186,6 +183,8 @@ export default function CatalogPage() {
                 </div>
             </div>
 
+            <div ref={resultsRef} className="results-anchor" />
+
             {error && <Alert>{error}</Alert>}
             {readingList.error && <Alert>{readingList.error}</Alert>}
             {readingList.notice && <Alert type="success">{readingList.notice}</Alert>}
@@ -231,7 +230,11 @@ export default function CatalogPage() {
                             </BookCard>
                         ))}
                     </BookGrid>
-                    <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+                    <Pagination
+                        page={page}
+                        totalPages={totalPages}
+                        onPageChange={handlePageChange}
+                    />
                 </>
             )}
         </section>
