@@ -16,7 +16,7 @@ import { EMPTY_FILTERS, useCatalogQuery, type CatalogFilters } from '../hooks/us
 import { useReadingList } from '../hooks/useReadingList.ts';
 import type { BookFacets, BookPage } from '../types/api.ts';
 
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 18;
 const SEARCH_DEBOUNCE_MS = 500;
 
 export default function CatalogPage() {
@@ -217,11 +217,21 @@ export default function CatalogPage() {
             {readingList.error && <Alert>{readingList.error}</Alert>}
             {readingList.notice && <Alert type="success">{readingList.notice}</Alert>}
 
-            <p role="status" aria-live="polite" className="text-body-secondary mb-3">
-                {result
-                    ? `${result.total} ${result.total === 1 ? 'resultaat' : 'resultaten'}`
-                    : 'Laden...'}
-            </p>
+            <div className="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+                <p role="status" aria-live="polite" className="text-body-secondary mb-0">
+                    {result
+                        ? `${result.total} ${result.total === 1 ? 'resultaat' : 'resultaten'}`
+                        : 'Laden...'}
+                </p>
+                {result && result.items.length > 0 && (
+                    <Pagination
+                        position="top"
+                        page={page}
+                        totalPages={totalPages}
+                        onPageChange={handlePageChange}
+                    />
+                )}
+            </div>
 
             {!result && !error && <Skeleton variant="cards" lines={6} label="Catalogus laden" />}
 

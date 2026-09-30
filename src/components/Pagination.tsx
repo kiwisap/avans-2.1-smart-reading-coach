@@ -4,6 +4,8 @@ interface PaginationProps {
     page: number;
     totalPages: number;
     onPageChange: (page: number) => void;
+    // Where the bar sits relative to the cards: decides the spacing and which way the menu opens.
+    position?: 'top' | 'bottom';
 }
 
 interface Gap {
@@ -34,10 +36,11 @@ function buildItems(page: number, totalPages: number): PageItem[] {
 
 interface GapDropdownProps extends Gap {
     onPageChange: (page: number) => void;
+    opensUp: boolean;
 }
 
-// The "..." button. Opens a small menu (upwards, because pagination sits at the page bottom).
-function GapDropdown({ from, to, onPageChange }: GapDropdownProps) {
+// The "..." button. Opens a small menu, upwards for the bar below the cards, downwards for the top bar.
+function GapDropdown({ from, to, onPageChange, opensUp }: GapDropdownProps) {
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLLIElement>(null);
     const menuId = useId();
@@ -61,7 +64,7 @@ function GapDropdown({ from, to, onPageChange }: GapDropdownProps) {
     const pages = Array.from({ length: to - from + 1 }, (_, index) => from + index);
 
     return (
-        <li ref={ref} className="page-item dropdown dropup">
+        <li ref={ref} className={`page-item dropdown ${opensUp ? 'dropup' : ''}`}>
             <button
                 type="button"
                 className="page-link"
@@ -99,11 +102,23 @@ function GapDropdown({ from, to, onPageChange }: GapDropdownProps) {
     );
 }
 
-export default function Pagination({ page, totalPages, onPageChange }: PaginationProps) {
+export default function Pagination({
+    page,
+    totalPages,
+    onPageChange,
+    position = 'bottom',
+}: PaginationProps) {
     if (totalPages <= 1) return null;
     return (
-        <nav aria-label="Paginering" className="mt-5">
-            <ul className="pagination justify-content-center flex-wrap">
+        <nav
+            aria-label={
+                position === 'top'
+                    ? 'Paginering boven de resultaten'
+                    : 'Paginering onder de resultaten'
+            }
+            className={position === 'top' ? '' : 'mt-4'}
+        >
+            <ul className="pagination justify-content-end flex-wrap mb-0">
                 <li className={`page-item ${page <= 1 ? 'disabled' : ''}`}>
                     <button
                         type="button"
@@ -133,6 +148,7 @@ export default function Pagination({ page, totalPages, onPageChange }: Paginatio
                             from={item.from}
                             to={item.to}
                             onPageChange={onPageChange}
+                            opensUp={position === 'bottom'}
                         />
                     ),
                 )}
