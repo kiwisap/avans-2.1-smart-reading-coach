@@ -1,0 +1,5 @@
+dist
+node_modules
+_to_delete
+package-lock.json
+.env
