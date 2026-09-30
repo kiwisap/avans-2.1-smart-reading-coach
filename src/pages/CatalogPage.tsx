@@ -74,6 +74,16 @@ export default function CatalogPage() {
         apply(draft);
     }
 
+    // Switching page keeps the filters out of view: scroll to the start of the results.
+    function handlePageChange(next: number) {
+        changePage(next);
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        resultsRef.current?.scrollIntoView({
+            behavior: reduceMotion ? 'auto' : 'smooth',
+            block: 'start',
+        });
+    }
+
     function resetFilters() {
         setDraft(EMPTY_FILTERS);
         reset();
