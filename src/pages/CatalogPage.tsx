@@ -8,11 +8,16 @@ import BookCard from '../components/BookCard.tsx';
 import BookGrid from '../components/BookGrid.tsx';
 import Button from '../components/Button.tsx';
 import Pagination from '../components/Pagination.tsx';
-import SelectField from '../components/SelectField.tsx';
+import MultiComboboxField from '../components/MultiComboboxField.tsx';
 import ShelfIllustration from '../components/ShelfIllustration.tsx';
 import Skeleton from '../components/Skeleton.tsx';
 import { TYPE_LABELS } from '../constants/labels.ts';
-import { EMPTY_FILTERS, useCatalogQuery, type CatalogFilters } from '../hooks/useCatalogQuery.ts';
+import {
+    EMPTY_FILTERS,
+    MAX_PER_FILTER,
+    useCatalogQuery,
+    type CatalogFilters,
+} from '../hooks/useCatalogQuery.ts';
 import { useReadingList } from '../hooks/useReadingList.ts';
 import type { BookFacets, BookPage } from '../types/api.ts';
 
@@ -63,9 +68,10 @@ export default function CatalogPage() {
 
     useEffect(() => {
         const params = new URLSearchParams({ page: String(page), limit: String(PAGE_SIZE) });
-        for (const [key, value] of Object.entries(filters)) {
-            if (value) params.set(key, value);
-        }
+        if (filters.search) params.set('search', filters.search);
+        for (const type of filters.types) params.append('type', type);
+        for (const level of filters.levels) params.append('level', level);
+        for (const theme of filters.themes) params.append('theme', theme);
         let cancelled = false;
         apiFetch<BookPage>(`/books?${params}`, { token })
             .then((data) => {
@@ -81,9 +87,12 @@ export default function CatalogPage() {
         };
     }, [token, filters, page]);
 
-    function updateDraft(field: keyof CatalogFilters) {
-        return (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
-            setDraft((current) => ({ ...current, [field]: event.target.value }));
+    function updateSearch(event: ChangeEvent<HTMLInputElement>) {
+        setDraft((current) => ({ ...current, search: event.target.value }));
+    }
+
+    function updateList(field: 'types' | 'levels' | 'themes') {
+        return (values: string[]) => setDraft((current) => ({ ...current, [field]: values }));
     }
 
     function applyFilters(event: SubmitEvent<HTMLFormElement>) {
@@ -108,7 +117,9 @@ export default function CatalogPage() {
 
     const totalPages = result ? Math.max(1, Math.ceil(result.total / PAGE_SIZE)) : 1;
 
-    const hasFilters = Object.values(filters).some(Boolean);
+    const hasFilters = Object.values(filters).some((value) =>
+        Array.isArray(value) ? value.length > 0 : Boolean(value),
+    );
 
     return (
         <section>
@@ -145,64 +156,68 @@ export default function CatalogPage() {
                                     placeholder="Titel, auteur of thema"
                                     maxLength={100}
                                     value={draft.search}
-                                    onChange={updateDraft('search')}
+                                    onChange={updateSearch}
                                 />
                                 <button type="submit" className="btn btn-primary rounded-pill px-4">
                                     Zoeken
                                 </button>
                             </div>
 
-                            <div className="row g-2 align-items-end">
-                                <div className="col-6 col-md-3">
-                                    <SelectField
+                            <div className="row g-2 align-items-start flex-nowrap">
+                                <div className="col-4">
+                                    <MultiComboboxField
                                         label="Soort"
                                         wrapperClassName="mb-0"
-                                        value={draft.type}
-                                        onChange={updateDraft('type')}
+                                        maxSelected={MAX_PER_FILTER}
+                                        emptyText="Geen soorten gevonden"
+                                        values={draft.types}
+                                        onChange={updateList('types')}
                                         options={options.types.map((type) => ({
                                             value: type,
                                             label: TYPE_LABELS[type] ?? type,
                                         }))}
                                     />
                                 </div>
-                                <div className="col-6 col-md-3">
-                                    <SelectField
+                                <div className="col-4">
+                                    <MultiComboboxField
                                         label="Niveau"
                                         wrapperClassName="mb-0"
-                                        value={draft.level}
-                                        onChange={updateDraft('level')}
+                                        maxSelected={MAX_PER_FILTER}
+                                        emptyText="Geen niveaus gevonden"
+                                        values={draft.levels}
+                                        onChange={updateList('levels')}
                                         options={options.levels.map((level) => ({
                                             value: level,
                                             label: level,
                                         }))}
                                     />
                                 </div>
-                                <div className="col-12 col-md-4">
-                                    <SelectField
-                                        label="Thema"
+                                <div className="col-4">
+                                    <MultiComboboxField
+                                        label="Thema's"
                                         wrapperClassName="mb-0"
-                                        value={draft.theme}
-                                        onChange={updateDraft('theme')}
+                                        maxSelected={MAX_PER_FILTER}
+                                        emptyText="Geen thema's gevonden"
+                                        values={draft.themes}
+                                        onChange={updateList('themes')}
                                         options={options.themes.map((theme) => ({
                                             value: theme,
                                             label: theme,
                                         }))}
                                     />
                                 </div>
-                                <div className="col-12 col-md-auto">
-                                    <button
-                                        type="button"
-                                        className="btn btn-link text-nowrap"
-                                        onClick={resetFilters}
-                                    >
-                                        <i
-                                            className="bi bi-arrow-counterclockwise me-1"
-                                            aria-hidden="true"
-                                        />
-                                        Wissen
-                                    </button>
-                                </div>
                             </div>
+                            <button
+                                type="button"
+                                className="btn btn-link text-nowrap px-0 mt-2"
+                                onClick={resetFilters}
+                            >
+                                <i
+                                    className="bi bi-arrow-counterclockwise me-1"
+                                    aria-hidden="true"
+                                />
+                                Alle filters wissen
+                            </button>
                         </form>
                     </div>
                     <div className="col-lg-5 d-none d-lg-block">
