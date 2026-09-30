@@ -1,0 +1,11 @@
+Vragen:
+- Er staat dat een docent leerlingen kan koppelen, maar ook dat een leerling zich
+  koppelt aan een docent, dit is een beetje tegenstrijdig en wat is leidend?
+- Hoe geef ik een gebruiker de docent rol?
+  - moet dat handmatig via de database worden gedaan
+  - moet er een vaste lijst met emails van docenten zijn
+  - moet er een admin gebruiker komen die een lijst van alle gebruikers kan zien en een rol kan toewijzen
+
+Ideeën:
+- Geschiedenis van leesprofiel en leeslijst
+  - een soort tijdlijn maken voor een leerling zodat de progressie van de leerling duidelijk getoond kan worden
