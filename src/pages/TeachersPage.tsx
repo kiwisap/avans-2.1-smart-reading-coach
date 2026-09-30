@@ -33,8 +33,8 @@ export default function TeachersPage() {
             );
             setNotice(
                 updated.linked
-                    ? `You are now linked to ${updated.name}.`
-                    : `You are no longer linked to ${updated.name}.`,
+                    ? `Je bent nu gekoppeld aan ${updated.name}.`
+                    : `Je bent niet meer gekoppeld aan ${updated.name}.`,
             );
         } catch (err) {
             setError(errorMessage(err));
@@ -43,31 +43,54 @@ export default function TeachersPage() {
 
     return (
         <section>
-            <h1>My teachers</h1>
-            <p>
-                A teacher you link to can see your reading profile and your reading list, and can
-                add titles to your list. You can remove the link at any time.
-            </p>
+            <header className="mb-4">
+                <h1 className="page-title">
+                    <i className="bi bi-mortarboard me-2" aria-hidden="true" />
+                    Mijn docenten
+                </h1>
+                <p className="text-body-secondary mb-0">
+                    Een docent aan wie je gekoppeld bent, kan je leesprofiel en je leeslijst zien en
+                    titels aan je lijst toevoegen. Je kunt de koppeling altijd weer verwijderen.
+                </p>
+            </header>
 
             {error && <Alert>{error}</Alert>}
             {notice && <Alert type="success">{notice}</Alert>}
-            {!teachers && !error && <Skeleton lines={4} label="Loading teachers" />}
-            {teachers?.length === 0 && <p>There are no teachers yet.</p>}
+            {!teachers && !error && <Skeleton lines={4} label="Docenten laden" />}
+            {teachers?.length === 0 && <p>Er zijn nog geen docenten.</p>}
 
             {teachers && teachers.length > 0 && (
-                <ul className="list">
+                <ul className="list-group shadow-sm">
                     {teachers.map((teacher) => (
-                        <li key={teacher.id}>
-                            <span>
-                                <strong>{teacher.name}</strong>
-                                {teacher.linked && <span className="on-list"> · ✓ Linked</span>}
+                        <li
+                            key={teacher.id}
+                            className="list-group-item d-flex flex-wrap justify-content-between align-items-center gap-2 py-3"
+                        >
+                            <span className="d-flex align-items-center gap-3">
+                                <i
+                                    className="bi bi-person-badge fs-3 text-body-secondary"
+                                    aria-hidden="true"
+                                />
+                                <span>
+                                    <strong>{teacher.name}</strong>
+                                    {teacher.linked && (
+                                        <span className="badge rounded-pill bg-success-subtle text-success-emphasis border border-success-subtle ms-2">
+                                            <i
+                                                className="bi bi-link-45deg me-1"
+                                                aria-hidden="true"
+                                            />
+                                            Linked
+                                        </span>
+                                    )}
+                                </span>
                             </span>
                             <Button
                                 variant={teacher.linked ? 'secondary' : 'primary'}
-                                aria-label={`${teacher.linked ? 'Unlink from' : 'Link to'} ${teacher.name}`}
+                                size="sm"
+                                aria-label={`${teacher.linked ? 'Ontkoppel van' : 'Koppel aan'} ${teacher.name}`}
                                 onClick={() => toggleLink(teacher)}
                             >
-                                {teacher.linked ? 'Unlink' : 'Link to this teacher'}
+                                {teacher.linked ? 'Ontkoppelen' : 'Koppel aan deze docent'}
                             </Button>
                         </li>
                     ))}

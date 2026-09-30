@@ -16,8 +16,8 @@ export default function ConfirmDialog({
     open,
     title,
     children,
-    confirmLabel = 'Confirm',
-    cancelLabel = 'Cancel',
+    confirmLabel = 'Bevestigen',
+    cancelLabel = 'Annuleren',
     onConfirm,
     onCancel,
 }: ConfirmDialogProps) {
@@ -41,13 +41,19 @@ export default function ConfirmDialog({
                 onCancel();
             }}
         >
-            <h2 id={titleId}>{title}</h2>
-            <div>{children}</div>
-            <div className="dialog-actions">
+            <div className="p-4">
+                <h2 id={titleId} className="h5 mb-3">
+                    {title}
+                </h2>
+                <div>{children}</div>
+            </div>
+            <div className="d-flex justify-content-end gap-2 bg-body-tertiary px-4 py-3 rounded-bottom">
                 <Button variant="secondary" onClick={onCancel}>
                     {cancelLabel}
                 </Button>
-                <Button onClick={onConfirm}>{confirmLabel}</Button>
+                <Button variant="danger" onClick={onConfirm}>
+                    {confirmLabel}
+                </Button>
             </div>
         </dialog>
     );

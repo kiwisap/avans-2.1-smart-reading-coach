@@ -59,7 +59,7 @@ export default function ProfilePage() {
                     setEditing(true);
                     setMessage({
                         type: 'info',
-                        text: 'We restored the changes you had not saved yet.',
+                        text: 'We hebben je niet-opgeslagen wijzigingen teruggezet.',
                     });
                 } else if (!profile) {
                     setValues(EMPTY_PROFILE);
@@ -126,8 +126,7 @@ export default function ProfilePage() {
                 type: 'success',
                 text: (
                     <>
-                        Your reading profile has been saved.{' '}
-                        <Link to="/advice">See your reading advice</Link>
+                        Je leesprofiel is opgeslagen. <Link to="/advice">Bekijk je leesadvies</Link>
                     </>
                 ),
             });
@@ -162,15 +161,23 @@ export default function ProfilePage() {
     if (saved === undefined && !message) {
         return (
             <section>
-                <h1>My reading profile</h1>
-                <Skeleton lines={5} label="Loading your profile" />
+                <h1 className="page-title mb-4">Mijn leesprofiel</h1>
+                <Skeleton lines={5} label="Profiel laden" />
             </section>
         );
     }
 
     return (
         <section>
-            <h1>My reading profile</h1>
+            <header className="mb-4">
+                <h1 className="page-title">
+                    <i className="bi bi-person-lines-fill me-2" aria-hidden="true" />
+                    Mijn leesprofiel
+                </h1>
+                <p className="text-body-secondary mb-0">
+                    Je antwoorden bepalen welke titels wij je adviseren.
+                </p>
+            </header>
             {message && <Alert type={message.type}>{message.text}</Alert>}
 
             {options && editing && (
@@ -189,21 +196,23 @@ export default function ProfilePage() {
             {saved && !editing && (
                 <>
                     <ProfileSummary profile={saved} />
-                    <Button onClick={startEditing}>Edit profile</Button>
+                    <Button icon="bi-pencil" onClick={startEditing}>
+                        Profiel bewerken
+                    </Button>
                 </>
             )}
 
             <ConfirmDialog
                 open={confirmOpen}
-                title="Discard your changes?"
-                confirmLabel="Discard changes"
-                cancelLabel="Keep editing"
+                title="Wijzigingen weggooien?"
+                confirmLabel="Wijzigingen weggooien"
+                cancelLabel="Verder bewerken"
                 onConfirm={discardChanges}
                 onCancel={() => setConfirmOpen(false)}
             >
                 <p>
-                    You changed your profile but did not save it. If you continue, the changes are
-                    lost.
+                    Je hebt je profiel aangepast maar niet opgeslagen. Als je doorgaat, gaan de
+                    wijzigingen verloren.
                 </p>
             </ConfirmDialog>
         </section>

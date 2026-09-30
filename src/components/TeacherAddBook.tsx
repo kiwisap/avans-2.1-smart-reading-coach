@@ -42,57 +42,77 @@ export default function TeacherAddBook({
     }
 
     return (
-        <section aria-labelledby="add-title-heading" className="card">
-            <h2 id="add-title-heading">Add a title to {studentName}&apos;s reading list</h2>
-            <form onSubmit={handleSearch} role="search">
-                <TextField
-                    label="Search the catalog"
-                    type="search"
-                    placeholder="Title, author or theme"
-                    value={query}
-                    onChange={(event) => setQuery(event.target.value)}
-                />
-                <Button type="submit" disabled={searching}>
-                    {searching ? 'Searching...' : 'Search'}
-                </Button>
-            </form>
+        <section aria-labelledby="add-title-heading" className="card shadow-sm mt-5">
+            <div className="card-body">
+                <h2 id="add-title-heading" className="h5">
+                    <i className="bi bi-plus-circle me-2" aria-hidden="true" />
+                    Voeg een titel toe aan de leeslijst van {studentName}
+                </h2>
+                <form
+                    onSubmit={handleSearch}
+                    role="search"
+                    className="d-flex gap-2 align-items-end"
+                >
+                    <TextField
+                        label="Zoek in de catalogus"
+                        type="search"
+                        placeholder="Titel, auteur of thema"
+                        wrapperClassName="flex-grow-1"
+                        value={query}
+                        onChange={(event) => setQuery(event.target.value)}
+                    />
+                    <Button type="submit" icon="bi-search" disabled={searching}>
+                        {searching ? 'Zoeken...' : 'Zoeken'}
+                    </Button>
+                </form>
 
-            {error && <Alert>{error}</Alert>}
+                {error && <Alert>{error}</Alert>}
 
-            {results && (
-                <>
-                    <p role="status">
-                        {results.length === 0
-                            ? 'No titles found.'
-                            : `Showing ${results.length} titles.`}
-                    </p>
-                    <ul className="list">
-                        {results.map((book) => (
-                            <li key={book.id}>
-                                <span>
-                                    <strong>{book.title}</strong>
-                                    {book.author && <> by {book.author}</>}
-                                    <span className="book-meta">
-                                        {' '}
-                                        · {TYPE_LABELS[book.type] ?? book.type}
+                {results && (
+                    <>
+                        <p role="status" className="text-body-secondary mt-3">
+                            {results.length === 0
+                                ? 'Geen titels gevonden.'
+                                : `${results.length} titels gevonden.`}
+                        </p>
+                        <ul className="list-group">
+                            {results.map((book) => (
+                                <li
+                                    key={book.id}
+                                    className="list-group-item d-flex flex-wrap justify-content-between align-items-center gap-2"
+                                >
+                                    <span>
+                                        <strong>{book.title}</strong>
+                                        {book.author && <> van {book.author}</>}
+                                        <span className="text-body-secondary">
+                                            {' '}
+                                            · {TYPE_LABELS[book.type] ?? book.type}
+                                        </span>
                                     </span>
-                                </span>
-                                {existingBookIds.has(book.id) ? (
-                                    <span className="on-list">✓ On the list</span>
-                                ) : (
-                                    <Button
-                                        variant="secondary"
-                                        aria-label={`Add ${book.title} to ${studentName}'s reading list`}
-                                        onClick={() => onAdd(book)}
-                                    >
-                                        Add
-                                    </Button>
-                                )}
-                            </li>
-                        ))}
-                    </ul>
-                </>
-            )}
+                                    {existingBookIds.has(book.id) ? (
+                                        <span className="text-success-emphasis fw-semibold">
+                                            <i
+                                                className="bi bi-check-circle-fill me-1"
+                                                aria-hidden="true"
+                                            />
+                                            Staat op de lijst
+                                        </span>
+                                    ) : (
+                                        <Button
+                                            variant="secondary"
+                                            size="sm"
+                                            aria-label={`Voeg ${book.title} toe aan de leeslijst van ${studentName}`}
+                                            onClick={() => onAdd(book)}
+                                        >
+                                            Toevoegen
+                                        </Button>
+                                    )}
+                                </li>
+                            ))}
+                        </ul>
+                    </>
+                )}
+            </div>
         </section>
     );
 }

@@ -5,6 +5,7 @@ import { useAuth } from '../auth/AuthContext.tsx';
 import AddToListButton from '../components/AddToListButton.tsx';
 import Alert from '../components/Alert.tsx';
 import BookCard from '../components/BookCard.tsx';
+import BookGrid from '../components/BookGrid.tsx';
 import Skeleton from '../components/Skeleton.tsx';
 import { useReadingList } from '../hooks/useReadingList.ts';
 import type { Suggestion } from '../types/api.ts';
@@ -23,7 +24,7 @@ export default function AdvicePage() {
             })
             .catch((err: unknown) => {
                 if (cancelled) return;
-                setError(err instanceof ApiError ? err : new ApiError(0, 'Something went wrong'));
+                setError(err instanceof ApiError ? err : new ApiError(0, 'Er is iets misgegaan'));
             });
         return () => {
             cancelled = true;
@@ -32,26 +33,36 @@ export default function AdvicePage() {
 
     return (
         <section>
-            <h1>Your reading advice</h1>
+            <header className="mb-4">
+                <h1 className="page-title">
+                    <i className="bi bi-stars me-2" aria-hidden="true" />
+                    Jouw leesadvies
+                </h1>
+                <p className="text-body-secondary mb-0">
+                    Titels die passen bij je leesprofiel, met een korte reden erbij.
+                </p>
+            </header>
 
             {error?.status === 409 && (
                 <Alert type="info">
-                    {error.message}. <Link to="/profile">Go to your reading profile</Link>
+                    {error.message}. <Link to="/profile">Ga naar je leesprofiel</Link>
                 </Alert>
             )}
             {error && error.status !== 409 && <Alert>{error.message}</Alert>}
             {readingList.error && <Alert>{readingList.error}</Alert>}
             {readingList.notice && <Alert type="success">{readingList.notice}</Alert>}
 
-            {!suggestions && !error && <Skeleton lines={6} label="Finding suggestions for you" />}
+            {!suggestions && !error && (
+                <Skeleton variant="cards" lines={3} label="Suggesties voor je zoeken" />
+            )}
 
             {suggestions && (
                 <>
-                    <p role="status">
-                        {suggestions.length} suggestions based on your reading profile.{' '}
-                        <Link to="/profile">Change your profile</Link> to get different advice.
+                    <p role="status" className="mb-3">
+                        {suggestions.length} suggesties op basis van je leesprofiel.{' '}
+                        <Link to="/profile">Pas je profiel aan</Link> voor ander advies.
                     </p>
-                    <div className="book-grid">
+                    <BookGrid>
                         {suggestions.map((book) => (
                             <BookCard key={book.id} book={book} motivation={book.motivation}>
                                 <AddToListButton
@@ -61,7 +72,7 @@ export default function AdvicePage() {
                                 />
                             </BookCard>
                         ))}
-                    </div>
+                    </BookGrid>
                 </>
             )}
         </section>

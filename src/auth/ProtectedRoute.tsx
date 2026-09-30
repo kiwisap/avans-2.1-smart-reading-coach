@@ -14,7 +14,14 @@ export default function ProtectedRoute({ roles, children }: ProtectedRouteProps)
     const { user, loading } = useAuth();
     const location = useLocation();
 
-    if (loading) return <p role="status">Loading...</p>;
+    if (loading) {
+        return (
+            <div className="text-center py-5" role="status">
+                <div className="spinner-border text-primary" aria-hidden="true" />
+                <span className="visually-hidden">Loading...</span>
+            </div>
+        );
+    }
 
     if (!user) {
         return <Navigate to="/login" replace state={{ from: location.pathname }} />;
@@ -22,7 +29,7 @@ export default function ProtectedRoute({ roles, children }: ProtectedRouteProps)
 
     if (roles && !roles.includes(user.role)) {
         return (
-            <Navigate to="/" replace state={{ notice: 'You do not have access to that page.' }} />
+            <Navigate to="/" replace state={{ notice: 'Je hebt geen toegang tot die pagina.' }} />
         );
     }
 

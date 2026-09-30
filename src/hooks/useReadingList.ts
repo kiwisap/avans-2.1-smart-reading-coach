@@ -38,7 +38,7 @@ export function useReadingList(enabled = true) {
                     body: { bookId: book.id },
                 });
                 setItems((current) => [item, ...(current ?? [])]);
-                setNotice(`"${book.title}" was added to your reading list.`);
+                setNotice(`"${book.title}" is toegevoegd aan je leeslijst.`);
             } catch (err) {
                 setError(errorMessage(err));
             }
@@ -73,9 +73,7 @@ export function useReadingList(enabled = true) {
                 setItems((current) =>
                     (current ?? []).filter((existing) => existing.id !== item.id),
                 );
-                setNotice(
-                    `"${item.book?.title ?? 'The title'}" was removed from your reading list.`,
-                );
+                setNotice(`"${item.book?.title ?? 'De titel'}" is van je leeslijst verwijderd.`);
             } catch (err) {
                 setError(errorMessage(err));
             }

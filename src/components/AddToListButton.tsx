@@ -9,15 +9,22 @@ interface AddToListButtonProps {
 
 export default function AddToListButton({ book, onList, onAdd }: AddToListButtonProps) {
     if (onList) {
-        return <p className="on-list">✓ On your reading list</p>;
+        return (
+            <span className="text-success-emphasis fw-semibold">
+                <i className="bi bi-bookmark-check-fill me-1" aria-hidden="true" />
+                Op je leeslijst
+            </span>
+        );
     }
     return (
         <Button
             variant="secondary"
-            aria-label={`Add ${book.title} to your reading list`}
+            size="sm"
+            icon="bi-bookmark-plus"
+            aria-label={`Voeg ${book.title} toe aan je leeslijst`}
             onClick={() => onAdd(book)}
         >
-            Add to reading list
+            Toevoegen
         </Button>
     );
 }

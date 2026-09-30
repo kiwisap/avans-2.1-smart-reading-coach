@@ -32,16 +32,16 @@ export async function apiFetch<T = unknown>(
             body: body ? JSON.stringify(body) : undefined,
         });
     } catch {
-        throw new ApiError(0, 'Cannot reach the server. Try again later.');
+        throw new ApiError(0, 'De server is niet bereikbaar. Probeer het later opnieuw.');
     }
 
     const data = (await response.json().catch(() => ({}))) as { message?: string };
     if (!response.ok) {
-        throw new ApiError(response.status, data.message ?? 'Something went wrong');
+        throw new ApiError(response.status, data.message ?? 'Er is iets misgegaan');
     }
     return data as T;
 }
 
 export function errorMessage(err: unknown): string {
-    return err instanceof Error ? err.message : 'Something went wrong';
+    return err instanceof Error ? err.message : 'Er is iets misgegaan';
 }

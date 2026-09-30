@@ -3,6 +3,7 @@ import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { errorMessage } from '../api/client.ts';
 import { useAuth } from '../auth/AuthContext.tsx';
 import Alert from '../components/Alert.tsx';
+import AuthLayout from '../components/AuthLayout.tsx';
 import Button from '../components/Button.tsx';
 import TextField from '../components/TextField.tsx';
 
@@ -33,12 +34,11 @@ export default function LoginPage() {
     }
 
     return (
-        <section className="card narrow">
-            <h1>Log in</h1>
+        <AuthLayout title="Inloggen" subtitle="Welkom terug. Ga verder waar je gebleven was.">
             {error && <Alert>{error}</Alert>}
             <form onSubmit={handleSubmit}>
                 <TextField
-                    label="Email"
+                    label="E-mail"
                     type="email"
                     autoComplete="email"
                     required
@@ -46,20 +46,20 @@ export default function LoginPage() {
                     onChange={(e) => setEmail(e.target.value)}
                 />
                 <TextField
-                    label="Password"
+                    label="Wachtwoord"
                     type="password"
                     autoComplete="current-password"
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
-                <Button type="submit" disabled={submitting}>
-                    {submitting ? 'Logging in...' : 'Log in'}
+                <Button type="submit" size="lg" className="w-100" disabled={submitting}>
+                    {submitting ? 'Bezig met inloggen...' : 'Inloggen'}
                 </Button>
             </form>
-            <p>
-                No account yet? <Link to="/register">Register</Link>
+            <p className="mt-4 mb-0">
+                Nog geen account? <Link to="/register">Registreer</Link>
             </p>
-        </section>
+        </AuthLayout>
     );
 }

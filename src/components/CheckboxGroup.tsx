@@ -44,59 +44,82 @@ export default function CheckboxGroup<T extends string>({
 
     return (
         <fieldset
-            className="choice-group"
+            className={`card card-body mb-4 shadow-sm ${error ? 'border-danger' : ''}`}
             aria-describedby={describedBy}
             aria-invalid={error ? 'true' : undefined}
         >
-            <legend>
+            <legend className="h6 float-none w-auto mb-1">
                 {legend}
                 {required && (
                     <>
                         <span aria-hidden="true"> *</span>
-                        <span className="visually-hidden"> (required)</span>
+                        <span className="visually-hidden"> (verplicht)</span>
                     </>
                 )}
             </legend>
             {hint && (
-                <small id={`${id}-hint`} className="hint">
+                <div id={`${id}-hint`} className="form-text mt-0 mb-2">
                     {hint}
-                </small>
+                </div>
             )}
             {max !== undefined && (
-                <p className="hint" aria-live="polite">
-                    {values.length} of {max} chosen
+                <p className="mb-2" aria-live="polite">
+                    <span
+                        className={`badge ${atLimit ? 'bg-warning-subtle text-warning-emphasis' : 'bg-primary-subtle text-primary-emphasis'}`}
+                    >
+                        {values.length} van {max} gekozen
+                    </span>
                 </p>
             )}
             {searchable && (
-                <div className="field">
-                    <label htmlFor={`${id}-filter`}>Filter the list</label>
-                    <input
-                        id={`${id}-filter`}
-                        type="search"
-                        value={query}
-                        onChange={(event) => setQuery(event.target.value)}
-                    />
+                <div className="mb-2">
+                    <label htmlFor={`${id}-filter`} className="form-label visually-hidden">
+                        Filter de lijst
+                    </label>
+                    <div className="input-group">
+                        <span className="input-group-text" aria-hidden="true">
+                            <i className="bi bi-search" />
+                        </span>
+                        <input
+                            id={`${id}-filter`}
+                            type="search"
+                            className="form-control"
+                            placeholder="Filter de lijst"
+                            value={query}
+                            onChange={(event) => setQuery(event.target.value)}
+                        />
+                    </div>
                 </div>
             )}
-            <div className={searchable ? 'choice-list scrollable' : 'choice-list'}>
-                {visible.map((option) => (
-                    <label key={option.value} className="choice">
-                        <input
-                            type="checkbox"
-                            value={option.value}
-                            checked={values.includes(option.value)}
-                            disabled={atLimit && !values.includes(option.value)}
-                            onChange={() => toggle(option.value)}
-                        />
-                        {option.label}
-                    </label>
-                ))}
-                {visible.length === 0 && <p>No matches.</p>}
+            <div className={searchable ? 'choice-scroll border rounded px-3 py-1' : ''}>
+                {visible.map((option) => {
+                    const inputId = `${id}-${option.value}`;
+                    return (
+                        <div key={option.value} className="form-check py-1">
+                            <input
+                                id={inputId}
+                                className="form-check-input"
+                                type="checkbox"
+                                value={option.value}
+                                checked={values.includes(option.value)}
+                                disabled={atLimit && !values.includes(option.value)}
+                                onChange={() => toggle(option.value)}
+                            />
+                            <label htmlFor={inputId} className="form-check-label">
+                                {option.label}
+                            </label>
+                        </div>
+                    );
+                })}
+                {visible.length === 0 && (
+                    <p className="text-body-secondary my-2">Geen resultaten.</p>
+                )}
             </div>
             {error && (
-                <small id={`${id}-error`} className="error-text">
+                <div id={`${id}-error`} className="text-danger mt-2">
+                    <i className="bi bi-exclamation-circle me-1" aria-hidden="true" />
                     {error}
-                </small>
+                </div>
             )}
         </fieldset>
     );

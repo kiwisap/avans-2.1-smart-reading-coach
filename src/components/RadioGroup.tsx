@@ -32,40 +32,48 @@ export default function RadioGroup<T extends string>({
 
     return (
         <fieldset
-            className="choice-group"
+            className={`card card-body mb-4 shadow-sm ${error ? 'border-danger' : ''}`}
             aria-describedby={describedBy}
             aria-invalid={error ? 'true' : undefined}
         >
-            <legend>
+            <legend className="h6 float-none w-auto mb-1">
                 {legend}
                 {required && (
                     <>
                         <span aria-hidden="true"> *</span>
-                        <span className="visually-hidden"> (required)</span>
+                        <span className="visually-hidden"> (verplicht)</span>
                     </>
                 )}
             </legend>
             {hint && (
-                <small id={`${id}-hint`} className="hint">
+                <div id={`${id}-hint`} className="form-text mt-0 mb-2">
                     {hint}
-                </small>
+                </div>
             )}
-            {options.map((option) => (
-                <label key={option.value} className="choice">
-                    <input
-                        type="radio"
-                        name={name}
-                        value={option.value}
-                        checked={value === option.value}
-                        onChange={() => onChange(option.value)}
-                    />
-                    {option.label}
-                </label>
-            ))}
+            {options.map((option) => {
+                const inputId = `${id}-${option.value}`;
+                return (
+                    <div key={option.value} className="form-check py-1">
+                        <input
+                            id={inputId}
+                            className="form-check-input"
+                            type="radio"
+                            name={name}
+                            value={option.value}
+                            checked={value === option.value}
+                            onChange={() => onChange(option.value)}
+                        />
+                        <label htmlFor={inputId} className="form-check-label">
+                            {option.label}
+                        </label>
+                    </div>
+                );
+            })}
             {error && (
-                <small id={`${id}-error`} className="error-text">
+                <div id={`${id}-error`} className="text-danger mt-2">
+                    <i className="bi bi-exclamation-circle me-1" aria-hidden="true" />
                     {error}
-                </small>
+                </div>
             )}
         </fieldset>
     );

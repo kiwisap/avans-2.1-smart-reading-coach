@@ -4,6 +4,8 @@ import { apiFetch, errorMessage } from '../api/client.ts';
 import { useAuth } from '../auth/AuthContext.tsx';
 import Alert from '../components/Alert.tsx';
 import BookCard from '../components/BookCard.tsx';
+import BookGrid from '../components/BookGrid.tsx';
+import MissingBookCard from '../components/MissingBookCard.tsx';
 import ProfileSummary from '../components/ProfileSummary.tsx';
 import Skeleton from '../components/Skeleton.tsx';
 import StatusBadge from '../components/StatusBadge.tsx';
@@ -58,7 +60,9 @@ function StudentDetail({ studentId }: { studentId: string | undefined }) {
             setOverview((current) =>
                 current ? { ...current, readingList: [item, ...current.readingList] } : current,
             );
-            setNotice(`"${book.title}" was added to ${overview.student.name}'s reading list.`);
+            setNotice(
+                `"${book.title}" is toegevoegd aan de leeslijst van ${overview.student.name}.`,
+            );
         } catch (err) {
             setError(errorMessage(err));
         }
@@ -69,7 +73,7 @@ function StudentDetail({ studentId }: { studentId: string | undefined }) {
             <section>
                 <Alert>{error}</Alert>
                 <p>
-                    <Link to="/students">Back to your students</Link>
+                    <Link to="/students">Terug naar je leerlingen</Link>
                 </p>
             </section>
         );
@@ -78,7 +82,7 @@ function StudentDetail({ studentId }: { studentId: string | undefined }) {
     if (!overview) {
         return (
             <section>
-                <Skeleton lines={6} label="Loading student" />
+                <Skeleton lines={6} label="Leerling laden" />
             </section>
         );
     }
@@ -88,36 +92,48 @@ function StudentDetail({ studentId }: { studentId: string | undefined }) {
     return (
         <section>
             <p>
-                <Link to="/students">← Back to your students</Link>
+                <Link to="/students">
+                    <i className="bi bi-arrow-left me-1" aria-hidden="true" />
+                    Terug naar je leerlingen
+                </Link>
             </p>
-            <h1>{student.name}</h1>
+            <header className="mb-4">
+                <h1 className="page-title">
+                    <i className="bi bi-person-circle me-2" aria-hidden="true" />
+                    {student.name}
+                </h1>
+                <p className="text-body-secondary mb-0">{student.email}</p>
+            </header>
 
             {error && <Alert>{error}</Alert>}
             {notice && <Alert type="success">{notice}</Alert>}
 
-            <h2>Reading profile</h2>
+            <h2 className="h4 mb-3">Leesprofiel</h2>
             {profile ? (
                 <ProfileSummary profile={profile} />
             ) : (
-                <p>This student has not filled in a reading profile yet.</p>
+                <p className="text-body-secondary">
+                    Deze leerling heeft nog geen leesprofiel ingevuld.
+                </p>
             )}
 
-            <h2>Reading list</h2>
-            {readingList.length === 0 && <p>Nothing on the reading list yet.</p>}
-            <div className="book-grid">
+            <h2 className="h4 mt-4 mb-3">Leeslijst</h2>
+            {readingList.length === 0 && (
+                <p className="text-body-secondary">Er staat nog niets op de leeslijst.</p>
+            )}
+            <BookGrid>
                 {readingList.map((item) =>
                     item.book ? (
                         <BookCard key={item.id} book={item.book}>
                             <StatusBadge status={item.status} />
                         </BookCard>
                     ) : (
-                        <article key={item.id} className="book-card">
-                            <h3>Title no longer available</h3>
+                        <MissingBookCard key={item.id}>
                             <StatusBadge status={item.status} />
-                        </article>
+                        </MissingBookCard>
                     ),
                 )}
-            </div>
+            </BookGrid>
 
             <TeacherAddBook
                 studentName={student.name}

@@ -1,13 +1,16 @@
 import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { apiFetch, errorMessage } from '../api/client.ts';
 import { useAuth } from '../auth/AuthContext.tsx';
 import AddToListButton from '../components/AddToListButton.tsx';
 import Alert from '../components/Alert.tsx';
 import BookCard from '../components/BookCard.tsx';
+import BookGrid from '../components/BookGrid.tsx';
 import Button from '../components/Button.tsx';
 import Pagination from '../components/Pagination.tsx';
 import SelectField from '../components/SelectField.tsx';
-import TextField from '../components/TextField.tsx';
+import ShelfIllustration from '../components/ShelfIllustration.tsx';
+import Skeleton from '../components/Skeleton.tsx';
 import { TYPE_LABELS } from '../constants/labels.ts';
 import { useReadingList } from '../hooks/useReadingList.ts';
 import type { BookFacets, BookPage } from '../types/api.ts';
@@ -25,6 +28,8 @@ const EMPTY_FILTERS: Filters = { search: '', type: '', level: '', theme: '' };
 
 export default function CatalogPage() {
     const { token, user } = useAuth();
+    const location = useLocation();
+    const accessNotice = (location.state as { notice?: string } | null)?.notice;
     const isStudent = user?.role === 'student';
     const readingList = useReadingList(isStudent);
     const [draft, setDraft] = useState<Filters>(EMPTY_FILTERS); // what the user is typing
@@ -79,58 +84,141 @@ export default function CatalogPage() {
 
     const totalPages = result ? Math.max(1, Math.ceil(result.total / PAGE_SIZE)) : 1;
 
+    const hasFilters = Object.values(filters).some(Boolean);
+
     return (
         <section>
-            <h1>Catalog</h1>
+            {accessNotice && <Alert>{accessNotice}</Alert>}
 
-            <form className="filters card" onSubmit={applyFilters} role="search">
-                <TextField
-                    label="Search"
-                    type="search"
-                    placeholder="Title, author or theme"
-                    value={draft.search}
-                    onChange={updateDraft('search')}
-                />
-                <SelectField
-                    label="Type"
-                    value={draft.type}
-                    onChange={updateDraft('type')}
-                    options={options.types.map((type) => ({
-                        value: type,
-                        label: TYPE_LABELS[type] ?? type,
-                    }))}
-                />
-                <SelectField
-                    label="Level"
-                    value={draft.level}
-                    onChange={updateDraft('level')}
-                    options={options.levels.map((level) => ({ value: level, label: level }))}
-                />
-                <SelectField
-                    label="Theme"
-                    value={draft.theme}
-                    onChange={updateDraft('theme')}
-                    options={options.themes.map((theme) => ({ value: theme, label: theme }))}
-                />
-                <div className="filter-actions">
-                    <Button type="submit">Search</Button>
-                    <Button variant="secondary" onClick={resetFilters}>
-                        Reset
-                    </Button>
+            <div className="hero mb-5">
+                <div className="row align-items-center g-4">
+                    <div className="col-lg-7">
+                        <p className="eyebrow text-secondary mb-2">Vrij lezen op maat</p>
+                        <h1 className="display-5 mb-2">Vind je volgende leestip</h1>
+                        <p className="fs-5 text-body-secondary mb-4">
+                            {user?.role === 'student' ? (
+                                <>
+                                    Hoi {user.name}! Zoek in de catalogus, of{' '}
+                                    <Link to="/advice">laat ons iets voor je uitkiezen</Link>.
+                                </>
+                            ) : (
+                                'Zoek in de catalogus met boeken, artikelen en meer.'
+                            )}
+                        </p>
+
+                        <form onSubmit={applyFilters} role="search">
+                            <div className="hero-search input-group mb-3">
+                                <span className="input-group-text ps-3" aria-hidden="true">
+                                    <i className="bi bi-search" />
+                                </span>
+                                <label htmlFor="catalog-search" className="visually-hidden">
+                                    Zoek op titel, auteur of thema
+                                </label>
+                                <input
+                                    id="catalog-search"
+                                    type="search"
+                                    className="form-control"
+                                    placeholder="Titel, auteur of thema"
+                                    value={draft.search}
+                                    onChange={updateDraft('search')}
+                                />
+                                <button type="submit" className="btn btn-primary rounded-pill px-4">
+                                    Zoeken
+                                </button>
+                            </div>
+
+                            <div className="row g-2 align-items-end">
+                                <div className="col-6 col-md-3">
+                                    <SelectField
+                                        label="Soort"
+                                        wrapperClassName="mb-0"
+                                        value={draft.type}
+                                        onChange={updateDraft('type')}
+                                        options={options.types.map((type) => ({
+                                            value: type,
+                                            label: TYPE_LABELS[type] ?? type,
+                                        }))}
+                                    />
+                                </div>
+                                <div className="col-6 col-md-3">
+                                    <SelectField
+                                        label="Niveau"
+                                        wrapperClassName="mb-0"
+                                        value={draft.level}
+                                        onChange={updateDraft('level')}
+                                        options={options.levels.map((level) => ({
+                                            value: level,
+                                            label: level,
+                                        }))}
+                                    />
+                                </div>
+                                <div className="col-12 col-md-4">
+                                    <SelectField
+                                        label="Thema"
+                                        wrapperClassName="mb-0"
+                                        value={draft.theme}
+                                        onChange={updateDraft('theme')}
+                                        options={options.themes.map((theme) => ({
+                                            value: theme,
+                                            label: theme,
+                                        }))}
+                                    />
+                                </div>
+                                <div className="col-12 col-md-auto">
+                                    <button
+                                        type="button"
+                                        className="btn btn-link text-nowrap"
+                                        onClick={resetFilters}
+                                    >
+                                        <i
+                                            className="bi bi-arrow-counterclockwise me-1"
+                                            aria-hidden="true"
+                                        />
+                                        Wissen
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div className="col-lg-5 d-none d-lg-block">
+                        <ShelfIllustration className="shelf" />
+                    </div>
                 </div>
-            </form>
+            </div>
 
             {error && <Alert>{error}</Alert>}
             {readingList.error && <Alert>{readingList.error}</Alert>}
             {readingList.notice && <Alert type="success">{readingList.notice}</Alert>}
 
-            <p role="status" aria-live="polite">
-                {result ? `${result.total} results` : 'Loading...'}
+            <p role="status" aria-live="polite" className="text-body-secondary mb-3">
+                {result
+                    ? `${result.total} ${result.total === 1 ? 'resultaat' : 'resultaten'}`
+                    : 'Laden...'}
             </p>
 
-            {result && (
+            {!result && !error && <Skeleton variant="cards" lines={6} label="Catalogus laden" />}
+
+            {result && result.items.length === 0 && (
+                <div className="text-center py-5">
+                    <i
+                        className="bi bi-emoji-neutral display-4 text-body-secondary"
+                        aria-hidden="true"
+                    />
+                    <h2 className="h4 mt-3">Niets gevonden</h2>
+                    <p className="text-body-secondary">
+                        Probeer andere woorden of haal een filter weg.
+                    </p>
+                    {hasFilters && (
+                        <Button variant="secondary" onClick={resetFilters}>
+                            Filters wissen
+                        </Button>
+                    )}
+                </div>
+            )}
+
+            {result && result.items.length > 0 && (
                 <>
-                    <div className="book-grid">
+                    <BookGrid>
                         {result.items.map((book) => (
                             <BookCard key={book.id} book={book}>
                                 {isStudent && (
@@ -142,7 +230,7 @@ export default function CatalogPage() {
                                 )}
                             </BookCard>
                         ))}
-                    </div>
+                    </BookGrid>
                     <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
                 </>
             )}

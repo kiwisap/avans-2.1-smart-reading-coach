@@ -81,13 +81,12 @@ export function sameProfile(a: ProfileFormValues, b: ProfileFormValues): boolean
 
 export function validateProfile(values: ProfileFormValues, maxTopics: number): ProfileErrors {
     const errors: ProfileErrors = {};
-    if (!values.languageLevel) errors.languageLevel = 'Choose your reading level';
-    if (values.materialTypes.length === 0)
-        errors.materialTypes = 'Choose at least one kind of text';
-    if (values.topics.length === 0) errors.topics = 'Choose at least one topic';
+    if (!values.languageLevel) errors.languageLevel = 'Kies je leesniveau';
+    if (values.materialTypes.length === 0) errors.materialTypes = 'Kies minstens één soort tekst';
+    if (values.topics.length === 0) errors.topics = 'Kies minstens één onderwerp';
     else if (values.topics.length > maxTopics) errors.topics = `Choose at most ${maxTopics} topics`;
-    if (!values.desiredLength) errors.desiredLength = 'Choose how long the text should be';
-    if (!values.readingGoal) errors.readingGoal = 'Choose why you want to read';
+    if (!values.desiredLength) errors.desiredLength = 'Kies hoe lang de tekst mag zijn';
+    if (!values.readingGoal) errors.readingGoal = 'Kies waarom je wilt lezen';
     return errors;
 }
 

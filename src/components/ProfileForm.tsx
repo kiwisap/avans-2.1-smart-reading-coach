@@ -45,12 +45,12 @@ export default function ProfileForm({
 
     return (
         <form onSubmit={onSubmit} noValidate>
-            <p className="hint">Fields marked with * are required.</p>
+            <p className="text-body-secondary">Velden met een * zijn verplicht.</p>
 
             {errorList.length > 0 && (
-                <div className="alert alert-error" role="alert" tabIndex={-1} ref={summaryRef}>
-                    <p>Please fix the following:</p>
-                    <ul>
+                <div className="alert alert-danger" role="alert" tabIndex={-1} ref={summaryRef}>
+                    <p className="fw-semibold mb-1">Pas het volgende aan:</p>
+                    <ul className="mb-0">
                         {errorList.map(([field, message]) => (
                             <li key={field}>{message}</li>
                         ))}
@@ -59,10 +59,10 @@ export default function ProfileForm({
             )}
 
             <RadioGroup
-                legend="What is your reading level?"
+                legend="Wat is je leesniveau?"
                 name="languageLevel"
                 required
-                hint="Not sure? Ask your teacher."
+                hint="Weet je het niet zeker? Vraag het je docent."
                 options={toOptions(options.languageLevels)}
                 value={values.languageLevel}
                 onChange={(value) => onChange('languageLevel', value)}
@@ -70,7 +70,7 @@ export default function ProfileForm({
             />
 
             <CheckboxGroup
-                legend="What kind of texts do you like?"
+                legend="Wat voor soort teksten vind je leuk?"
                 required
                 options={toOptions(options.materialTypes, TYPE_LABELS)}
                 values={values.materialTypes}
@@ -79,11 +79,11 @@ export default function ProfileForm({
             />
 
             <CheckboxGroup
-                legend="Which topics interest you?"
+                legend="Welke onderwerpen interesseren je?"
                 required
                 searchable
                 max={options.maxTopics}
-                hint={`Choose up to ${options.maxTopics}.`}
+                hint={`Kies er maximaal ${options.maxTopics}.`}
                 options={toOptions(options.topics)}
                 values={values.topics}
                 onChange={(value) => onChange('topics', value)}
@@ -91,7 +91,7 @@ export default function ProfileForm({
             />
 
             <RadioGroup
-                legend="How long should the text be?"
+                legend="Hoe lang mag de tekst zijn?"
                 name="desiredLength"
                 required
                 options={toOptions(options.desiredLengths, LENGTH_LABELS)}
@@ -101,7 +101,7 @@ export default function ProfileForm({
             />
 
             <RadioGroup
-                legend="Why do you want to read?"
+                legend="Waarom wil je lezen?"
                 name="readingGoal"
                 required
                 options={toOptions(options.readingGoals, GOAL_LABELS)}
@@ -110,9 +110,9 @@ export default function ProfileForm({
                 error={errors.readingGoal}
             />
 
-            <div className="filter-actions">
-                <Button type="submit" disabled={submitting}>
-                    {submitting ? 'Saving...' : 'Save profile'}
+            <div className="d-flex gap-2">
+                <Button type="submit" icon="bi-check-lg" disabled={submitting}>
+                    {submitting ? 'Opslaan...' : 'Profiel opslaan'}
                 </Button>
                 {onCancel && (
                     <Button variant="secondary" onClick={onCancel}>

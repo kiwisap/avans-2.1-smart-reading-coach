@@ -3,6 +3,7 @@ import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { errorMessage } from '../api/client.ts';
 import { useAuth } from '../auth/AuthContext.tsx';
 import Alert from '../components/Alert.tsx';
+import AuthLayout from '../components/AuthLayout.tsx';
 import Button from '../components/Button.tsx';
 import TextField from '../components/TextField.tsx';
 
@@ -32,12 +33,14 @@ export default function RegisterPage() {
     }
 
     return (
-        <section className="card narrow">
-            <h1>Create an account</h1>
+        <AuthLayout
+            title="Account aanmaken"
+            subtitle="Het duurt maar een minuutje. Daarna kunnen we adviseren."
+        >
             {error && <Alert>{error}</Alert>}
             <form onSubmit={handleSubmit}>
                 <TextField
-                    label="Name"
+                    label="Naam"
                     autoComplete="name"
                     required
                     maxLength={100}
@@ -45,7 +48,7 @@ export default function RegisterPage() {
                     onChange={(e) => setName(e.target.value)}
                 />
                 <TextField
-                    label="Email"
+                    label="E-mail"
                     type="email"
                     autoComplete="email"
                     required
@@ -53,23 +56,23 @@ export default function RegisterPage() {
                     onChange={(e) => setEmail(e.target.value)}
                 />
                 <TextField
-                    label="Password"
+                    label="Wachtwoord"
                     type="password"
                     autoComplete="new-password"
                     required
                     minLength={8}
                     maxLength={72}
-                    hint="At least 8 characters"
+                    hint="Minimaal 8 tekens"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
-                <Button type="submit" disabled={submitting}>
-                    {submitting ? 'Creating account...' : 'Register'}
+                <Button type="submit" size="lg" className="w-100" disabled={submitting}>
+                    {submitting ? 'Account aanmaken...' : 'Registreren'}
                 </Button>
             </form>
-            <p>
-                Already have an account? <Link to="/login">Log in</Link>
+            <p className="mt-4 mb-0">
+                Heb je al een account? <Link to="/login">Inloggen</Link>
             </p>
-        </section>
+        </AuthLayout>
     );
 }

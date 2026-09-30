@@ -1,9 +1,8 @@
-import { Route, Routes } from 'react-router-dom';
+import { Link, Navigate, Route, Routes } from 'react-router-dom';
 import ProtectedRoute from './auth/ProtectedRoute.tsx';
 import Layout from './components/Layout.tsx';
 import AdvicePage from './pages/AdvicePage.tsx';
 import CatalogPage from './pages/CatalogPage.tsx';
-import HomePage from './pages/HomePage.tsx';
 import LoginPage from './pages/LoginPage.tsx';
 import ProfilePage from './pages/ProfilePage.tsx';
 import ReadingListPage from './pages/ReadingListPage.tsx';
@@ -22,18 +21,11 @@ export default function App() {
                     path="/"
                     element={
                         <ProtectedRoute>
-                            <HomePage />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/catalog"
-                    element={
-                        <ProtectedRoute>
                             <CatalogPage />
                         </ProtectedRoute>
                     }
                 />
+                <Route path="/catalog" element={<Navigate to="/" replace />} />
                 <Route
                     path="/reading-list"
                     element={
@@ -82,7 +74,19 @@ export default function App() {
                         </ProtectedRoute>
                     }
                 />
-                <Route path="*" element={<p>Page not found.</p>} />
+                <Route
+                    path="*"
+                    element={
+                        <div className="text-center py-5">
+                            <i
+                                className="bi bi-compass display-3 text-body-secondary"
+                                aria-hidden="true"
+                            />
+                            <h1 className="h3 mt-3">Pagina niet gevonden</h1>
+                            <Link to="/">Terug naar de catalogus</Link>
+                        </div>
+                    }
+                />
             </Route>
         </Routes>
     );
