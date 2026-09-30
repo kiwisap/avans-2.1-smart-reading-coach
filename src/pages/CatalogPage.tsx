@@ -17,6 +17,7 @@ import { useReadingList } from '../hooks/useReadingList.ts';
 import type { BookFacets, BookPage } from '../types/api.ts';
 
 const PAGE_SIZE = 12;
+const SEARCH_DEBOUNCE_MS = 500;
 
 export default function CatalogPage() {
     const { token, user } = useAuth();
@@ -26,6 +27,7 @@ export default function CatalogPage() {
     const readingList = useReadingList(isStudent);
     const { filters, page, apply, changePage, reset } = useCatalogQuery(); // applied, from the URL
     const [draft, setDraft] = useState<CatalogFilters>(filters); // what the user is typing
+    const draftRef = useRef(draft); // latest draft, read by the search timer below
     const resultsRef = useRef<HTMLDivElement>(null);
     const [options, setOptions] = useState<BookFacets>({ types: [], levels: [], themes: [] });
     const [result, setResult] = useState<BookPage | null>(null);
@@ -37,6 +39,21 @@ export default function CatalogPage() {
         setSyncedFilters(filters);
         setDraft(filters);
     }
+
+    useEffect(() => {
+        draftRef.current = draft;
+    }, [draft]);
+
+    // Search as you type: 500 ms after the last keystroke the search text is applied, but only
+    // when it differs from what is already applied.
+    useEffect(() => {
+        if (draft.search.trim() === filters.search) return undefined;
+        const timer = window.setTimeout(() => {
+            const latest = draftRef.current;
+            apply({ ...latest, search: latest.search.trim() });
+        }, SEARCH_DEBOUNCE_MS);
+        return () => window.clearTimeout(timer);
+    }, [draft.search, filters.search, apply]);
 
     useEffect(() => {
         apiFetch<BookFacets>('/books/filters', { token })
@@ -71,7 +88,7 @@ export default function CatalogPage() {
 
     function applyFilters(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault();
-        apply(draft);
+        apply({ ...draft, search: draft.search.trim() });
     }
 
     // Switching page keeps the filters out of view: scroll to the start of the results.
@@ -126,6 +143,7 @@ export default function CatalogPage() {
                                     type="search"
                                     className="form-control"
                                     placeholder="Titel, auteur of thema"
+                                    maxLength={100}
                                     value={draft.search}
                                     onChange={updateDraft('search')}
                                 />
