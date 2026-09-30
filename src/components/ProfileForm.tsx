@@ -1,4 +1,4 @@
-import { useEffect, useRef, type FormEventHandler } from 'react';
+import { useEffect, useRef, type SubmitEventHandler } from 'react';
 import { GOAL_LABELS, LENGTH_LABELS, TYPE_LABELS } from '../constants/labels.ts';
 import type { ProfileErrors, ProfileFormValues } from '../profile/profileDraft.ts';
 import type { ProfileOptions } from '../types/api.ts';
@@ -21,7 +21,7 @@ interface ProfileFormProps {
     submitCount: number;
     submitting: boolean;
     onChange: <K extends keyof ProfileFormValues>(field: K, value: ProfileFormValues[K]) => void;
-    onSubmit: FormEventHandler<HTMLFormElement>;
+    onSubmit: SubmitEventHandler<HTMLFormElement>;
     onCancel?: () => void;
 }
 

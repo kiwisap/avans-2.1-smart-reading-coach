@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useState, type SubmitEvent } from 'react';
 import { apiFetch, errorMessage } from '../api/client.ts';
 import { useAuth } from '../auth/AuthContext.tsx';
 import { TYPE_LABELS } from '../constants/labels.ts';
@@ -25,7 +25,7 @@ export default function TeacherAddBook({
     const [error, setError] = useState<string | null>(null);
     const [searching, setSearching] = useState(false);
 
-    async function handleSearch(event: FormEvent<HTMLFormElement>) {
+    async function handleSearch(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault();
         setError(null);
         setSearching(true);

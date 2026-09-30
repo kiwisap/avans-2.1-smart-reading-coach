@@ -19,12 +19,19 @@ export default defineConfig([
         ],
         languageOptions: {
             globals: globals.browser,
+            parserOptions: {
+                // Type aware rules use the project's tsconfig files.
+                projectService: true,
+                tsconfigRootDir: import.meta.dirname,
+            },
         },
         rules: {
             eqeqeq: ['error', 'always', { null: 'ignore' }],
             'prefer-const': 'error',
             'no-console': ['warn', { allow: ['warn', 'error'] }],
             '@typescript-eslint/consistent-type-imports': 'error',
+            // Fails the lint when code uses an API that is marked @deprecated.
+            '@typescript-eslint/no-deprecated': 'error',
             '@typescript-eslint/no-unused-vars': [
                 'error',
                 { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },

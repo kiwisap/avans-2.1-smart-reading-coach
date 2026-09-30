@@ -1,4 +1,4 @@
-import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
+import { useEffect, useState, type ChangeEvent, type SubmitEvent } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { apiFetch, errorMessage } from '../api/client.ts';
 import { useAuth } from '../auth/AuthContext.tsx';
@@ -70,7 +70,7 @@ export default function CatalogPage() {
             setDraft((current) => ({ ...current, [field]: event.target.value }));
     }
 
-    function applyFilters(event: FormEvent<HTMLFormElement>) {
+    function applyFilters(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault();
         setPage(1);
         setFilters(draft);
