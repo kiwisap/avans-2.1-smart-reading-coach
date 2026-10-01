@@ -11,7 +11,7 @@ Inhoud: [Techniek](#techniek) · [Lokaal draaien](#lokaal-draaien) · [Scripts](
 | Framework  | React 19 met TypeScript (strict)                                                            |
 | Bouwtool   | Vite 8                                                                                      |
 | Routing    | React Router 7                                                                              |
-| Teksten    | i18next en react-i18next, alle teksten staan in `src/locales/nl.json`                       |
+| Teksten    | i18next en react-i18next, alle teksten staan in `public/locales/nl.json`                    |
 | Vormgeving | Bootstrap 5.3 via Sass, Bootstrap Icons, lettertypes Fraunces en DM Sans (lokaal ingebouwd) |
 | Kwaliteit  | ESLint 9 met `jsx-a11y` en `react-hooks`, Prettier, EditorConfig                            |
 
@@ -113,7 +113,7 @@ Iedere soort tekst heeft een eigen kleur en pictogram (`constants/typeStyles.ts`
 
 ## Teksten en talen
 
-Alle teksten die een gebruiker ziet staan in `src/locales/nl.json`, gegroepeerd per onderdeel (`nav`, `catalog`, `profile`, enzovoort). In de code staan dus geen losse Nederlandse zinnen.
+Alle teksten die een gebruiker ziet staan in `public/locales/nl.json`, gegroepeerd per onderdeel (`nav`, `catalog`, `profile`, enzovoort). In de code staan dus geen losse Nederlandse zinnen.
 
 - In een component: `const { t } = useTranslation();` en dan `t('catalog.heading')`.
 - Buiten React (hooks, validatie, de API client): `import i18n from '../i18n/index.ts'` en `i18n.t('...')`.
@@ -124,7 +124,9 @@ Alle teksten die een gebruiker ziet staan in `src/locales/nl.json`, gegroepeerd 
 
 De sleutels zijn getypeerd (`i18n/i18next.d.ts`): een sleutel die niet in `nl.json` staat geeft een fout bij `npm run typecheck`.
 
-**Een taal toevoegen.** Kopieer `nl.json` naar bijvoorbeeld `en.json` en vertaal de waarden, zet de taal bij `resources` in `src/i18n/index.ts` en roep `i18n.changeLanguage('en')` aan, bijvoorbeeld vanuit een taalkeuze in `Layout.tsx`. Het `lang` attribuut van de pagina volgt de gekozen taal vanzelf.
+**Een taal toevoegen.** Kopieer `public/locales/nl.json` naar bijvoorbeeld `en.json` en vertaal de waarden, zet de code bij `SUPPORTED_LANGUAGES` in `src/i18n/index.ts` en roep `i18n.changeLanguage('en')` aan, bijvoorbeeld vanuit een taalkeuze in `Layout.tsx`. De taal wordt dan eerst geladen en daarna gewisseld. Het `lang` attribuut van de pagina volgt de gekozen taal vanzelf.
+
+**Hoe de teksten geladen worden.** De teksten zitten niet in de JavaScript, het zijn gewone bestanden in `public/locales` die Vite ongewijzigd meekopieert naar `dist/locales`. `i18n/index.ts` haalt het bestand van de actieve taal op bij het opstarten en `main.tsx` toont de app pas daarna, zodat je geen ruwe sleutels ziet. Lukt het laden niet, dan start de app toch en staat de fout in de console. Een tekst aanpassen kan dus zonder de app opnieuw te bouwen, maar de browser kan het oude bestand nog even in de cache houden. De sleutels blijven getypeerd: `i18n/i18next.d.ts` leidt het type af van `nl.json`.
 
 **Teksten van de backend.** De frontend vertaalt geen foutcodes. Elk verzoek stuurt de huidige taal mee in de `Accept-Language` header (`api/client.ts`) en de backend antwoordt in die taal. Een fout komt terug als problem details (RFC 9457, `application/problem+json`) en `api/client.ts` toont het veld `detail` als `message` van de `ApiError`. Ook de tekst bij een advies ("Waarom dit bij je past") is al vertaald. Voeg je een taal toe, dan moet de backend die taal ook hebben (zie de README van de API). Code die op een bepaalde fout reageert, vergelijkt op `error.status` en niet op de tekst, zoals `AdvicePage` doet met 409 (leesprofiel ontbreekt).
 
@@ -159,7 +161,7 @@ De stijl wordt afgedwongen door tooling: `npm run format` past hem toe en `npm r
 | Typen                           | `strict` staat aan, geen `any`, geen verouderde (deprecated) API's                            |
 | ESLint                          | `react-hooks`, `jsx-a11y`, `consistent-type-imports`, `no-deprecated`, `eqeqeq`, `no-console` |
 
-Commentaar in de code is Engels, teksten die een gebruiker ziet staan in `src/locales/nl.json` (Nederlands).
+Commentaar in de code is Engels, teksten die een gebruiker ziet staan in `public/locales/nl.json` (Nederlands).
 
 ## Een kleine wijziging doen
 
@@ -167,10 +169,10 @@ Voorbeeld: een nieuwe pagina toevoegen, bijvoorbeeld "Statistieken" voor leerlin
 
 1. Maak `src/pages/StatsPage.tsx` met een `export default function StatsPage()`. Haal data op met `apiFetch` en toon `Skeleton` tijdens het laden.
 2. Voeg in `src/App.tsx` een `Route` toe, ingepakt in `<ProtectedRoute roles={['student']}>`.
-3. Voeg in `src/components/Layout.tsx` een item toe aan de lijst `STUDENT` met pad, `labelKey` en pictogram, en zet de naam van het menu item onder `nav` in `src/locales/nl.json`.
+3. Voeg in `src/components/Layout.tsx` een item toe aan de lijst `STUDENT` met pad, `labelKey` en pictogram, en zet de naam van het menu item onder `nav` in `public/locales/nl.json`.
 4. Draai `npm run check` en bekijk de pagina met `npm run dev`.
 
-Wil je een nieuw label voor een soort tekst, voeg het dan toe onder `types` in `src/locales/nl.json`. Pictogram en kleur staan in `constants/typeStyles.ts`.
+Wil je een nieuw label voor een soort tekst, voeg het dan toe onder `types` in `public/locales/nl.json`. Pictogram en kleur staan in `constants/typeStyles.ts`.
 
 ## Requirements
 
