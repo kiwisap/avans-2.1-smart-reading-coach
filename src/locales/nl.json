@@ -13,7 +13,6 @@
     "errors": {
         "generic": "Er is iets misgegaan",
         "serverUnreachable": "De server is niet bereikbaar. Probeer het later opnieuw.",
-        "noAccess": "Je hebt geen toegang tot die pagina.",
         "profileIncomplete": "Het profiel is niet volledig ingevuld"
     },
     "roles": {

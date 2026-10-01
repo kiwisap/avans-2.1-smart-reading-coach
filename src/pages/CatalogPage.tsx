@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ChangeEvent, type SubmitEvent } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { apiFetch, errorMessage } from '../api/client.ts';
 import { useAuth } from '../auth/AuthContext.tsx';
 import AddToListButton from '../components/AddToListButton.tsx';
@@ -28,8 +28,6 @@ const SEARCH_DEBOUNCE_MS = 500;
 export default function CatalogPage() {
     const { t } = useTranslation();
     const { token, user } = useAuth();
-    const location = useLocation();
-    const accessNotice = (location.state as { notice?: string } | null)?.notice;
     const isStudent = user?.role === 'student';
     const readingList = useReadingList(isStudent);
     const { filters, page, apply, changePage, reset } = useCatalogQuery(); // applied, from the URL
@@ -125,8 +123,6 @@ export default function CatalogPage() {
 
     return (
         <section>
-            {accessNotice && <Alert>{accessNotice}</Alert>}
-
             <div className="hero mb-5">
                 <div className="row align-items-center g-4">
                     <div className="col-lg-7">
