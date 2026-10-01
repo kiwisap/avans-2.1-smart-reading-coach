@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import type { Role } from '../types/api.ts';
 import { useAuth } from './AuthContext.tsx';
+import { useTranslation } from 'react-i18next';
 
 interface ProtectedRouteProps {
     roles?: Role[];
@@ -11,6 +12,7 @@ interface ProtectedRouteProps {
 // Usage: <ProtectedRoute roles={['teacher']}>...</ProtectedRoute>
 // Not logged in: go to the login page. Wrong role: go home with a clear message.
 export default function ProtectedRoute({ roles, children }: ProtectedRouteProps) {
+    const { t } = useTranslation();
     const { user, loading } = useAuth();
     const location = useLocation();
 
@@ -18,7 +20,7 @@ export default function ProtectedRoute({ roles, children }: ProtectedRouteProps)
         return (
             <div className="text-center py-5" role="status">
                 <div className="spinner-border text-primary" aria-hidden="true" />
-                <span className="visually-hidden">Loading...</span>
+                <span className="visually-hidden">{t('common.loading')}</span>
             </div>
         );
     }
@@ -34,9 +36,7 @@ export default function ProtectedRoute({ roles, children }: ProtectedRouteProps)
     }
 
     if (roles && !roles.includes(user.role)) {
-        return (
-            <Navigate to="/" replace state={{ notice: 'Je hebt geen toegang tot die pagina.' }} />
-        );
+        return <Navigate to="/" replace state={{ notice: t('errors.noAccess') }} />;
     }
 
     return children;

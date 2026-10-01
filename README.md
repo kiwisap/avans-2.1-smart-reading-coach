@@ -2,7 +2,7 @@
 
 De frontend van **Smart Reading Coach** (project "Vrij lezen op maat", Avans ICT SE2.1). Leerlingen bladeren door de catalogus, vullen hun leesprofiel in, krijgen leesadvies en houden een leeslijst bij. Docenten volgen de leerlingen die aan hen gekoppeld zijn. De app praat met de API in de map `smart-reading-coach-api`.
 
-Inhoud: [Techniek](#techniek) · [Lokaal draaien](#lokaal-draaien) · [Scripts](#scripts) · [Pagina's](#paginas-en-toegang) · [Mappenstructuur](#mappenstructuur) · [Architectuur](#architectuur) · [Vormgeving](#vormgeving) · [Toegankelijkheid](#toegankelijkheid-en-responsive) · [Coding style](#coding-style) · [Een wijziging doen](#een-kleine-wijziging-doen) · [Requirements](#requirements)
+Inhoud: [Techniek](#techniek) · [Lokaal draaien](#lokaal-draaien) · [Scripts](#scripts) · [Pagina's](#paginas-en-toegang) · [Mappenstructuur](#mappenstructuur) · [Architectuur](#architectuur) · [Vormgeving](#vormgeving) · [Teksten en talen](#teksten-en-talen) · [Toegankelijkheid](#toegankelijkheid-en-responsive) · [Coding style](#coding-style) · [Een wijziging doen](#een-kleine-wijziging-doen) · [Requirements](#requirements)
 
 ## Techniek
 
@@ -11,6 +11,7 @@ Inhoud: [Techniek](#techniek) · [Lokaal draaien](#lokaal-draaien) · [Scripts](
 | Framework  | React 19 met TypeScript (strict)                                                            |
 | Bouwtool   | Vite 8                                                                                      |
 | Routing    | React Router 7                                                                              |
+| Teksten    | i18next en react-i18next, alle teksten staan in `src/locales/nl.json`                       |
 | Vormgeving | Bootstrap 5.3 via Sass, Bootstrap Icons, lettertypes Fraunces en DM Sans (lokaal ingebouwd) |
 | Kwaliteit  | ESLint 9 met `jsx-a11y` en `react-hooks`, Prettier, EditorConfig                            |
 
@@ -83,7 +84,9 @@ src/
     auth/                AuthContext (sessie en token) en ProtectedRoute
     api/                 client.ts: één functie om de API aan te roepen
     profile/             logica van het profielformulier: validatie en concept bewaren
-    constants/           labels en pictogrammen per soort tekst
+    constants/           pictogrammen en kleuren per soort tekst
+    i18n/                i18next instellen (index.ts), typering van de sleutels en labels voor API waarden
+    locales/             nl.json: alle teksten die een gebruiker ziet
     types/               typen van de API antwoorden
     styles/              main.scss: kleuren, lettertypes en eigen stijlen
 ```
@@ -92,7 +95,7 @@ src/
 
 **Pagina's en componenten.** Een pagina haalt data op en zet het scherm in elkaar. Herbruikbare onderdelen staan in `components/` en bevatten geen eigen dataverkeer. Zo bestaat elke knop, elk formulierveld en elke boekkaart maar één keer (`Button`, `TextField`, `SelectField`, `BookCard`, `Alert`, `Skeleton`, `Pagination` en meer). Wil je iets aan de stijl van alle knoppen veranderen, dan doe je dat op één plek.
 
-**Data ophalen.** Alle verzoeken lopen via `apiFetch` in `api/client.ts`. Die voegt het token toe, zet netwerkfouten en serverfouten om naar een `ApiError` met een Nederlandse melding en geeft getypeerde data terug.
+**Data ophalen.** Alle verzoeken lopen via `apiFetch` in `api/client.ts`. Die voegt het token toe, zet netwerkfouten en serverfouten om naar een `ApiError` met een vertaalde melding en geeft getypeerde data terug.
 
 **Sessie.** `AuthContext` bewaart de gebruiker en het JWT. Het token staat in `localStorage` onder de naam `src_token` zodat je ingelogd blijft na een herlaad. Bij het opstarten wordt het token gecontroleerd via `/auth/me`.
 
@@ -107,6 +110,23 @@ src/
 De basis is Bootstrap 5 (grid, formulieren, kaarten), maar met een eigen uiterlijk: een warm papierachtig kleurenpalet, bosgroen als hoofdkleur, terracotta als accent en schreefletters voor koppen. Alle keuzes staan bovenaan `src/styles/main.scss` als Sass variabelen (`$forest`, `$terracotta`, `$paper` en meer). Verander je daar een kleur, dan volgen alle Bootstrap onderdelen mee.
 
 Iedere soort tekst heeft een eigen kleur en pictogram (`constants/typeStyles.ts`). Kaartvoeten met acties gebruiken overal dezelfde knopgrootte via de klasse `card-actions`.
+
+## Teksten en talen
+
+Alle teksten die een gebruiker ziet staan in `src/locales/nl.json`, gegroepeerd per onderdeel (`nav`, `catalog`, `profile`, enzovoort). In de code staan dus geen losse Nederlandse zinnen.
+
+- In een component: `const { t } = useTranslation();` en dan `t('catalog.heading')`.
+- Buiten React (hooks, validatie, de API client): `import i18n from '../i18n/index.ts'` en `i18n.t('...')`.
+- Variabelen: `t('readingList.added', { title })` met `{{title}}` in het JSON bestand.
+- Meervoud: `results_one` en `results_other` in het JSON bestand, aangeroepen met `t('catalog.results', { count })`.
+- Zinnen met een link erin gebruiken `<Trans>` en tags in de tekst, bijvoorbeeld `<advice>laat ons iets voor je uitkiezen</advice>`. Gebruik geen tagnamen van lege HTML elementen zoals `link` of `br`.
+- Waarden uit de API (soort tekst, lengte, doel) krijgen hun label via `typeLabel`, `lengthLabel` en `goalLabel` in `i18n/labels.ts`. Een onbekende waarde wordt gewoon getoond zoals hij is.
+
+De sleutels zijn getypeerd (`i18n/i18next.d.ts`): een sleutel die niet in `nl.json` staat geeft een fout bij `npm run typecheck`.
+
+**Een taal toevoegen.** Kopieer `nl.json` naar bijvoorbeeld `en.json` en vertaal de waarden, zet de taal bij `resources` in `src/i18n/index.ts` en roep `i18n.changeLanguage('en')` aan, bijvoorbeeld vanuit een taalkeuze in `Layout.tsx`. Het `lang` attribuut van de pagina volgt de gekozen taal vanzelf.
+
+**Teksten van de backend.** De frontend vertaalt geen foutcodes. Elk verzoek stuurt de huidige taal mee in de `Accept-Language` header (`api/client.ts`) en de backend antwoordt in die taal. Een fout komt terug als problem details (RFC 9457, `application/problem+json`) en `api/client.ts` toont het veld `detail` als `message` van de `ApiError`. Ook de tekst bij een advies ("Waarom dit bij je past") is al vertaald. Voeg je een taal toe, dan moet de backend die taal ook hebben (zie de README van de API). Code die op een bepaalde fout reageert, vergelijkt op `error.status` en niet op de tekst, zoals `AdvicePage` doet met 409 (leesprofiel ontbreekt).
 
 ## Toegankelijkheid en responsive
 
@@ -139,7 +159,7 @@ De stijl wordt afgedwongen door tooling: `npm run format` past hem toe en `npm r
 | Typen                           | `strict` staat aan, geen `any`, geen verouderde (deprecated) API's                            |
 | ESLint                          | `react-hooks`, `jsx-a11y`, `consistent-type-imports`, `no-deprecated`, `eqeqeq`, `no-console` |
 
-Commentaar in de code is Engels, teksten die een gebruiker ziet zijn Nederlands.
+Commentaar in de code is Engels, teksten die een gebruiker ziet staan in `src/locales/nl.json` (Nederlands).
 
 ## Een kleine wijziging doen
 
@@ -147,10 +167,10 @@ Voorbeeld: een nieuwe pagina toevoegen, bijvoorbeeld "Statistieken" voor leerlin
 
 1. Maak `src/pages/StatsPage.tsx` met een `export default function StatsPage()`. Haal data op met `apiFetch` en toon `Skeleton` tijdens het laden.
 2. Voeg in `src/App.tsx` een `Route` toe, ingepakt in `<ProtectedRoute roles={['student']}>`.
-3. Voeg in `src/components/Layout.tsx` een item toe aan de lijst `STUDENT` met pad, label en pictogram.
+3. Voeg in `src/components/Layout.tsx` een item toe aan de lijst `STUDENT` met pad, `labelKey` en pictogram, en zet de naam van het menu item onder `nav` in `src/locales/nl.json`.
 4. Draai `npm run check` en bekijk de pagina met `npm run dev`.
 
-Wil je een nieuw label of pictogram voor een soort tekst, pas dan `constants/labels.ts` en `constants/typeStyles.ts` aan.
+Wil je een nieuw label voor een soort tekst, voeg het dan toe onder `types` in `src/locales/nl.json`. Pictogram en kleur staan in `constants/typeStyles.ts`.
 
 ## Requirements
 

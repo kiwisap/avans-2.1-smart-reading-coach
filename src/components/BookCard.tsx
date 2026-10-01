@@ -1,7 +1,8 @@
 import { useState, type ReactNode } from 'react';
-import { TYPE_LABELS } from '../constants/labels.ts';
+import { typeLabel } from '../i18n/labels.ts';
 import { DEFAULT_TYPE_STYLE, TYPE_STYLES } from '../constants/typeStyles.ts';
 import type { Book } from '../types/api.ts';
+import { useTranslation } from 'react-i18next';
 
 const LONG_DESCRIPTION = 180;
 
@@ -13,6 +14,7 @@ interface BookCardProps {
 
 // One catalog item. Renders its own grid column, so wrap cards in <BookGrid>.
 export default function BookCard({ book, motivation, children }: BookCardProps) {
+    const { t } = useTranslation();
     const [expanded, setExpanded] = useState(false);
     const style = TYPE_STYLES[book.type] ?? DEFAULT_TYPE_STYLE;
     const description = book.description ?? '';
@@ -26,7 +28,7 @@ export default function BookCard({ book, motivation, children }: BookCardProps) 
                 <div className="card-body d-flex flex-column pb-2">
                     <p className={`eyebrow text-${style.accent}-emphasis mb-2`}>
                         <i className={`bi ${style.icon} me-1`} aria-hidden="true" />
-                        {TYPE_LABELS[book.type] ?? book.type}
+                        {typeLabel(book.type)}
                         {book.genre && ` · ${book.genre}`}
                     </p>
 
@@ -37,7 +39,7 @@ export default function BookCard({ book, motivation, children }: BookCardProps) 
                         <p className="mb-3">
                             <span className="badge rounded-pill bg-body-secondary text-body-emphasis fw-medium">
                                 <i className="bi bi-bar-chart-fill me-1" aria-hidden="true" />
-                                Niveau {book.levelLabel}
+                                {t('book.level', { level: book.levelLabel })}
                             </span>
                         </p>
                     )}
@@ -52,8 +54,10 @@ export default function BookCard({ book, motivation, children }: BookCardProps) 
                                     aria-expanded={expanded}
                                     onClick={() => setExpanded((current) => !current)}
                                 >
-                                    {expanded ? 'Toon minder' : 'Lees meer'}
-                                    <span className="visually-hidden"> over {book.title}</span>
+                                    {expanded ? t('book.showLess') : t('book.readMore')}
+                                    <span className="visually-hidden">
+                                        {t('book.about', { title: book.title })}
+                                    </span>
                                 </button>
                             )}
                         </div>
@@ -63,7 +67,7 @@ export default function BookCard({ book, motivation, children }: BookCardProps) 
                         <div className="motivation p-3 mb-3">
                             <h3 className="h6 mb-1">
                                 <i className="bi bi-stars me-2" aria-hidden="true" />
-                                Waarom dit bij je past
+                                {t('book.whyFits')}
                             </h3>
                             <p className="mb-0">{motivation}</p>
                         </div>
@@ -72,7 +76,7 @@ export default function BookCard({ book, motivation, children }: BookCardProps) 
                     {book.themes.length > 0 && (
                         <ul
                             className="list-unstyled d-flex flex-wrap gap-1 mb-3"
-                            aria-label="Thema's"
+                            aria-label={t('book.themes')}
                         >
                             {book.themes.map((theme) => (
                                 <li key={theme}>
@@ -85,11 +89,11 @@ export default function BookCard({ book, motivation, children }: BookCardProps) 
                     {book.url && (
                         <p className="mb-3">
                             <a href={book.url} target="_blank" rel="noreferrer">
-                                Online lezen
+                                {t('book.readOnline')}
                                 <i className="bi bi-box-arrow-up-right ms-1" aria-hidden="true" />
                                 <span className="visually-hidden">
                                     {' '}
-                                    {book.title} (opent in een nieuw tabblad)
+                                    {t('book.opensInNewTab', { title: book.title })}
                                 </span>
                             </a>
                         </p>

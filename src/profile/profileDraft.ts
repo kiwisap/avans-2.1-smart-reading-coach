@@ -6,6 +6,7 @@ import type {
     ReadingGoal,
     ReadingProfile,
 } from '../types/api.ts';
+import i18n from '../i18n/index.ts';
 
 // The form starts empty, so single choice answers can be '' until the student picks one.
 export interface ProfileFormValues {
@@ -81,19 +82,23 @@ export function sameProfile(a: ProfileFormValues, b: ProfileFormValues): boolean
 
 export function validateProfile(values: ProfileFormValues, maxTopics: number): ProfileErrors {
     const errors: ProfileErrors = {};
-    if (!values.languageLevel) errors.languageLevel = 'Kies je leesniveau';
-    if (values.materialTypes.length === 0) errors.materialTypes = 'Kies minstens één soort tekst';
-    if (values.topics.length === 0) errors.topics = 'Kies minstens één onderwerp';
-    else if (values.topics.length > maxTopics) errors.topics = `Choose at most ${maxTopics} topics`;
-    if (!values.desiredLength) errors.desiredLength = 'Kies hoe lang de tekst mag zijn';
-    if (!values.readingGoal) errors.readingGoal = 'Kies waarom je wilt lezen';
+    if (!values.languageLevel) errors.languageLevel = i18n.t('profile.validation.level');
+    if (values.materialTypes.length === 0) {
+        errors.materialTypes = i18n.t('profile.validation.types');
+    }
+    if (values.topics.length === 0) errors.topics = i18n.t('profile.validation.topics');
+    else if (values.topics.length > maxTopics) {
+        errors.topics = i18n.t('profile.validation.tooManyTopics', { max: maxTopics });
+    }
+    if (!values.desiredLength) errors.desiredLength = i18n.t('profile.validation.length');
+    if (!values.readingGoal) errors.readingGoal = i18n.t('profile.validation.goal');
     return errors;
 }
 
 // Only call this after validateProfile found no errors.
 export function toProfileInput(values: ProfileFormValues): ProfileInput {
     if (!values.languageLevel || !values.desiredLength || !values.readingGoal) {
-        throw new Error('Profile is incomplete');
+        throw new Error(i18n.t('errors.profileIncomplete'));
     }
     return {
         languageLevel: values.languageLevel,

@@ -2,28 +2,28 @@ import { useState } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext.tsx';
 import BrandMark from './BrandMark.tsx';
+import { useTranslation } from 'react-i18next';
 
 interface NavItem {
     to: string;
-    label: string;
+    labelKey: 'catalog' | 'advice' | 'readingList' | 'profile' | 'teachers' | 'students'; // key under "nav" in nl.json
     icon: string;
     end?: boolean;
 }
 
-const ROLE_LABELS = { student: 'Leerling', teacher: 'Docent' } as const;
-
-const COMMON: NavItem[] = [{ to: '/', label: 'Catalogus', icon: 'bi-collection', end: true }];
+const COMMON: NavItem[] = [{ to: '/', labelKey: 'catalog', icon: 'bi-collection', end: true }];
 
 const STUDENT: NavItem[] = [
-    { to: '/advice', label: 'Advies', icon: 'bi-stars' },
-    { to: '/reading-list', label: 'Leeslijst', icon: 'bi-bookmarks' },
-    { to: '/profile', label: 'Mijn profiel', icon: 'bi-person-lines-fill' },
-    { to: '/teachers', label: 'Mijn docenten', icon: 'bi-mortarboard' },
+    { to: '/advice', labelKey: 'advice', icon: 'bi-stars' },
+    { to: '/reading-list', labelKey: 'readingList', icon: 'bi-bookmarks' },
+    { to: '/profile', labelKey: 'profile', icon: 'bi-person-lines-fill' },
+    { to: '/teachers', labelKey: 'teachers', icon: 'bi-mortarboard' },
 ];
 
-const TEACHER: NavItem[] = [{ to: '/students', label: 'Leerlingen', icon: 'bi-people' }];
+const TEACHER: NavItem[] = [{ to: '/students', labelKey: 'students', icon: 'bi-people' }];
 
 export default function Layout() {
+    const { t } = useTranslation();
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
@@ -40,22 +40,25 @@ export default function Layout() {
     return (
         <div className="d-flex flex-column min-vh-100">
             <a href="#main" className="skip-link">
-                Ga naar de hoofdinhoud
+                {t('nav.skipLink')}
             </a>
 
             <header>
-                <nav className="navbar navbar-expand-lg site-nav sticky-top" aria-label="Hoofdmenu">
+                <nav
+                    className="navbar navbar-expand-lg site-nav sticky-top"
+                    aria-label={t('nav.mainMenu')}
+                >
                     <div className="container">
                         <Link to="/" className="navbar-brand" onClick={close}>
                             <BrandMark />
-                            Smart Reading Coach
+                            {t('app.name')}
                         </Link>
                         <button
                             type="button"
                             className="navbar-toggler"
                             aria-controls="main-menu"
                             aria-expanded={open}
-                            aria-label="Menu in- of uitklappen"
+                            aria-label={t('nav.toggleMenu')}
                             onClick={() => setOpen((current) => !current)}
                         >
                             <span className="navbar-toggler-icon" />
@@ -78,7 +81,7 @@ export default function Layout() {
                                                 className={`bi ${item.icon} me-2`}
                                                 aria-hidden="true"
                                             />
-                                            {item.label}
+                                            {t(`nav.${item.labelKey}`)}
                                         </NavLink>
                                     </li>
                                 ))}
@@ -94,7 +97,7 @@ export default function Layout() {
                                             <span className="lh-sm">
                                                 {user.name}
                                                 <span className="d-block small text-body-secondary text-capitalize">
-                                                    {ROLE_LABELS[user.role]}
+                                                    {t(`roles.${user.role}`)}
                                                 </span>
                                             </span>
                                         </span>
@@ -107,7 +110,7 @@ export default function Layout() {
                                                 className="bi bi-box-arrow-right me-1"
                                                 aria-hidden="true"
                                             />
-                                            Uitloggen
+                                            {t('nav.logout')}
                                         </button>
                                     </>
                                 ) : (
@@ -117,14 +120,14 @@ export default function Layout() {
                                             className="btn btn-outline-primary btn-sm"
                                             onClick={close}
                                         >
-                                            Inloggen
+                                            {t('nav.login')}
                                         </NavLink>
                                         <NavLink
                                             to="/register"
                                             className="btn btn-primary btn-sm"
                                             onClick={close}
                                         >
-                                            Registreren
+                                            {t('nav.register')}
                                         </NavLink>
                                     </>
                                 )}
@@ -139,7 +142,7 @@ export default function Layout() {
             </main>
 
             <footer className="site-footer py-3 text-center small">
-                Smart Reading Coach · Vrij lezen op maat
+                {t('app.name')} · {t('app.subtitle')}
             </footer>
         </div>
     );

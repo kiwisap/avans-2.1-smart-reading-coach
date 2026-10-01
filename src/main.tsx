@@ -5,6 +5,7 @@ import '@fontsource-variable/dm-sans';
 import '@fontsource-variable/fraunces';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import './styles/main.scss';
+import './i18n/index.ts';
 import App from './App.tsx';
 import { AuthProvider } from './auth/AuthContext.tsx';
 

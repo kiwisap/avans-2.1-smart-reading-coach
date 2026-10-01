@@ -9,8 +9,10 @@ import BookGrid from '../components/BookGrid.tsx';
 import Skeleton from '../components/Skeleton.tsx';
 import { useReadingList } from '../hooks/useReadingList.ts';
 import type { Suggestion } from '../types/api.ts';
+import { Trans, useTranslation } from 'react-i18next';
 
 export default function AdvicePage() {
+    const { t } = useTranslation();
     const { token } = useAuth();
     const readingList = useReadingList();
     const [suggestions, setSuggestions] = useState<Suggestion[] | null>(null);
@@ -24,28 +26,30 @@ export default function AdvicePage() {
             })
             .catch((err: unknown) => {
                 if (cancelled) return;
-                setError(err instanceof ApiError ? err : new ApiError(0, 'Er is iets misgegaan'));
+                setError(err instanceof ApiError ? err : new ApiError(0, t('errors.generic')));
             });
         return () => {
             cancelled = true;
         };
-    }, [token]);
+    }, [token, t]);
 
     return (
         <section>
             <header className="mb-4">
                 <h1 className="page-title">
                     <i className="bi bi-stars me-2" aria-hidden="true" />
-                    Jouw leesadvies
+                    {t('advice.title')}
                 </h1>
-                <p className="text-body-secondary mb-0">
-                    Titels die passen bij je leesprofiel, met een korte reden erbij.
-                </p>
+                <p className="text-body-secondary mb-0">{t('advice.intro')}</p>
             </header>
 
             {error?.status === 409 && (
                 <Alert type="info">
-                    {error.message}. <Link to="/profile">Ga naar je leesprofiel</Link>
+                    <Trans
+                        i18nKey="advice.goToProfile"
+                        values={{ message: error.message }}
+                        components={{ profile: <Link to="/profile" /> }}
+                    />
                 </Alert>
             )}
             {error && error.status !== 409 && <Alert>{error.message}</Alert>}
@@ -53,14 +57,17 @@ export default function AdvicePage() {
             {readingList.notice && <Alert type="success">{readingList.notice}</Alert>}
 
             {!suggestions && !error && (
-                <Skeleton variant="cards" lines={3} label="Suggesties voor je zoeken" />
+                <Skeleton variant="cards" lines={3} label={t('advice.loading')} />
             )}
 
             {suggestions && (
                 <>
                     <p role="status" className="mb-3">
-                        {suggestions.length} suggesties op basis van je leesprofiel.{' '}
-                        <Link to="/profile">Pas je profiel aan</Link> voor ander advies.
+                        <Trans
+                            i18nKey="advice.count"
+                            count={suggestions.length}
+                            components={{ profile: <Link to="/profile" /> }}
+                        />
                     </p>
                     <BookGrid>
                         {suggestions.map((book) => (

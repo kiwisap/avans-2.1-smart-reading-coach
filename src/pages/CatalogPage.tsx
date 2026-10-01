@@ -11,7 +11,7 @@ import Pagination from '../components/Pagination.tsx';
 import MultiComboboxField from '../components/MultiComboboxField.tsx';
 import ShelfIllustration from '../components/ShelfIllustration.tsx';
 import Skeleton from '../components/Skeleton.tsx';
-import { TYPE_LABELS } from '../constants/labels.ts';
+import { typeLabel } from '../i18n/labels.ts';
 import {
     EMPTY_FILTERS,
     MAX_PER_FILTER,
@@ -20,11 +20,13 @@ import {
 } from '../hooks/useCatalogQuery.ts';
 import { useReadingList } from '../hooks/useReadingList.ts';
 import type { BookFacets, BookPage } from '../types/api.ts';
+import { Trans, useTranslation } from 'react-i18next';
 
 const PAGE_SIZE = 18;
 const SEARCH_DEBOUNCE_MS = 500;
 
 export default function CatalogPage() {
+    const { t } = useTranslation();
     const { token, user } = useAuth();
     const location = useLocation();
     const accessNotice = (location.state as { notice?: string } | null)?.notice;
@@ -128,16 +130,17 @@ export default function CatalogPage() {
             <div className="hero mb-5">
                 <div className="row align-items-center g-4">
                     <div className="col-lg-7">
-                        <p className="eyebrow text-secondary mb-2">Vrij lezen op maat</p>
-                        <h1 className="display-5 mb-2">Vind je volgende leestip</h1>
+                        <p className="eyebrow text-secondary mb-2">{t('catalog.eyebrow')}</p>
+                        <h1 className="display-5 mb-2">{t('catalog.heading')}</h1>
                         <p className="fs-5 text-body-secondary mb-4">
                             {user?.role === 'student' ? (
-                                <>
-                                    Hoi {user.name}! Zoek in de catalogus, of{' '}
-                                    <Link to="/advice">laat ons iets voor je uitkiezen</Link>.
-                                </>
+                                <Trans
+                                    i18nKey="catalog.heroStudent"
+                                    values={{ name: user.name }}
+                                    components={{ advice: <Link to="/advice" /> }}
+                                />
                             ) : (
-                                'Zoek in de catalogus met boeken, artikelen en meer.'
+                                t('catalog.heroTeacher')
                             )}
                         </p>
 
@@ -147,43 +150,43 @@ export default function CatalogPage() {
                                     <i className="bi bi-search" />
                                 </span>
                                 <label htmlFor="catalog-search" className="visually-hidden">
-                                    Zoek op titel, auteur of thema
+                                    {t('catalog.searchLabel')}
                                 </label>
                                 <input
                                     id="catalog-search"
                                     type="search"
                                     className="form-control"
-                                    placeholder="Titel, auteur of thema"
+                                    placeholder={t('catalog.searchPlaceholder')}
                                     maxLength={100}
                                     value={draft.search}
                                     onChange={updateSearch}
                                 />
                                 <button type="submit" className="btn btn-primary rounded-pill px-4">
-                                    Zoeken
+                                    {t('catalog.search')}
                                 </button>
                             </div>
 
                             <div className="row g-2 align-items-start flex-nowrap">
                                 <div className="col-4">
                                     <MultiComboboxField
-                                        label="Soort"
+                                        label={t('catalog.filterType')}
                                         wrapperClassName="mb-0"
                                         maxSelected={MAX_PER_FILTER}
-                                        emptyText="Geen soorten gevonden"
+                                        emptyText={t('catalog.noTypes')}
                                         values={draft.types}
                                         onChange={updateList('types')}
                                         options={options.types.map((type) => ({
                                             value: type,
-                                            label: TYPE_LABELS[type] ?? type,
+                                            label: typeLabel(type),
                                         }))}
                                     />
                                 </div>
                                 <div className="col-4">
                                     <MultiComboboxField
-                                        label="Niveau"
+                                        label={t('catalog.filterLevel')}
                                         wrapperClassName="mb-0"
                                         maxSelected={MAX_PER_FILTER}
-                                        emptyText="Geen niveaus gevonden"
+                                        emptyText={t('catalog.noLevels')}
                                         values={draft.levels}
                                         onChange={updateList('levels')}
                                         options={options.levels.map((level) => ({
@@ -194,10 +197,10 @@ export default function CatalogPage() {
                                 </div>
                                 <div className="col-4">
                                     <MultiComboboxField
-                                        label="Thema's"
+                                        label={t('catalog.filterThemes')}
                                         wrapperClassName="mb-0"
                                         maxSelected={MAX_PER_FILTER}
-                                        emptyText="Geen thema's gevonden"
+                                        emptyText={t('catalog.noThemes')}
                                         values={draft.themes}
                                         onChange={updateList('themes')}
                                         options={options.themes.map((theme) => ({
@@ -216,7 +219,7 @@ export default function CatalogPage() {
                                     className="bi bi-arrow-counterclockwise me-1"
                                     aria-hidden="true"
                                 />
-                                Alle filters wissen
+                                {t('catalog.clearAll')}
                             </button>
                         </form>
                     </div>
@@ -234,9 +237,7 @@ export default function CatalogPage() {
 
             <div className="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
                 <p role="status" aria-live="polite" className="text-body-secondary mb-0">
-                    {result
-                        ? `${result.total} ${result.total === 1 ? 'resultaat' : 'resultaten'}`
-                        : 'Laden...'}
+                    {result ? t('catalog.results', { count: result.total }) : t('common.loading')}
                 </p>
                 {result && result.items.length > 0 && (
                     <Pagination
@@ -248,7 +249,9 @@ export default function CatalogPage() {
                 )}
             </div>
 
-            {!result && !error && <Skeleton variant="cards" lines={6} label="Catalogus laden" />}
+            {!result && !error && (
+                <Skeleton variant="cards" lines={6} label={t('catalog.loadingCatalog')} />
+            )}
 
             {result && result.items.length === 0 && (
                 <div className="text-center py-5">
@@ -256,13 +259,11 @@ export default function CatalogPage() {
                         className="bi bi-emoji-neutral display-4 text-body-secondary"
                         aria-hidden="true"
                     />
-                    <h2 className="h4 mt-3">Niets gevonden</h2>
-                    <p className="text-body-secondary">
-                        Probeer andere woorden of haal een filter weg.
-                    </p>
+                    <h2 className="h4 mt-3">{t('catalog.emptyTitle')}</h2>
+                    <p className="text-body-secondary">{t('catalog.emptyHint')}</p>
                     {hasFilters && (
                         <Button variant="secondary" onClick={resetFilters}>
-                            Filters wissen
+                            {t('catalog.clearFilters')}
                         </Button>
                     )}
                 </div>

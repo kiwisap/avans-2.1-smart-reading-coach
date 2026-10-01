@@ -1,11 +1,12 @@
 import { useState, type SubmitEvent } from 'react';
 import { apiFetch, errorMessage } from '../api/client.ts';
 import { useAuth } from '../auth/AuthContext.tsx';
-import { TYPE_LABELS } from '../constants/labels.ts';
+import { typeLabel } from '../i18n/labels.ts';
 import type { Book, BookPage } from '../types/api.ts';
 import Alert from './Alert.tsx';
 import Button from './Button.tsx';
 import TextField from './TextField.tsx';
+import { useTranslation } from 'react-i18next';
 
 interface TeacherAddBookProps {
     studentName: string;
@@ -19,6 +20,7 @@ export default function TeacherAddBook({
     existingBookIds,
     onAdd,
 }: TeacherAddBookProps) {
+    const { t } = useTranslation();
     const { token } = useAuth();
     const [query, setQuery] = useState('');
     const [results, setResults] = useState<Book[] | null>(null);
@@ -46,7 +48,7 @@ export default function TeacherAddBook({
             <div className="card-body">
                 <h2 id="add-title-heading" className="h5">
                     <i className="bi bi-plus-circle me-2" aria-hidden="true" />
-                    Voeg een titel toe aan de leeslijst van {studentName}
+                    {t('teacherAdd.heading', { name: studentName })}
                 </h2>
                 <form
                     onSubmit={handleSearch}
@@ -54,15 +56,15 @@ export default function TeacherAddBook({
                     className="d-flex gap-2 align-items-end"
                 >
                     <TextField
-                        label="Zoek in de catalogus"
+                        label={t('teacherAdd.searchLabel')}
                         type="search"
-                        placeholder="Titel, auteur of thema"
+                        placeholder={t('teacherAdd.searchPlaceholder')}
                         wrapperClassName="flex-grow-1"
                         value={query}
                         onChange={(event) => setQuery(event.target.value)}
                     />
                     <Button type="submit" icon="bi-search" disabled={searching}>
-                        {searching ? 'Zoeken...' : 'Zoeken'}
+                        {searching ? t('teacherAdd.searching') : t('teacherAdd.search')}
                     </Button>
                 </form>
 
@@ -72,8 +74,8 @@ export default function TeacherAddBook({
                     <>
                         <p role="status" className="text-body-secondary mt-3">
                             {results.length === 0
-                                ? 'Geen titels gevonden.'
-                                : `${results.length} titels gevonden.`}
+                                ? t('teacherAdd.none')
+                                : t('teacherAdd.found', { count: results.length })}
                         </p>
                         <ul className="list-group">
                             {results.map((book) => (
@@ -83,10 +85,10 @@ export default function TeacherAddBook({
                                 >
                                     <span>
                                         <strong>{book.title}</strong>
-                                        {book.author && <> van {book.author}</>}
+                                        {book.author && t('teacherAdd.by', { author: book.author })}
                                         <span className="text-body-secondary">
                                             {' '}
-                                            · {TYPE_LABELS[book.type] ?? book.type}
+                                            · {typeLabel(book.type)}
                                         </span>
                                     </span>
                                     {existingBookIds.has(book.id) ? (
@@ -95,16 +97,19 @@ export default function TeacherAddBook({
                                                 className="bi bi-check-circle-fill me-1"
                                                 aria-hidden="true"
                                             />
-                                            Staat op de lijst
+                                            {t('teacherAdd.onList')}
                                         </span>
                                     ) : (
                                         <Button
                                             variant="secondary"
                                             size="sm"
-                                            aria-label={`Voeg ${book.title} toe aan de leeslijst van ${studentName}`}
+                                            aria-label={t('teacherAdd.addLabel', {
+                                                title: book.title,
+                                                name: studentName,
+                                            })}
                                             onClick={() => onAdd(book)}
                                         >
-                                            Toevoegen
+                                            {t('teacherAdd.add')}
                                         </Button>
                                     )}
                                 </li>

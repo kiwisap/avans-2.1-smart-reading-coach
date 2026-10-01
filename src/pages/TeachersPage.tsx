@@ -5,8 +5,10 @@ import Alert from '../components/Alert.tsx';
 import Button from '../components/Button.tsx';
 import Skeleton from '../components/Skeleton.tsx';
 import type { TeacherLink } from '../types/api.ts';
+import { useTranslation } from 'react-i18next';
 
 export default function TeachersPage() {
+    const { t } = useTranslation();
     const { token } = useAuth();
     const [teachers, setTeachers] = useState<TeacherLink[] | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -33,8 +35,8 @@ export default function TeachersPage() {
             );
             setNotice(
                 updated.linked
-                    ? `Je bent nu gekoppeld aan ${updated.name}.`
-                    : `Je bent niet meer gekoppeld aan ${updated.name}.`,
+                    ? t('teachers.nowLinked', { name: updated.name })
+                    : t('teachers.nowUnlinked', { name: updated.name }),
             );
         } catch (err) {
             setError(errorMessage(err));
@@ -46,18 +48,15 @@ export default function TeachersPage() {
             <header className="mb-4">
                 <h1 className="page-title">
                     <i className="bi bi-mortarboard me-2" aria-hidden="true" />
-                    Mijn docenten
+                    {t('teachers.title')}
                 </h1>
-                <p className="text-body-secondary mb-0">
-                    Een docent aan wie je gekoppeld bent, kan je leesprofiel en je leeslijst zien en
-                    titels aan je lijst toevoegen. Je kunt de koppeling altijd weer verwijderen.
-                </p>
+                <p className="text-body-secondary mb-0">{t('teachers.intro')}</p>
             </header>
 
             {error && <Alert>{error}</Alert>}
             {notice && <Alert type="success">{notice}</Alert>}
-            {!teachers && !error && <Skeleton lines={4} label="Docenten laden" />}
-            {teachers?.length === 0 && <p>Er zijn nog geen docenten.</p>}
+            {!teachers && !error && <Skeleton lines={4} label={t('teachers.loading')} />}
+            {teachers?.length === 0 && <p>{t('teachers.none')}</p>}
 
             {teachers && teachers.length > 0 && (
                 <ul className="list-group shadow-sm">
@@ -79,7 +78,7 @@ export default function TeachersPage() {
                                                 className="bi bi-link-45deg me-1"
                                                 aria-hidden="true"
                                             />
-                                            Linked
+                                            {t('teachers.linked')}
                                         </span>
                                     )}
                                 </span>
@@ -87,10 +86,15 @@ export default function TeachersPage() {
                             <Button
                                 variant={teacher.linked ? 'secondary' : 'primary'}
                                 size="sm"
-                                aria-label={`${teacher.linked ? 'Ontkoppel van' : 'Koppel aan'} ${teacher.name}`}
+                                aria-label={t(
+                                    teacher.linked ? 'teachers.unlinkLabel' : 'teachers.linkLabel',
+                                    {
+                                        name: teacher.name,
+                                    },
+                                )}
                                 onClick={() => toggleLink(teacher)}
                             >
-                                {teacher.linked ? 'Ontkoppelen' : 'Koppel aan deze docent'}
+                                {teacher.linked ? t('teachers.unlink') : t('teachers.link')}
                             </Button>
                         </li>
                     ))}

@@ -10,11 +10,24 @@ import RegisterPage from './pages/RegisterPage.tsx';
 import StudentDetailPage from './pages/StudentDetailPage.tsx';
 import StudentsPage from './pages/StudentsPage.tsx';
 import TeachersPage from './pages/TeachersPage.tsx';
+import { useTranslation } from 'react-i18next';
 
 // The old /catalog address forwards to the home page and keeps the filters in the query.
 function CatalogRedirect() {
     const { search } = useLocation();
     return <Navigate to={{ pathname: '/', search }} replace />;
+}
+
+// Shown for every address that does not exist.
+function NotFound() {
+    const { t } = useTranslation();
+    return (
+        <div className="text-center py-5">
+            <i className="bi bi-compass display-3 text-body-secondary" aria-hidden="true" />
+            <h1 className="h3 mt-3">{t('notFound.title')}</h1>
+            <Link to="/">{t('notFound.back')}</Link>
+        </div>
+    );
 }
 
 export default function App() {
@@ -80,19 +93,7 @@ export default function App() {
                         </ProtectedRoute>
                     }
                 />
-                <Route
-                    path="*"
-                    element={
-                        <div className="text-center py-5">
-                            <i
-                                className="bi bi-compass display-3 text-body-secondary"
-                                aria-hidden="true"
-                            />
-                            <h1 className="h3 mt-3">Pagina niet gevonden</h1>
-                            <Link to="/">Terug naar de catalogus</Link>
-                        </div>
-                    }
-                />
+                <Route path="*" element={<NotFound />} />
             </Route>
         </Routes>
     );

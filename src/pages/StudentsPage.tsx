@@ -5,8 +5,10 @@ import { useAuth } from '../auth/AuthContext.tsx';
 import Alert from '../components/Alert.tsx';
 import Skeleton from '../components/Skeleton.tsx';
 import type { StudentSummary } from '../types/api.ts';
+import { useTranslation } from 'react-i18next';
 
 export default function StudentsPage() {
+    const { t } = useTranslation();
     const { token } = useAuth();
     const [students, setStudents] = useState<StudentSummary[] | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -22,22 +24,19 @@ export default function StudentsPage() {
             <header className="mb-4">
                 <h1 className="page-title">
                     <i className="bi bi-people me-2" aria-hidden="true" />
-                    Jouw leerlingen
+                    {t('students.title')}
                 </h1>
             </header>
             {error && <Alert>{error}</Alert>}
-            {!students && !error && <Skeleton lines={4} label="Leerlingen laden" />}
+            {!students && !error && <Skeleton lines={4} label={t('students.loading')} />}
             {students?.length === 0 && (
                 <div className="text-center py-5">
                     <i
                         className="bi bi-person-plus display-4 text-body-secondary"
                         aria-hidden="true"
                     />
-                    <h2 className="h4 mt-3">Nog geen leerlingen</h2>
-                    <p className="text-body-secondary">
-                        Leerlingen koppelen zichzelf aan jou op hun pagina &quot;Mijn
-                        docenten&quot;.
-                    </p>
+                    <h2 className="h4 mt-3">{t('students.emptyTitle')}</h2>
+                    <p className="text-body-secondary">{t('students.emptyHint')}</p>
                 </div>
             )}
             {students && students.length > 0 && (
@@ -73,7 +72,9 @@ export default function StudentsPage() {
                                     className={`bi ${student.hasProfile ? 'bi-check-circle-fill' : 'bi-circle'} me-1`}
                                     aria-hidden="true"
                                 />
-                                {student.hasProfile ? 'Profiel ingevuld' : 'Nog geen profiel'}
+                                {student.hasProfile
+                                    ? t('students.hasProfile')
+                                    : t('students.noProfile')}
                             </span>
                         </li>
                     ))}

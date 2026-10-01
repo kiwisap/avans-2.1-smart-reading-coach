@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { apiFetch, errorMessage } from '../api/client.ts';
 import { useAuth } from '../auth/AuthContext.tsx';
 import type { Book, ReadingListItem, ReadingStatus } from '../types/api.ts';
+import i18n from '../i18n/index.ts';
 
 // Loads the student's reading list and exposes add, toggle and remove.
 // Pass enabled=false for roles without a reading list (teachers).
@@ -38,7 +39,7 @@ export function useReadingList(enabled = true) {
                     body: { bookId: book.id },
                 });
                 setItems((current) => [item, ...(current ?? [])]);
-                setNotice(`"${book.title}" is toegevoegd aan je leeslijst.`);
+                setNotice(i18n.t('readingList.added', { title: book.title }));
             } catch (err) {
                 setError(errorMessage(err));
             }
@@ -73,7 +74,11 @@ export function useReadingList(enabled = true) {
                 setItems((current) =>
                     (current ?? []).filter((existing) => existing.id !== item.id),
                 );
-                setNotice(`"${item.book?.title ?? 'De titel'}" is van je leeslijst verwijderd.`);
+                setNotice(
+                    i18n.t('readingList.removed', {
+                        title: item.book?.title ?? i18n.t('book.fallbackTitle'),
+                    }),
+                );
             } catch (err) {
                 setError(errorMessage(err));
             }

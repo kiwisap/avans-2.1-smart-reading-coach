@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface PaginationProps {
     page: number;
@@ -41,6 +42,7 @@ interface GapDropdownProps extends Gap {
 
 // The "..." button. Opens a small menu, upwards for the bar below the cards, downwards for the top bar.
 function GapDropdown({ from, to, onPageChange, opensUp }: GapDropdownProps) {
+    const { t } = useTranslation();
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLLIElement>(null);
     const menuId = useId();
@@ -71,7 +73,7 @@ function GapDropdown({ from, to, onPageChange, opensUp }: GapDropdownProps) {
                 aria-haspopup="true"
                 aria-expanded={open}
                 aria-controls={menuId}
-                aria-label={`Kies een pagina van ${from} tot ${to}`}
+                aria-label={t('pagination.pickPage', { from, to })}
                 onClick={() => setOpen((current) => !current)}
             >
                 …
@@ -92,7 +94,7 @@ function GapDropdown({ from, to, onPageChange, opensUp }: GapDropdownProps) {
                                     onPageChange(number);
                                 }}
                             >
-                                Pagina {number}
+                                {t('pagination.page', { number })}
                             </button>
                         </li>
                     ))}
@@ -108,14 +110,11 @@ export default function Pagination({
     onPageChange,
     position = 'bottom',
 }: PaginationProps) {
+    const { t } = useTranslation();
     if (totalPages <= 1) return null;
     return (
         <nav
-            aria-label={
-                position === 'top'
-                    ? 'Paginering boven de resultaten'
-                    : 'Paginering onder de resultaten'
-            }
+            aria-label={position === 'top' ? t('pagination.above') : t('pagination.below')}
             className={position === 'top' ? '' : 'mt-4'}
         >
             <ul className="pagination justify-content-end flex-wrap mb-0">
@@ -126,7 +125,8 @@ export default function Pagination({
                         disabled={page <= 1}
                         onClick={() => onPageChange(page - 1)}
                     >
-                        <i className="bi bi-chevron-left" aria-hidden="true" /> Vorige
+                        <i className="bi bi-chevron-left" aria-hidden="true" />{' '}
+                        {t('pagination.previous')}
                     </button>
                 </li>
                 {buildItems(page, totalPages).map((item) =>
@@ -136,7 +136,7 @@ export default function Pagination({
                                 type="button"
                                 className="page-link"
                                 aria-current={item === page ? 'page' : undefined}
-                                aria-label={`Pagina ${item}`}
+                                aria-label={t('pagination.page', { number: item })}
                                 onClick={() => onPageChange(item)}
                             >
                                 {item}
@@ -159,7 +159,8 @@ export default function Pagination({
                         disabled={page >= totalPages}
                         onClick={() => onPageChange(page + 1)}
                     >
-                        Volgende <i className="bi bi-chevron-right" aria-hidden="true" />
+                        {t('pagination.next')}{' '}
+                        <i className="bi bi-chevron-right" aria-hidden="true" />
                     </button>
                 </li>
             </ul>

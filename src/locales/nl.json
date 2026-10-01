@@ -1,0 +1,250 @@
+{
+    "app": {
+        "name": "Smart Reading Coach",
+        "subtitle": "Vrij lezen op maat"
+    },
+    "common": {
+        "loading": "Laden...",
+        "required": "(verplicht)",
+        "confirm": "Bevestigen",
+        "cancel": "Annuleren",
+        "noResults": "Geen resultaten."
+    },
+    "errors": {
+        "generic": "Er is iets misgegaan",
+        "serverUnreachable": "De server is niet bereikbaar. Probeer het later opnieuw.",
+        "noAccess": "Je hebt geen toegang tot die pagina.",
+        "profileIncomplete": "Het profiel is niet volledig ingevuld"
+    },
+    "roles": {
+        "student": "Leerling",
+        "teacher": "Docent"
+    },
+    "nav": {
+        "skipLink": "Ga naar de hoofdinhoud",
+        "mainMenu": "Hoofdmenu",
+        "toggleMenu": "Menu in- of uitklappen",
+        "catalog": "Catalogus",
+        "advice": "Advies",
+        "readingList": "Leeslijst",
+        "profile": "Mijn profiel",
+        "teachers": "Mijn docenten",
+        "students": "Leerlingen",
+        "login": "Inloggen",
+        "register": "Registreren",
+        "logout": "Uitloggen"
+    },
+    "notFound": {
+        "title": "Pagina niet gevonden",
+        "back": "Terug naar de catalogus"
+    },
+    "auth": {
+        "tagline": "Lees wat bij je past. Groei in je eigen tempo.",
+        "intro": "Maak je leesprofiel, krijg advies dat past bij jouw niveau en houd bij wat je hebt gelezen.",
+        "email": "E-mail",
+        "password": "Wachtwoord",
+        "login": {
+            "title": "Inloggen",
+            "subtitle": "Welkom terug. Ga verder waar je gebleven was.",
+            "submit": "Inloggen",
+            "submitting": "Bezig met inloggen...",
+            "noAccount": "Nog geen account? <register>Registreer</register>"
+        },
+        "register": {
+            "title": "Account aanmaken",
+            "subtitle": "Het duurt maar een minuutje. Daarna kunnen we adviseren.",
+            "name": "Naam",
+            "passwordHint": "Minimaal 8 tekens",
+            "submit": "Registreren",
+            "submitting": "Account aanmaken...",
+            "haveAccount": "Heb je al een account? <login>Inloggen</login>"
+        }
+    },
+    "catalog": {
+        "eyebrow": "Vrij lezen op maat",
+        "heading": "Vind je volgende leestip",
+        "heroStudent": "Hoi {{name}}! Zoek in de catalogus, of <advice>laat ons iets voor je uitkiezen</advice>.",
+        "heroTeacher": "Zoek in de catalogus met boeken, artikelen en meer.",
+        "searchLabel": "Zoek op titel, auteur of thema",
+        "searchPlaceholder": "Titel, auteur of thema",
+        "search": "Zoeken",
+        "filterType": "Soort",
+        "filterLevel": "Niveau",
+        "filterThemes": "Thema's",
+        "noTypes": "Geen soorten gevonden",
+        "noLevels": "Geen niveaus gevonden",
+        "noThemes": "Geen thema's gevonden",
+        "clearAll": "Alle filters wissen",
+        "clearFilters": "Filters wissen",
+        "results_one": "{{count}} resultaat",
+        "results_other": "{{count}} resultaten",
+        "loadingCatalog": "Catalogus laden",
+        "emptyTitle": "Niets gevonden",
+        "emptyHint": "Probeer andere woorden of haal een filter weg."
+    },
+    "combobox": {
+        "all": "Alle",
+        "nothingFound": "Niets gevonden",
+        "selected": "{{count}} gekozen",
+        "clear": "{{label}} leegmaken",
+        "remove": "Verwijder {{label}}",
+        "limitReached": "Maximaal {{max}} gekozen. Haal er een weg om een andere te kiezen."
+    },
+    "pagination": {
+        "above": "Paginering boven de resultaten",
+        "below": "Paginering onder de resultaten",
+        "previous": "Vorige",
+        "next": "Volgende",
+        "page": "Pagina {{number}}",
+        "pickPage": "Kies een pagina van {{from}} tot {{to}}"
+    },
+    "book": {
+        "level": "Niveau {{level}}",
+        "showLess": "Toon minder",
+        "readMore": "Lees meer",
+        "about": " over {{title}}",
+        "whyFits": "Waarom dit bij je past",
+        "themes": "Thema's",
+        "readOnline": "Online lezen",
+        "opensInNewTab": "{{title}} (opent in een nieuw tabblad)",
+        "missingTitle": "Titel niet meer beschikbaar",
+        "missingText": "Deze titel is uit de catalogus verwijderd.",
+        "fallbackTitle": "De titel"
+    },
+    "types": {
+        "boek": "Boek",
+        "online-artikel": "Online artikel",
+        "blogpost": "Blogpost",
+        "dichtbundel": "Dichtbundel",
+        "tijdschrift": "Tijdschrift",
+        "krant": "Krant"
+    },
+    "lengths": {
+        "short": "Kort (een gedicht, artikel of een paar bladzijden)",
+        "medium": "Middel (een kort verhaal of een dun boek)",
+        "long": "Lang (een heel boek)"
+    },
+    "goals": {
+        "enjoyment": "Voor mijn plezier",
+        "learn": "Om iets nieuws te leren",
+        "language": "Om mijn taalvaardigheid te verbeteren",
+        "work": "Voor werk of studie"
+    },
+    "status": {
+        "read": "Gelezen",
+        "unread": "Nog niet gelezen"
+    },
+    "readingList": {
+        "title": "Mijn leeslijst",
+        "loading": "Leeslijst laden",
+        "emptyTitle": "Je leeslijst is leeg",
+        "emptyHint": "Voeg titels toe vanuit de <catalog>catalogus</catalog> of vanuit je <advice>leesadvies</advice>.",
+        "progress": "{{read}} van de {{total}} titels gelezen",
+        "progressLabel": "Leesvoortgang",
+        "markRead": "Gelezen",
+        "remove": "Verwijderen",
+        "removeLabel": "Verwijder {{title}} van je leeslijst",
+        "add": "Toevoegen",
+        "addLabel": "Voeg {{title}} toe aan je leeslijst",
+        "onList": "Op je leeslijst",
+        "added": "\"{{title}}\" is toegevoegd aan je leeslijst.",
+        "removed": "\"{{title}}\" is van je leeslijst verwijderd."
+    },
+    "advice": {
+        "title": "Jouw leesadvies",
+        "intro": "Titels die passen bij je leesprofiel, met een korte reden erbij.",
+        "goToProfile": "{{message}}. <profile>Ga naar je leesprofiel</profile>",
+        "loading": "Suggesties voor je zoeken",
+        "count_one": "{{count}} suggestie op basis van je leesprofiel. <profile>Pas je profiel aan</profile> voor ander advies.",
+        "count_other": "{{count}} suggesties op basis van je leesprofiel. <profile>Pas je profiel aan</profile> voor ander advies."
+    },
+    "profile": {
+        "title": "Mijn leesprofiel",
+        "intro": "Je antwoorden bepalen welke titels wij je adviseren.",
+        "loading": "Profiel laden",
+        "restored": "We hebben je niet-opgeslagen wijzigingen teruggezet.",
+        "saved": "Je leesprofiel is opgeslagen. <advice>Bekijk je leesadvies</advice>",
+        "edit": "Profiel bewerken",
+        "summary": {
+            "level": "Leesniveau",
+            "types": "Soorten teksten",
+            "topics": "Onderwerpen",
+            "length": "Lengte",
+            "goal": "Reden om te lezen"
+        },
+        "form": {
+            "requiredNote": "Velden met een * zijn verplicht.",
+            "fixFollowing": "Pas het volgende aan:",
+            "levelLegend": "Wat is je leesniveau?",
+            "levelHint": "Weet je het niet zeker? Vraag het je docent.",
+            "typesLegend": "Wat voor soort teksten vind je leuk?",
+            "topicsLegend": "Welke onderwerpen interesseren je?",
+            "topicsHint": "Kies er maximaal {{max}}.",
+            "lengthLegend": "Hoe lang mag de tekst zijn?",
+            "goalLegend": "Waarom wil je lezen?",
+            "save": "Profiel opslaan",
+            "saving": "Opslaan...",
+            "cancel": "Annuleren",
+            "filterList": "Filter de lijst",
+            "chosen": "{{count}} van {{max}} gekozen"
+        },
+        "validation": {
+            "level": "Kies je leesniveau",
+            "types": "Kies minstens één soort tekst",
+            "topics": "Kies minstens één onderwerp",
+            "tooManyTopics": "Kies maximaal {{max}} onderwerpen",
+            "length": "Kies hoe lang de tekst mag zijn",
+            "goal": "Kies waarom je wilt lezen"
+        },
+        "discard": {
+            "title": "Wijzigingen weggooien?",
+            "confirm": "Wijzigingen weggooien",
+            "keepEditing": "Verder bewerken",
+            "text": "Je hebt je profiel aangepast maar niet opgeslagen. Als je doorgaat, gaan de wijzigingen verloren."
+        }
+    },
+    "teachers": {
+        "title": "Mijn docenten",
+        "intro": "Een docent aan wie je gekoppeld bent, kan je leesprofiel en je leeslijst zien en titels aan je lijst toevoegen. Je kunt de koppeling altijd weer verwijderen.",
+        "loading": "Docenten laden",
+        "none": "Er zijn nog geen docenten.",
+        "linked": "Gekoppeld",
+        "link": "Koppel aan deze docent",
+        "unlink": "Ontkoppelen",
+        "linkLabel": "Koppel aan {{name}}",
+        "unlinkLabel": "Ontkoppel van {{name}}",
+        "nowLinked": "Je bent nu gekoppeld aan {{name}}.",
+        "nowUnlinked": "Je bent niet meer gekoppeld aan {{name}}."
+    },
+    "students": {
+        "title": "Jouw leerlingen",
+        "loading": "Leerlingen laden",
+        "emptyTitle": "Nog geen leerlingen",
+        "emptyHint": "Leerlingen koppelen zichzelf aan jou op hun pagina \"Mijn docenten\".",
+        "hasProfile": "Profiel ingevuld",
+        "noProfile": "Nog geen profiel"
+    },
+    "studentDetail": {
+        "back": "Terug naar je leerlingen",
+        "loading": "Leerling laden",
+        "profileHeading": "Leesprofiel",
+        "noProfile": "Deze leerling heeft nog geen leesprofiel ingevuld.",
+        "listHeading": "Leeslijst",
+        "emptyList": "Er staat nog niets op de leeslijst.",
+        "added": "\"{{title}}\" is toegevoegd aan de leeslijst van {{name}}."
+    },
+    "teacherAdd": {
+        "heading": "Voeg een titel toe aan de leeslijst van {{name}}",
+        "searchLabel": "Zoek in de catalogus",
+        "searchPlaceholder": "Titel, auteur of thema",
+        "search": "Zoeken",
+        "searching": "Zoeken...",
+        "none": "Geen titels gevonden.",
+        "found_one": "{{count}} titel gevonden.",
+        "found_other": "{{count}} titels gevonden.",
+        "by": " van {{author}}",
+        "onList": "Staat op de lijst",
+        "add": "Toevoegen",
+        "addLabel": "Voeg {{title}} toe aan de leeslijst van {{name}}"
+    }
+}

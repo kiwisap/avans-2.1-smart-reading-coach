@@ -1,5 +1,6 @@
 import type { Book } from '../types/api.ts';
 import Button from './Button.tsx';
+import { useTranslation } from 'react-i18next';
 
 interface AddToListButtonProps {
     book: Pick<Book, 'id' | 'title'>;
@@ -8,11 +9,12 @@ interface AddToListButtonProps {
 }
 
 export default function AddToListButton({ book, onList, onAdd }: AddToListButtonProps) {
+    const { t } = useTranslation();
     if (onList) {
         return (
             <span className="status-chip is-success">
                 <i className="bi bi-bookmark-check-fill" aria-hidden="true" />
-                Op je leeslijst
+                {t('readingList.onList')}
             </span>
         );
     }
@@ -20,10 +22,10 @@ export default function AddToListButton({ book, onList, onAdd }: AddToListButton
         <Button
             variant="secondary"
             icon="bi-bookmark-plus"
-            aria-label={`Voeg ${book.title} toe aan je leeslijst`}
+            aria-label={t('readingList.addLabel', { title: book.title })}
             onClick={() => onAdd(book)}
         >
-            Toevoegen
+            {t('readingList.add')}
         </Button>
     );
 }

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 interface SkeletonProps {
     lines?: number;
     label?: string;
@@ -5,10 +6,11 @@ interface SkeletonProps {
 }
 
 // Placeholders shown while data loads. Screen readers get a single "Loading" message.
-export default function Skeleton({ lines = 3, label = 'Laden', variant = 'lines' }: SkeletonProps) {
+export default function Skeleton({ lines = 3, label, variant = 'lines' }: SkeletonProps) {
+    const { t } = useTranslation();
     return (
         <div role="status" aria-busy="true">
-            <span className="visually-hidden">{label}</span>
+            <span className="visually-hidden">{label ?? t('common.loading')}</span>
             <div aria-hidden="true" className="placeholder-glow">
                 {variant === 'lines' ? (
                     Array.from({ length: lines }, (_, index) => (

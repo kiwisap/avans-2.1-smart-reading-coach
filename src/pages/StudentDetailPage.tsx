@@ -11,6 +11,7 @@ import Skeleton from '../components/Skeleton.tsx';
 import StatusBadge from '../components/StatusBadge.tsx';
 import TeacherAddBook from '../components/TeacherAddBook.tsx';
 import type { Book, ReadingListItem, StudentOverview } from '../types/api.ts';
+import { useTranslation } from 'react-i18next';
 
 export default function StudentDetailPage() {
     const { studentId } = useParams<{ studentId: string }>();
@@ -19,6 +20,7 @@ export default function StudentDetailPage() {
 }
 
 function StudentDetail({ studentId }: { studentId: string | undefined }) {
+    const { t } = useTranslation();
     const { token } = useAuth();
     const [overview, setOverview] = useState<StudentOverview | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -60,9 +62,7 @@ function StudentDetail({ studentId }: { studentId: string | undefined }) {
             setOverview((current) =>
                 current ? { ...current, readingList: [item, ...current.readingList] } : current,
             );
-            setNotice(
-                `"${book.title}" is toegevoegd aan de leeslijst van ${overview.student.name}.`,
-            );
+            setNotice(t('studentDetail.added', { title: book.title, name: overview.student.name }));
         } catch (err) {
             setError(errorMessage(err));
         }
@@ -73,7 +73,7 @@ function StudentDetail({ studentId }: { studentId: string | undefined }) {
             <section>
                 <Alert>{error}</Alert>
                 <p>
-                    <Link to="/students">Terug naar je leerlingen</Link>
+                    <Link to="/students">{t('studentDetail.back')}</Link>
                 </p>
             </section>
         );
@@ -82,7 +82,7 @@ function StudentDetail({ studentId }: { studentId: string | undefined }) {
     if (!overview) {
         return (
             <section>
-                <Skeleton lines={6} label="Leerling laden" />
+                <Skeleton lines={6} label={t('studentDetail.loading')} />
             </section>
         );
     }
@@ -94,7 +94,7 @@ function StudentDetail({ studentId }: { studentId: string | undefined }) {
             <p>
                 <Link to="/students">
                     <i className="bi bi-arrow-left me-1" aria-hidden="true" />
-                    Terug naar je leerlingen
+                    {t('studentDetail.back')}
                 </Link>
             </p>
             <header className="mb-4">
@@ -108,18 +108,16 @@ function StudentDetail({ studentId }: { studentId: string | undefined }) {
             {error && <Alert>{error}</Alert>}
             {notice && <Alert type="success">{notice}</Alert>}
 
-            <h2 className="h4 mb-3">Leesprofiel</h2>
+            <h2 className="h4 mb-3">{t('studentDetail.profileHeading')}</h2>
             {profile ? (
                 <ProfileSummary profile={profile} />
             ) : (
-                <p className="text-body-secondary">
-                    Deze leerling heeft nog geen leesprofiel ingevuld.
-                </p>
+                <p className="text-body-secondary">{t('studentDetail.noProfile')}</p>
             )}
 
-            <h2 className="h4 mt-4 mb-3">Leeslijst</h2>
+            <h2 className="h4 mt-4 mb-3">{t('studentDetail.listHeading')}</h2>
             {readingList.length === 0 && (
-                <p className="text-body-secondary">Er staat nog niets op de leeslijst.</p>
+                <p className="text-body-secondary">{t('studentDetail.emptyList')}</p>
             )}
             <BookGrid>
                 {readingList.map((item) =>

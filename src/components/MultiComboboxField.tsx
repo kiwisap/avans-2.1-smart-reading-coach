@@ -1,4 +1,5 @@
 import { useId, useMemo, useRef, useState, type KeyboardEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface ComboboxOption {
     value: string;
@@ -23,11 +24,12 @@ export default function MultiComboboxField({
     values,
     options,
     onChange,
-    placeholder = 'Alle',
-    emptyText = 'Niets gevonden',
+    placeholder,
+    emptyText,
     maxSelected = Number.POSITIVE_INFINITY,
     wrapperClassName = 'mb-3',
 }: MultiComboboxFieldProps) {
+    const { t } = useTranslation();
     const id = useId();
     const listId = `${id}-list`;
     const rootRef = useRef<HTMLDivElement>(null);
@@ -108,7 +110,11 @@ export default function MultiComboboxField({
                     role="combobox"
                     className="form-control combobox-input"
                     autoComplete="off"
-                    placeholder={values.length > 0 ? `${values.length} gekozen` : placeholder}
+                    placeholder={
+                        values.length > 0
+                            ? t('combobox.selected', { count: values.length })
+                            : (placeholder ?? t('combobox.all'))
+                    }
                     aria-expanded={open}
                     aria-controls={listId}
                     aria-autocomplete="list"
@@ -129,7 +135,7 @@ export default function MultiComboboxField({
                     <button
                         type="button"
                         className="combobox-clear btn btn-sm"
-                        aria-label={`${label} leegmaken`}
+                        aria-label={t('combobox.clear', { label })}
                         onClick={() => {
                             onChange([]);
                             setQuery('');
@@ -177,12 +183,12 @@ export default function MultiComboboxField({
                             className="combobox-empty text-body-secondary small"
                             role="presentation"
                         >
-                            Maximaal {maxSelected} gekozen. Haal er een weg om een andere te kiezen.
+                            {t('combobox.limitReached', { max: maxSelected })}
                         </li>
                     )}
                     {visible.length === 0 && (
                         <li className="combobox-empty text-body-secondary" role="presentation">
-                            {emptyText}
+                            {emptyText ?? t('combobox.nothingFound')}
                         </li>
                     )}
                 </ul>
@@ -194,7 +200,7 @@ export default function MultiComboboxField({
                             <button
                                 type="button"
                                 className="chip chip-removable"
-                                aria-label={`Verwijder ${labelOf(value)}`}
+                                aria-label={t('combobox.remove', { label: labelOf(value) })}
                                 onClick={() => toggle(value)}
                             >
                                 {labelOf(value)}

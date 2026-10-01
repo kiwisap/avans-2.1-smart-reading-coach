@@ -21,6 +21,7 @@ import {
     type ProfileFormValues,
 } from '../profile/profileDraft.ts';
 import type { ProfileOptions, ReadingProfile } from '../types/api.ts';
+import { Trans, useTranslation } from 'react-i18next';
 
 interface Message {
     type: 'success' | 'error' | 'info';
@@ -28,6 +29,7 @@ interface Message {
 }
 
 export default function ProfilePage() {
+    const { t } = useTranslation();
     const { token, user } = useAuth();
     const userId = user?.id ?? '';
     const [options, setOptions] = useState<ProfileOptions | null>(null);
@@ -59,7 +61,7 @@ export default function ProfilePage() {
                     setEditing(true);
                     setMessage({
                         type: 'info',
-                        text: 'We hebben je niet-opgeslagen wijzigingen teruggezet.',
+                        text: t('profile.restored'),
                     });
                 } else if (!profile) {
                     setValues(EMPTY_PROFILE);
@@ -72,7 +74,7 @@ export default function ProfilePage() {
         return () => {
             cancelled = true;
         };
-    }, [token, userId]);
+    }, [token, userId, t]);
 
     const baseline = saved ? toFormValues(saved) : EMPTY_PROFILE;
     const dirty = editing && !sameProfile(values, baseline);
@@ -125,9 +127,7 @@ export default function ProfilePage() {
             setMessage({
                 type: 'success',
                 text: (
-                    <>
-                        Je leesprofiel is opgeslagen. <Link to="/advice">Bekijk je leesadvies</Link>
-                    </>
+                    <Trans i18nKey="profile.saved" components={{ advice: <Link to="/advice" /> }} />
                 ),
             });
         } catch (err) {
@@ -161,8 +161,8 @@ export default function ProfilePage() {
     if (saved === undefined && !message) {
         return (
             <section>
-                <h1 className="page-title mb-4">Mijn leesprofiel</h1>
-                <Skeleton lines={5} label="Profiel laden" />
+                <h1 className="page-title mb-4">{t('profile.title')}</h1>
+                <Skeleton lines={5} label={t('profile.loading')} />
             </section>
         );
     }
@@ -172,11 +172,9 @@ export default function ProfilePage() {
             <header className="mb-4">
                 <h1 className="page-title">
                     <i className="bi bi-person-lines-fill me-2" aria-hidden="true" />
-                    Mijn leesprofiel
+                    {t('profile.title')}
                 </h1>
-                <p className="text-body-secondary mb-0">
-                    Je antwoorden bepalen welke titels wij je adviseren.
-                </p>
+                <p className="text-body-secondary mb-0">{t('profile.intro')}</p>
             </header>
             {message && <Alert type={message.type}>{message.text}</Alert>}
 
@@ -197,23 +195,20 @@ export default function ProfilePage() {
                 <>
                     <ProfileSummary profile={saved} />
                     <Button icon="bi-pencil" onClick={startEditing}>
-                        Profiel bewerken
+                        {t('profile.edit')}
                     </Button>
                 </>
             )}
 
             <ConfirmDialog
                 open={confirmOpen}
-                title="Wijzigingen weggooien?"
-                confirmLabel="Wijzigingen weggooien"
-                cancelLabel="Verder bewerken"
+                title={t('profile.discard.title')}
+                confirmLabel={t('profile.discard.confirm')}
+                cancelLabel={t('profile.discard.keepEditing')}
                 onConfirm={discardChanges}
                 onCancel={() => setConfirmOpen(false)}
             >
-                <p>
-                    Je hebt je profiel aangepast maar niet opgeslagen. Als je doorgaat, gaan de
-                    wijzigingen verloren.
-                </p>
+                <p>{t('profile.discard.text')}</p>
             </ConfirmDialog>
         </section>
     );

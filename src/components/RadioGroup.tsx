@@ -1,4 +1,5 @@
 import { useId } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface ChoiceOption<T extends string> {
     value: T;
@@ -26,6 +27,7 @@ export default function RadioGroup<T extends string>({
     hint,
     error,
 }: RadioGroupProps<T>) {
+    const { t } = useTranslation();
     const id = useId();
     const describedBy =
         [hint && `${id}-hint`, error && `${id}-error`].filter(Boolean).join(' ') || undefined;
@@ -41,7 +43,7 @@ export default function RadioGroup<T extends string>({
                 {required && (
                     <>
                         <span aria-hidden="true"> *</span>
-                        <span className="visually-hidden"> (verplicht)</span>
+                        <span className="visually-hidden"> {t('common.required')}</span>
                     </>
                 )}
             </legend>

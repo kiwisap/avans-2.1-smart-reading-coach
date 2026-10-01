@@ -1,18 +1,19 @@
 import { useEffect, useRef, type SubmitEventHandler } from 'react';
-import { GOAL_LABELS, LENGTH_LABELS, TYPE_LABELS } from '../constants/labels.ts';
+import { goalLabel, lengthLabel, typeLabel } from '../i18n/labels.ts';
 import type { ProfileErrors, ProfileFormValues } from '../profile/profileDraft.ts';
 import type { ProfileOptions } from '../types/api.ts';
 import Button from './Button.tsx';
 import CheckboxGroup from './CheckboxGroup.tsx';
 import RadioGroup, { type ChoiceOption } from './RadioGroup.tsx';
+import { useTranslation } from 'react-i18next';
 
 const toOptions = <T extends string>(
     values: readonly T[],
-    labels: Record<string, string> = {},
+    label: (value: string) => string = (value) => value,
 ): ChoiceOption<T>[] =>
     values
         .filter((value) => typeof value === 'string' && value !== '')
-        .map((value) => ({ value, label: labels[value] ?? value }));
+        .map((value) => ({ value, label: label(value) }));
 
 interface ProfileFormProps {
     options: ProfileOptions;
@@ -35,6 +36,7 @@ export default function ProfileForm({
     onSubmit,
     onCancel,
 }: ProfileFormProps) {
+    const { t } = useTranslation();
     const summaryRef = useRef<HTMLDivElement>(null);
     const errorList = Object.entries(errors);
 
@@ -45,11 +47,11 @@ export default function ProfileForm({
 
     return (
         <form onSubmit={onSubmit} noValidate>
-            <p className="text-body-secondary">Velden met een * zijn verplicht.</p>
+            <p className="text-body-secondary">{t('profile.form.requiredNote')}</p>
 
             {errorList.length > 0 && (
                 <div className="alert alert-danger" role="alert" tabIndex={-1} ref={summaryRef}>
-                    <p className="fw-semibold mb-1">Pas het volgende aan:</p>
+                    <p className="fw-semibold mb-1">{t('profile.form.fixFollowing')}</p>
                     <ul className="mb-0">
                         {errorList.map(([field, message]) => (
                             <li key={field}>{message}</li>
@@ -59,10 +61,10 @@ export default function ProfileForm({
             )}
 
             <RadioGroup
-                legend="Wat is je leesniveau?"
+                legend={t('profile.form.levelLegend')}
                 name="languageLevel"
                 required
-                hint="Weet je het niet zeker? Vraag het je docent."
+                hint={t('profile.form.levelHint')}
                 options={toOptions(options.languageLevels)}
                 value={values.languageLevel}
                 onChange={(value) => onChange('languageLevel', value)}
@@ -70,20 +72,20 @@ export default function ProfileForm({
             />
 
             <CheckboxGroup
-                legend="Wat voor soort teksten vind je leuk?"
+                legend={t('profile.form.typesLegend')}
                 required
-                options={toOptions(options.materialTypes, TYPE_LABELS)}
+                options={toOptions(options.materialTypes, typeLabel)}
                 values={values.materialTypes}
                 onChange={(value) => onChange('materialTypes', value)}
                 error={errors.materialTypes}
             />
 
             <CheckboxGroup
-                legend="Welke onderwerpen interesseren je?"
+                legend={t('profile.form.topicsLegend')}
                 required
                 searchable
                 max={options.maxTopics}
-                hint={`Kies er maximaal ${options.maxTopics}.`}
+                hint={t('profile.form.topicsHint', { max: options.maxTopics })}
                 options={toOptions(options.topics)}
                 values={values.topics}
                 onChange={(value) => onChange('topics', value)}
@@ -91,20 +93,20 @@ export default function ProfileForm({
             />
 
             <RadioGroup
-                legend="Hoe lang mag de tekst zijn?"
+                legend={t('profile.form.lengthLegend')}
                 name="desiredLength"
                 required
-                options={toOptions(options.desiredLengths, LENGTH_LABELS)}
+                options={toOptions(options.desiredLengths, lengthLabel)}
                 value={values.desiredLength}
                 onChange={(value) => onChange('desiredLength', value)}
                 error={errors.desiredLength}
             />
 
             <RadioGroup
-                legend="Waarom wil je lezen?"
+                legend={t('profile.form.goalLegend')}
                 name="readingGoal"
                 required
-                options={toOptions(options.readingGoals, GOAL_LABELS)}
+                options={toOptions(options.readingGoals, goalLabel)}
                 value={values.readingGoal}
                 onChange={(value) => onChange('readingGoal', value)}
                 error={errors.readingGoal}
@@ -112,11 +114,11 @@ export default function ProfileForm({
 
             <div className="d-flex gap-2">
                 <Button type="submit" icon="bi-check-lg" disabled={submitting}>
-                    {submitting ? 'Opslaan...' : 'Profiel opslaan'}
+                    {submitting ? t('profile.form.saving') : t('profile.form.save')}
                 </Button>
                 {onCancel && (
                     <Button variant="secondary" onClick={onCancel}>
-                        Cancel
+                        {t('profile.form.cancel')}
                     </Button>
                 )}
             </div>

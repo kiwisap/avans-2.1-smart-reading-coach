@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, type ReactNode } from 'react';
 import Button from './Button.tsx';
+import { useTranslation } from 'react-i18next';
 
 interface ConfirmDialogProps {
     open: boolean;
@@ -16,11 +17,12 @@ export default function ConfirmDialog({
     open,
     title,
     children,
-    confirmLabel = 'Bevestigen',
-    cancelLabel = 'Annuleren',
+    confirmLabel,
+    cancelLabel,
     onConfirm,
     onCancel,
 }: ConfirmDialogProps) {
+    const { t } = useTranslation();
     const ref = useRef<HTMLDialogElement>(null);
     const titleId = useId();
 
@@ -49,10 +51,10 @@ export default function ConfirmDialog({
             </div>
             <div className="d-flex justify-content-end gap-2 bg-body-tertiary px-4 py-3 rounded-bottom">
                 <Button variant="secondary" onClick={onCancel}>
-                    {cancelLabel}
+                    {cancelLabel ?? t('common.cancel')}
                 </Button>
                 <Button variant="danger" onClick={onConfirm}>
-                    {confirmLabel}
+                    {confirmLabel ?? t('common.confirm')}
                 </Button>
             </div>
         </dialog>

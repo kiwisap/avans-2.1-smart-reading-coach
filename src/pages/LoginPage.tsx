@@ -6,8 +6,10 @@ import Alert from '../components/Alert.tsx';
 import AuthLayout from '../components/AuthLayout.tsx';
 import Button from '../components/Button.tsx';
 import TextField from '../components/TextField.tsx';
+import { Trans, useTranslation } from 'react-i18next';
 
 export default function LoginPage() {
+    const { t } = useTranslation();
     const { user, login } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
@@ -34,11 +36,11 @@ export default function LoginPage() {
     }
 
     return (
-        <AuthLayout title="Inloggen" subtitle="Welkom terug. Ga verder waar je gebleven was.">
+        <AuthLayout title={t('auth.login.title')} subtitle={t('auth.login.subtitle')}>
             {error && <Alert>{error}</Alert>}
             <form onSubmit={handleSubmit}>
                 <TextField
-                    label="E-mail"
+                    label={t('auth.email')}
                     type="email"
                     autoComplete="email"
                     required
@@ -46,7 +48,7 @@ export default function LoginPage() {
                     onChange={(e) => setEmail(e.target.value)}
                 />
                 <TextField
-                    label="Wachtwoord"
+                    label={t('auth.password')}
                     type="password"
                     autoComplete="current-password"
                     required
@@ -54,11 +56,14 @@ export default function LoginPage() {
                     onChange={(e) => setPassword(e.target.value)}
                 />
                 <Button type="submit" size="lg" className="w-100" disabled={submitting}>
-                    {submitting ? 'Bezig met inloggen...' : 'Inloggen'}
+                    {submitting ? t('auth.login.submitting') : t('auth.login.submit')}
                 </Button>
             </form>
             <p className="mt-4 mb-0">
-                Nog geen account? <Link to="/register">Registreer</Link>
+                <Trans
+                    i18nKey="auth.login.noAccount"
+                    components={{ register: <Link to="/register" /> }}
+                />
             </p>
         </AuthLayout>
     );

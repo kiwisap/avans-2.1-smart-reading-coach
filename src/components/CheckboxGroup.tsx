@@ -1,5 +1,6 @@
 import { useId, useState } from 'react';
 import type { ChoiceOption } from './RadioGroup.tsx';
+import { useTranslation } from 'react-i18next';
 
 interface CheckboxGroupProps<T extends string> {
     legend: string;
@@ -24,6 +25,7 @@ export default function CheckboxGroup<T extends string>({
     max,
     searchable = false,
 }: CheckboxGroupProps<T>) {
+    const { t } = useTranslation();
     const id = useId();
     const [query, setQuery] = useState('');
     const describedBy =
@@ -53,7 +55,7 @@ export default function CheckboxGroup<T extends string>({
                 {required && (
                     <>
                         <span aria-hidden="true"> *</span>
-                        <span className="visually-hidden"> (verplicht)</span>
+                        <span className="visually-hidden"> {t('common.required')}</span>
                     </>
                 )}
             </legend>
@@ -67,14 +69,14 @@ export default function CheckboxGroup<T extends string>({
                     <span
                         className={`badge ${atLimit ? 'bg-warning-subtle text-warning-emphasis' : 'bg-primary-subtle text-primary-emphasis'}`}
                     >
-                        {values.length} van {max} gekozen
+                        {t('profile.form.chosen', { count: values.length, max })}
                     </span>
                 </p>
             )}
             {searchable && (
                 <div className="mb-2">
                     <label htmlFor={`${id}-filter`} className="form-label visually-hidden">
-                        Filter de lijst
+                        {t('profile.form.filterList')}
                     </label>
                     <div className="input-group">
                         <span className="input-group-text" aria-hidden="true">
@@ -84,7 +86,7 @@ export default function CheckboxGroup<T extends string>({
                             id={`${id}-filter`}
                             type="search"
                             className="form-control"
-                            placeholder="Filter de lijst"
+                            placeholder={t('profile.form.filterList')}
                             value={query}
                             onChange={(event) => setQuery(event.target.value)}
                         />
@@ -112,7 +114,7 @@ export default function CheckboxGroup<T extends string>({
                     );
                 })}
                 {visible.length === 0 && (
-                    <p className="text-body-secondary my-2">Geen resultaten.</p>
+                    <p className="text-body-secondary my-2">{t('common.noResults')}</p>
                 )}
             </div>
             {error && (
