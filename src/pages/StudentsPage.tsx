@@ -13,11 +13,26 @@ export default function StudentsPage() {
     const [students, setStudents] = useState<StudentSummary[] | null>(null);
     const [error, setError] = useState<string | null>(null);
 
+    const [reloadKey, setReloadKey] = useState(0); // raised by the retry button
+
     useEffect(() => {
+        let cancelled = false;
         apiFetch<{ students: StudentSummary[] }>('/students', { token })
-            .then((data) => setStudents(data.students))
-            .catch((err: unknown) => setError(errorMessage(err)));
-    }, [token]);
+            .then((data) => {
+                if (!cancelled) setStudents(data.students);
+            })
+            .catch((err: unknown) => {
+                if (!cancelled) setError(errorMessage(err));
+            });
+        return () => {
+            cancelled = true;
+        };
+    }, [token, reloadKey]);
+
+    function retry() {
+        setError(null);
+        setReloadKey((key) => key + 1);
+    }
 
     return (
         <section>
@@ -27,7 +42,7 @@ export default function StudentsPage() {
                     {t('students.title')}
                 </h1>
             </header>
-            {error && <Alert>{error}</Alert>}
+            {error && <Alert onRetry={retry}>{error}</Alert>}
             {!students && !error && <Skeleton lines={4} label={t('students.loading')} />}
             {students?.length === 0 && (
                 <div className="text-center py-5">

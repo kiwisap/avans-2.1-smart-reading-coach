@@ -1,8 +1,10 @@
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface AlertProps {
     type?: 'error' | 'success' | 'info';
     children: ReactNode;
+    onRetry?: () => void; // shows a "try again" button, for errors that may pass
 }
 
 const STYLES = {
@@ -11,7 +13,8 @@ const STYLES = {
     info: { className: 'alert-info', icon: 'bi-info-circle-fill' },
 } as const;
 
-export default function Alert({ type = 'error', children }: AlertProps) {
+export default function Alert({ type = 'error', children, onRetry }: AlertProps) {
+    const { t } = useTranslation();
     const { className, icon } = STYLES[type];
     return (
         <div
@@ -19,7 +22,21 @@ export default function Alert({ type = 'error', children }: AlertProps) {
             role={type === 'error' ? 'alert' : 'status'}
         >
             <i className={`bi ${icon} mt-1`} aria-hidden="true" />
-            <div>{children}</div>
+            <div>
+                {children}
+                {onRetry && (
+                    <div className="mt-2">
+                        <button
+                            type="button"
+                            className="btn btn-sm btn-outline-danger"
+                            onClick={onRetry}
+                        >
+                            <i className="bi bi-arrow-clockwise me-1" aria-hidden="true" />
+                            {t('common.retry')}
+                        </button>
+                    </div>
+                )}
+            </div>
         </div>
     );
 }

@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext.tsx';
 import BrandMark from './BrandMark.tsx';
+import ErrorBoundary from './ErrorBoundary.tsx';
 import { useTranslation } from 'react-i18next';
 
 interface NavItem {
@@ -26,6 +27,7 @@ export default function Layout() {
     const { t } = useTranslation();
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+    const { pathname } = useLocation();
     const [open, setOpen] = useState(false);
 
     const items = user ? [...COMMON, ...(user.role === 'student' ? STUDENT : TEACHER)] : [];
@@ -138,7 +140,10 @@ export default function Layout() {
             </header>
 
             <main id="main" className="container py-4 py-lg-5 flex-grow-1" tabIndex={-1}>
-                <Outlet />
+                {/* The menu stays usable when a page breaks; going to another page resets it. */}
+                <ErrorBoundary resetKey={pathname}>
+                    <Outlet />
+                </ErrorBoundary>
             </main>
 
             <footer className="site-footer py-3 text-center small">

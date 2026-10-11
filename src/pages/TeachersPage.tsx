@@ -14,11 +14,26 @@ export default function TeachersPage() {
     const [error, setError] = useState<string | null>(null);
     const [notice, setNotice] = useState<string | null>(null);
 
+    const [reloadKey, setReloadKey] = useState(0); // raised by the retry button
+
     useEffect(() => {
+        let cancelled = false;
         apiFetch<{ teachers: TeacherLink[] }>('/teachers', { token })
-            .then((data) => setTeachers(data.teachers))
-            .catch((err: unknown) => setError(errorMessage(err)));
-    }, [token]);
+            .then((data) => {
+                if (!cancelled) setTeachers(data.teachers);
+            })
+            .catch((err: unknown) => {
+                if (!cancelled) setError(errorMessage(err));
+            });
+        return () => {
+            cancelled = true;
+        };
+    }, [token, reloadKey]);
+
+    function retry() {
+        setError(null);
+        setReloadKey((key) => key + 1);
+    }
 
     async function toggleLink(teacher: TeacherLink) {
         setError(null);
@@ -53,7 +68,7 @@ export default function TeachersPage() {
                 <p className="text-body-secondary mb-0">{t('teachers.intro')}</p>
             </header>
 
-            {error && <Alert>{error}</Alert>}
+            {error && <Alert onRetry={retry}>{error}</Alert>}
             {notice && <Alert type="success">{notice}</Alert>}
             {!teachers && !error && <Skeleton lines={4} label={t('teachers.loading')} />}
             {teachers?.length === 0 && <p>{t('teachers.none')}</p>}

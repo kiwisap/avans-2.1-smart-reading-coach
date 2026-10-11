@@ -72,11 +72,11 @@ Open Chrome DevTools (F12), kies Lighthouse, alleen de categorie Accessibility, 
 
 | Pagina       | Desktop score | Mobiel score | Gevonden punten en oplossing |
 | ------------ | ------------- | ------------ | ---------------------------- |
-| Inloggen     |      100      |     100      |                              |
-| Catalogus    |      100      |     100      |                              |
-| Mijn profiel |      100      |     100      |                              |
-| Advies       |      100      |     100      |                              |
-| Leeslijst    |      100      |     100      |                              |
+| Inloggen     | 100           | 100          |                              |
+| Catalogus    | 100           | 100          |                              |
+| Mijn profiel | 100           | 100          |                              |
+| Advies       | 100           | 100          |                              |
+| Leeslijst    | 100           | 100          |                              |
 
 Elk punt dat Lighthouse noemt, los je op of onderbouw je. Lighthouse gebruikt dezelfde axe engine, dus verwacht geen verrassingen, maar het levert wel de score als bewijs op.
 

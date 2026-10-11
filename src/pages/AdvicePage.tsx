@@ -17,6 +17,7 @@ export default function AdvicePage() {
     const readingList = useReadingList();
     const [suggestions, setSuggestions] = useState<Suggestion[] | null>(null);
     const [error, setError] = useState<ApiError | null>(null);
+    const [reloadKey, setReloadKey] = useState(0); // raised by the retry button
 
     useEffect(() => {
         let cancelled = false;
@@ -31,7 +32,12 @@ export default function AdvicePage() {
         return () => {
             cancelled = true;
         };
-    }, [token, t]);
+    }, [token, t, reloadKey]);
+
+    function retry() {
+        setError(null);
+        setReloadKey((key) => key + 1);
+    }
 
     return (
         <section>
@@ -52,7 +58,7 @@ export default function AdvicePage() {
                     />
                 </Alert>
             )}
-            {error && error.status !== 409 && <Alert>{error.message}</Alert>}
+            {error && error.status !== 409 && <Alert onRetry={retry}>{error.message}</Alert>}
             {readingList.error && <Alert>{readingList.error}</Alert>}
             {readingList.notice && <Alert type="success">{readingList.notice}</Alert>}
 

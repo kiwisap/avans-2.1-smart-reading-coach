@@ -8,12 +8,17 @@
         "required": "(verplicht)",
         "confirm": "Bevestigen",
         "cancel": "Annuleren",
-        "noResults": "Geen resultaten."
+        "noResults": "Geen resultaten.",
+        "retry": "Probeer opnieuw"
     },
     "errors": {
         "generic": "Er is iets misgegaan",
         "serverUnreachable": "De server is niet bereikbaar. Probeer het later opnieuw.",
-        "profileIncomplete": "Het profiel is niet volledig ingevuld"
+        "profileIncomplete": "Het profiel is niet volledig ingevuld",
+        "boundary": {
+            "title": "Er ging iets mis",
+            "text": "Dit scherm kon niet worden getoond. Je gegevens zijn veilig. Probeer het opnieuw of ga terug naar de catalogus."
+        }
     },
     "roles": {
         "student": "Leerling",

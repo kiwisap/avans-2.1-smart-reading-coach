@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ChangeEvent, type SubmitEvent } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { apiFetch, errorMessage } from '../api/client.ts';
 import { useAuth } from '../auth/AuthContext.tsx';
@@ -7,23 +7,16 @@ import Alert from '../components/Alert.tsx';
 import BookCard from '../components/BookCard.tsx';
 import BookGrid from '../components/BookGrid.tsx';
 import Button from '../components/Button.tsx';
+import CatalogSearchForm from '../components/CatalogSearchForm.tsx';
 import Pagination from '../components/Pagination.tsx';
-import MultiComboboxField from '../components/MultiComboboxField.tsx';
 import ShelfIllustration from '../components/ShelfIllustration.tsx';
 import Skeleton from '../components/Skeleton.tsx';
-import { typeLabel } from '../i18n/labels.ts';
-import {
-    EMPTY_FILTERS,
-    MAX_PER_FILTER,
-    useCatalogQuery,
-    type CatalogFilters,
-} from '../hooks/useCatalogQuery.ts';
+import { useCatalogQuery } from '../hooks/useCatalogQuery.ts';
 import { useReadingList } from '../hooks/useReadingList.ts';
 import type { BookFacets, BookPage } from '../types/api.ts';
 import { Trans, useTranslation } from 'react-i18next';
 
 const PAGE_SIZE = 18;
-const SEARCH_DEBOUNCE_MS = 500;
 
 export default function CatalogPage() {
     const { t } = useTranslation();
@@ -31,40 +24,17 @@ export default function CatalogPage() {
     const isStudent = user?.role === 'student';
     const readingList = useReadingList(isStudent);
     const { filters, page, apply, changePage, reset } = useCatalogQuery(); // applied, from the URL
-    const [draft, setDraft] = useState<CatalogFilters>(filters); // what the user is typing
-    const draftRef = useRef(draft); // latest draft, read by the search timer below
     const resultsRef = useRef<HTMLDivElement>(null);
     const [options, setOptions] = useState<BookFacets>({ types: [], levels: [], themes: [] });
     const [result, setResult] = useState<BookPage | null>(null);
     const [error, setError] = useState<string | null>(null);
-
-    // When the URL changes (back button, a followed link) the form follows it.
-    const [syncedFilters, setSyncedFilters] = useState(filters);
-    if (syncedFilters !== filters) {
-        setSyncedFilters(filters);
-        setDraft(filters);
-    }
-
-    useEffect(() => {
-        draftRef.current = draft;
-    }, [draft]);
-
-    // Search as you type: 500 ms after the last keystroke the search text is applied, but only
-    // when it differs from what is already applied.
-    useEffect(() => {
-        if (draft.search.trim() === filters.search) return undefined;
-        const timer = window.setTimeout(() => {
-            const latest = draftRef.current;
-            apply({ ...latest, search: latest.search.trim() });
-        }, SEARCH_DEBOUNCE_MS);
-        return () => window.clearTimeout(timer);
-    }, [draft.search, filters.search, apply]);
+    const [reloadKey, setReloadKey] = useState(0); // raised by the retry button
 
     useEffect(() => {
         apiFetch<BookFacets>('/books/filters', { token })
             .then(setOptions)
             .catch((err: unknown) => setError(errorMessage(err)));
-    }, [token]);
+    }, [token, reloadKey]);
 
     useEffect(() => {
         const params = new URLSearchParams({ page: String(page), limit: String(PAGE_SIZE) });
@@ -85,19 +55,11 @@ export default function CatalogPage() {
         return () => {
             cancelled = true;
         };
-    }, [token, filters, page]);
+    }, [token, filters, page, reloadKey]);
 
-    function updateSearch(event: ChangeEvent<HTMLInputElement>) {
-        setDraft((current) => ({ ...current, search: event.target.value }));
-    }
-
-    function updateList(field: 'types' | 'levels' | 'themes') {
-        return (values: string[]) => setDraft((current) => ({ ...current, [field]: values }));
-    }
-
-    function applyFilters(event: SubmitEvent<HTMLFormElement>) {
-        event.preventDefault();
-        apply({ ...draft, search: draft.search.trim() });
+    function retry() {
+        setError(null);
+        setReloadKey((key) => key + 1);
     }
 
     // Switching page keeps the filters out of view: scroll to the start of the results.
@@ -108,11 +70,6 @@ export default function CatalogPage() {
             behavior: reduceMotion ? 'auto' : 'smooth',
             block: 'start',
         });
-    }
-
-    function resetFilters() {
-        setDraft(EMPTY_FILTERS);
-        reset();
     }
 
     const totalPages = result ? Math.max(1, Math.ceil(result.total / PAGE_SIZE)) : 1;
@@ -140,84 +97,12 @@ export default function CatalogPage() {
                             )}
                         </p>
 
-                        <form onSubmit={applyFilters} role="search">
-                            <div className="hero-search input-group mb-3">
-                                <span className="input-group-text ps-3" aria-hidden="true">
-                                    <i className="bi bi-search" />
-                                </span>
-                                <label htmlFor="catalog-search" className="visually-hidden">
-                                    {t('catalog.searchLabel')}
-                                </label>
-                                <input
-                                    id="catalog-search"
-                                    type="search"
-                                    className="form-control"
-                                    placeholder={t('catalog.searchPlaceholder')}
-                                    maxLength={100}
-                                    value={draft.search}
-                                    onChange={updateSearch}
-                                />
-                                <button type="submit" className="btn btn-primary rounded-pill px-4">
-                                    {t('catalog.search')}
-                                </button>
-                            </div>
-
-                            <div className="row g-2 align-items-start flex-nowrap">
-                                <div className="col-4">
-                                    <MultiComboboxField
-                                        label={t('catalog.filterType')}
-                                        wrapperClassName="mb-0"
-                                        maxSelected={MAX_PER_FILTER}
-                                        emptyText={t('catalog.noTypes')}
-                                        values={draft.types}
-                                        onChange={updateList('types')}
-                                        options={options.types.map((type) => ({
-                                            value: type,
-                                            label: typeLabel(type),
-                                        }))}
-                                    />
-                                </div>
-                                <div className="col-4">
-                                    <MultiComboboxField
-                                        label={t('catalog.filterLevel')}
-                                        wrapperClassName="mb-0"
-                                        maxSelected={MAX_PER_FILTER}
-                                        emptyText={t('catalog.noLevels')}
-                                        values={draft.levels}
-                                        onChange={updateList('levels')}
-                                        options={options.levels.map((level) => ({
-                                            value: level,
-                                            label: level,
-                                        }))}
-                                    />
-                                </div>
-                                <div className="col-4">
-                                    <MultiComboboxField
-                                        label={t('catalog.filterThemes')}
-                                        wrapperClassName="mb-0"
-                                        maxSelected={MAX_PER_FILTER}
-                                        emptyText={t('catalog.noThemes')}
-                                        values={draft.themes}
-                                        onChange={updateList('themes')}
-                                        options={options.themes.map((theme) => ({
-                                            value: theme,
-                                            label: theme,
-                                        }))}
-                                    />
-                                </div>
-                            </div>
-                            <button
-                                type="button"
-                                className="btn btn-link text-nowrap px-0 mt-2"
-                                onClick={resetFilters}
-                            >
-                                <i
-                                    className="bi bi-arrow-counterclockwise me-1"
-                                    aria-hidden="true"
-                                />
-                                {t('catalog.clearAll')}
-                            </button>
-                        </form>
+                        <CatalogSearchForm
+                            filters={filters}
+                            options={options}
+                            onApply={apply}
+                            onReset={reset}
+                        />
                     </div>
                     <div className="col-lg-5 d-none d-lg-block">
                         <ShelfIllustration className="shelf" />
@@ -227,7 +112,7 @@ export default function CatalogPage() {
 
             <div ref={resultsRef} className="results-anchor" />
 
-            {error && <Alert>{error}</Alert>}
+            {error && <Alert onRetry={retry}>{error}</Alert>}
             {readingList.error && <Alert>{readingList.error}</Alert>}
             {readingList.notice && <Alert type="success">{readingList.notice}</Alert>}
 
@@ -258,7 +143,7 @@ export default function CatalogPage() {
                     <h2 className="h4 mt-3">{t('catalog.emptyTitle')}</h2>
                     <p className="text-body-secondary">{t('catalog.emptyHint')}</p>
                     {hasFilters && (
-                        <Button variant="secondary" onClick={resetFilters}>
+                        <Button variant="secondary" onClick={reset}>
                             {t('catalog.clearFilters')}
                         </Button>
                     )}
