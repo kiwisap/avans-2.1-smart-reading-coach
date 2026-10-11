@@ -190,6 +190,8 @@ De sleutels zijn getypeerd (`i18n/i18next.d.ts`): een sleutel die niet in `nl.js
 
 ## Toegankelijkheid en responsive
 
+De aanpak, de uitkomst van de axe scan en de handmatige checklist staan in [docs/accessibility.md](docs/accessibility.md). De scan draait mee met `npm run test:e2e`.
+
 De app is ontworpen tegen WCAG 2.1 niveau A en bruikbaar op desktop en telefoon (het raster wisselt tussen 1, 2 en 3 kolommen en de navigatie klapt in).
 
 - Semantische HTML: `header`, `nav`, `main`, `footer`, een logische kopstructuur en een "Ga naar de hoofdinhoud" link.

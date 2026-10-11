@@ -29,7 +29,11 @@ export default defineConfig({
     projects: [
         { name: 'desktop', use: { ...devices['Desktop Chrome'] } },
         // The same flows on a phone sized screen, because the app must be fully usable there.
-        { name: 'mobile', use: { ...devices['Pixel 7'] }, testMatch: /reading-flow\.spec\.ts/ },
+        {
+            name: 'mobile',
+            use: { ...devices['Pixel 7'] },
+            testMatch: /(reading-flow|accessibility)\.spec\.ts/,
+        },
     ],
     webServer: startServers
         ? [
