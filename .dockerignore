@@ -1,0 +1,22 @@
+# Keep secrets and local files out of the image
+.env
+.env.*
+!.env.example
+
+# Rebuilt inside the image
+node_modules
+dist
+
+# Not needed to build
+.git
+.github
+.gitignore
+.gitattributes
+.editorconfig
+.prettierrc.json
+.prettierignore
+eslint.config.js
+Dockerfile
+.dockerignore
+*.md
+ideas-and-questions.txt
