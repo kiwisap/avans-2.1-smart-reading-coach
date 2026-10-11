@@ -1,6 +1,6 @@
 name: CI/CD
 
-# Every push and pull request is checked. A push to the main branch is deployed to Azure
+# Every push and pull request is checked. A push to the main branch is deployed to Render
 # after all checks are green. Make the "Build, lint and typecheck" and "Dependency scan" checks
 # required in the branch protection rule, so a red pipeline blocks the merge.
 on:
@@ -72,59 +72,49 @@ jobs:
               run: npm audit --audit-level=high
 
     deploy:
-        name: Deploy to Azure
+        name: Deploy to Render
         needs: [check, security]
         if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
         runs-on: ubuntu-latest
         environment: production
-        permissions:
-            id-token: write # lets the job sign in to Azure without a stored password
-            contents: read
         env:
-            ACR_NAME: ${{ vars.ACR_NAME }}
-            RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
-            APP_NAME: ${{ vars.WEB_APP_NAME }}
-            API_APP_NAME: ${{ vars.API_APP_NAME }}
+            # Secret URL of the deploy hook of the Render service (Render: Settings > Deploy Hook).
+            DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+            # Render API key (Account settings > API Keys), only used to read the status of the deploy.
+            RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+            WEB_URL: ${{ vars.WEB_URL }}
         steps:
-            - uses: actions/checkout@v4
-
-            - name: Sign in to Azure
-              uses: azure/login@v2
-              with:
-                  client-id: ${{ vars.AZURE_CLIENT_ID }}
-                  tenant-id: ${{ vars.AZURE_TENANT_ID }}
-                  subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-
-            - name: Sign in to the container registry
-              run: az acr login --name "$ACR_NAME"
-
-            # The frontend needs the address of the API when it is built. It is asked from Azure,
-            # so it never has to be written down here.
-            - name: Find the API address
+            # Auto deploy is switched off in render.yaml, so Render only deploys what this pipeline
+            # has checked. The deploy hook starts a deploy of exactly this commit.
+            - name: Start the deploy
               run: |
-                  API_FQDN=$(az containerapp show --name "$API_APP_NAME" --resource-group "$RESOURCE_GROUP" \
-                      --query properties.configuration.ingress.fqdn --output tsv)
-                  echo "VITE_API_URL=https://$API_FQDN/api" >> "$GITHUB_ENV"
+                  RESPONSE=$(curl --fail --silent --show-error --request POST \
+                      "${DEPLOY_HOOK_URL}&ref=${GITHUB_SHA}")
+                  echo "$RESPONSE"
+                  echo "DEPLOY_ID=$(echo "$RESPONSE" | jq --raw-output '.deploy.id')" >> "$GITHUB_ENV"
+                  # The service id is part of the hook URL: https://api.render.com/deploy/srv-xxxx?key=...
+                  echo "SERVICE_ID=$(echo "$DEPLOY_HOOK_URL" | sed -E 's#.*/deploy/(srv-[^?]+).*#\1#')" >> "$GITHUB_ENV"
 
-            - name: Build and push the image
+            # Wait until Render says the new version is live (or the build failed).
+            - name: Wait for the deploy
               run: |
-                  IMAGE="$ACR_NAME.azurecr.io/$IMAGE_NAME"
-                  docker build --build-arg VITE_API_URL="$VITE_API_URL" \
-                      --tag "$IMAGE:${{ github.sha }}" --tag "$IMAGE:latest" .
-                  docker push "$IMAGE:${{ github.sha }}"
-                  docker push "$IMAGE:latest"
+                  for attempt in $(seq 1 60); do
+                      STATUS=$(curl --fail --silent --show-error \
+                          --header "Authorization: Bearer $RENDER_API_KEY" \
+                          "https://api.render.com/v1/services/$SERVICE_ID/deploys/$DEPLOY_ID" \
+                          | jq --raw-output '.status')
+                      echo "Deploy status: $STATUS"
+                      case "$STATUS" in
+                          live) exit 0 ;;
+                          build_failed | update_failed | pre_deploy_failed | canceled | deactivated) exit 1 ;;
+                      esac
+                      sleep 15
+                  done
+                  echo "The deploy took longer than 15 minutes" && exit 1
 
-            - name: Deploy the new revision
-              run: |
-                  az containerapp update \
-                      --name "$APP_NAME" \
-                      --resource-group "$RESOURCE_GROUP" \
-                      --image "$ACR_NAME.azurecr.io/$IMAGE_NAME:${{ github.sha }}"
-
+            # The site itself must answer.
             - name: Smoke test
               run: |
-                  FQDN=$(az containerapp show --name "$APP_NAME" --resource-group "$RESOURCE_GROUP" \
-                      --query properties.configuration.ingress.fqdn --output tsv)
-                  echo "Checking https://$FQDN/"
+                  echo "Checking ${WEB_URL}/"
                   curl --fail --silent --show-error --retry 12 --retry-delay 10 --retry-all-errors \
-                      --output /dev/null "https://$FQDN/"
+                      --output /dev/null "${WEB_URL}/"

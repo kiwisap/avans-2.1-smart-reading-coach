@@ -128,11 +128,13 @@ De volledige architectuur en de ERD staan in de README van de backend.
 
 ## CI/CD en deployment
 
-De pipeline staat in `.github/workflows/ci-cd.yml` en draait bij elke push en pull request: installeren met `npm ci`, typecheck, ESLint, Prettier controle, productiebuild en een Docker build, plus een `npm audit` op ernstige kwetsbaarheden. Op `main` volgt daarna de deploy naar Azure Container Apps, met een smoke test op de startpagina. Het adres van de API wordt tijdens de deploy uit Azure gehaald en bij het bouwen in de image gezet (`VITE_API_URL`), omdat Vite het in de JavaScript bakt.
+De pipeline staat in `.github/workflows/ci-cd.yml` en draait bij elke push en pull request: installeren met `npm ci`, typecheck, ESLint, Prettier controle, productiebuild en een Docker build, plus een `npm audit` op ernstige kwetsbaarheden. Op `main` volgt daarna de deploy naar Render: een deploy hook start de build van precies die commit, de pipeline wacht tot Render meldt dat hij live is en doet een smoke test op de startpagina.
 
-De image bestaat uit twee stappen: Vite bouwt de statische bestanden en nginx (`nginx.conf`, met beveiligingsheaders en een Content Security Policy) serveert ze op poort 8080. De Azure omgeving richt je eenmalig in met `deploy/azure-setup.sh` in de backend repository, daar staat ook de uitleg over de variabelen die in de GitHub environment `production` horen.
+De website draait als _static site_ op Render (gratis, slaapt nooit). `render.yaml` beschrijft de build (`npm ci && npm run build`), het doorsturen van alle paden naar `index.html` voor React Router en de beveiligingsheaders. Het adres van de API staat in de Render variabele `VITE_API_URL`, omdat Vite het tijdens het bouwen in de JavaScript bakt. De API, de databases en de stappen om alles eenmalig in te richten staan in de README van de backend.
 
-Lokaal proberen: `docker build --build-arg VITE_API_URL=http://localhost:3000/api -t smart-reading-coach .`
+In de GitHub environment `production` van deze repository horen de secrets `RENDER_DEPLOY_HOOK_URL` en `RENDER_API_KEY` en de variabele `WEB_URL` (het adres van de website).
+
+Daarnaast bevat de repository een `Dockerfile` met nginx, voor wie de site als container wil draaien: `docker build --build-arg VITE_API_URL=http://localhost:3000/api -t smart-reading-coach .`
 
 ## Vormgeving
 

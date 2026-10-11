@@ -1,0 +1,40 @@
+# Render Blueprint: the website as a static site. Static sites are free and never sleep.
+services:
+    - type: web
+      runtime: static
+      name: smart-reading-coach
+      buildCommand: npm ci && npm run build
+      staticPublishPath: ./dist
+      # The GitHub Actions pipeline starts every deploy (deploy hook), after the checks are green.
+      autoDeployTrigger: off
+      envVars:
+          - key: NODE_VERSION
+            value: '24'
+          # Vite puts this address in the JavaScript while building, for example
+          # https://smart-reading-coach-api.onrender.com/api
+          - key: VITE_API_URL
+            sync: false
+      routes:
+          # Every address is a route of the app (React Router), so unknown paths get index.html.
+          - type: rewrite
+            source: /*
+            destination: /index.html
+      headers:
+          - path: /*
+            name: X-Content-Type-Options
+            value: nosniff
+          - path: /*
+            name: X-Frame-Options
+            value: DENY
+          - path: /*
+            name: Referrer-Policy
+            value: strict-origin-when-cross-origin
+          - path: /*
+            name: Permissions-Policy
+            value: camera=(), microphone=(), geolocation=()
+          - path: /*
+            name: Content-Security-Policy
+            value: "default-src 'self'; connect-src 'self' https://*.onrender.com http://localhost:3000; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+          - path: /assets/*
+            name: Cache-Control
+            value: public, max-age=31536000, immutable
