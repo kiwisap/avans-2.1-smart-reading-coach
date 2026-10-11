@@ -7,7 +7,13 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default defineConfig([
-    globalIgnores(['dist', 'node_modules', 'src/api/schema.d.ts']),
+    globalIgnores([
+        'dist',
+        'node_modules',
+        'src/api/schema.d.ts',
+        'test-results',
+        'playwright-report',
+    ]),
 
     {
         files: ['**/*.{ts,tsx}'],

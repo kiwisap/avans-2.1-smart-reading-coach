@@ -57,6 +57,33 @@ Vite leest deze waarde bij het starten en bouwen. Pas je hem aan, herstart dan `
 | `npm run lint`, `npm run lint:fix`       | ESLint draaien, eventueel met automatische fixes  |
 | `npm run format`, `npm run format:check` | Prettier toepassen of controleren                 |
 | `npm run check`                          | Typecheck, lint en formatcontrole in één keer     |
+| `npm run test:e2e`                       | End to end tests met Playwright (zie hieronder)   |
+
+## End to end tests
+
+De tests in `e2e/` sturen een echte browser (Chromium) aan tegen de echte frontend, API en databases. Ze testen wat de gebruiker doet, niet de losse onderdelen.
+
+| Bestand                    | Wat het afdekt                                                                                              | Waarom dit                                                           |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `e2e/reading-flow.spec.ts` | Registreren, profiel invullen en opslaan, advies bekijken, titel bewaren, als gelezen markeren, verwijderen | De kernflow: hier bestaat de applicatie voor (ook op mobiel formaat) |
+| `e2e/auth.spec.ts`         | Beveiligde routes, fout bij verkeerd wachtwoord, rolbewaking via de URL, onbekende pagina                   | Zonder inloggen en rollen is niets anders veilig                     |
+| `e2e/teacher.spec.ts`      | Leerling koppelt aan docent, docent ziet profiel, niet gekoppelde leerling blijft onzichtbaar               | Privacy: een docent ziet alleen eigen leerlingen                     |
+
+Elke test maakt zijn eigen gebruiker aan met een uniek e-mailadres, dus de tests hangen niet van elkaar af en je kunt ze herhaald draaien zonder de database op te schonen.
+
+### Draaien
+
+1. Start de databases en maak de gegevens klaar in de API repository: `docker compose up -d`, daarna `npm run db:migrate`, `npm run db:seed` en `npm run import:catalog`.
+2. Eenmalig in deze repository: `npm install` en `npx playwright install chromium`.
+3. `npm run test:e2e`. Playwright start de frontend en de API zelf als ze nog niet draaien.
+
+Handig: `npm run test:e2e:ui` voor een interactieve weergave en `npm run test:e2e:report` voor het HTML rapport na een run.
+
+De docentaccount komt uit de seed (`teacher@example.com`). Heeft die een ander wachtwoord, zet dan `E2E_TEACHER_PASSWORD` (en eventueel `E2E_TEACHER_EMAIL` en `E2E_TEACHER_NAME`). Met `E2E_BASE_URL=https://...` test je een gedeployde frontend; dan worden er geen servers gestart.
+
+### Teststrategie
+
+Wat wel getest wordt: de flows waar uitval het meest schaadt (profiel, advies, leeslijst, inloggen, privacy van de docentweergave). Wat niet: alle filtercombinaties van de catalogus en uiterlijke details, omdat die weinig risico hebben en de tests traag en breekbaar zouden maken. De adviesregels zelf zijn in de backend met unit tests afgedekt, de e2e test controleert alleen dat de keten van scherm tot database samenwerkt. Deze tests draaien bewust nog niet in de CI: ze hebben databases met catalogusdata nodig.
 
 ## Pagina's en toegang
 

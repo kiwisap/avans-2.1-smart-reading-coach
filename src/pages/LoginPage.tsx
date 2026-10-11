@@ -18,7 +18,10 @@ export default function LoginPage() {
     const [error, setError] = useState<string | null>(null);
     const [submitting, setSubmitting] = useState(false);
 
-    if (user) return <Navigate to="/" replace />;
+    // Where the route guard sent the visitor from. Also used when the session appears first.
+    const from = (location.state as { from?: string } | null)?.from;
+
+    if (user) return <Navigate to={from ?? '/'} replace />;
 
     async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -26,7 +29,6 @@ export default function LoginPage() {
         setSubmitting(true);
         try {
             await login(email, password);
-            const from = (location.state as { from?: string } | null)?.from;
             navigate(from ?? '/', { replace: true });
         } catch (err) {
             setError(errorMessage(err));
