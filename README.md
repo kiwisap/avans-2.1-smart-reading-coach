@@ -47,15 +47,16 @@ Vite leest deze waarde bij het starten en bouwen. Pas je hem aan, herstart dan `
 
 ## Scripts
 
-| Script                                   | Doel                                             |
-| ---------------------------------------- | ------------------------------------------------ |
-| `npm run dev`                            | Ontwikkelserver met direct herladen              |
-| `npm run build`                          | Typecheck en productiebuild naar de map `dist`   |
-| `npm run preview`                        | De productiebuild lokaal bekijken                |
-| `npm run typecheck`                      | Types controleren                                |
-| `npm run lint`, `npm run lint:fix`       | ESLint draaien, eventueel met automatische fixes |
-| `npm run format`, `npm run format:check` | Prettier toepassen of controleren                |
-| `npm run check`                          | Typecheck, lint en formatcontrole in één keer    |
+| Script                                   | Doel                                              |
+| ---------------------------------------- | ------------------------------------------------- |
+| `npm run dev`                            | Ontwikkelserver met direct herladen               |
+| `npm run build`                          | Typecheck en productiebuild naar de map `dist`    |
+| `npm run preview`                        | De productiebuild lokaal bekijken                 |
+| `npm run typecheck`                      | Types controleren                                 |
+| `npm run api:types`                      | Types genereren uit `openapi.json` van de backend |
+| `npm run lint`, `npm run lint:fix`       | ESLint draaien, eventueel met automatische fixes  |
+| `npm run format`, `npm run format:check` | Prettier toepassen of controleren                 |
+| `npm run check`                          | Typecheck, lint en formatcontrole in één keer     |
 
 ## Pagina's en toegang
 
@@ -82,16 +83,36 @@ src/
     components/          herbruikbare onderdelen (knoppen, formuliervelden, kaarten, layout)
     hooks/               eigen hooks: useReadingList, useCatalogQuery
     auth/                AuthContext (sessie en token) en ProtectedRoute
-    api/                 client.ts: één functie om de API aan te roepen
+    api/                 client.ts: één functie om de API aan te roepen, schema.d.ts: gegenereerde types
     profile/             logica van het profielformulier: validatie en concept bewaren
     constants/           pictogrammen en kleuren per soort tekst
     i18n/                i18next instellen (index.ts), typering van de sleutels en labels voor API waarden
     locales/             nl.json: alle teksten die een gebruiker ziet
-    types/               typen van de API antwoorden
+    types/               api.ts: de API typen onder korte namen (komen uit api/schema.d.ts)
     styles/              main.scss: kleuren, lettertypes en eigen stijlen
 ```
 
 ## Architectuur
+
+```mermaid
+flowchart LR
+    subgraph FE["Frontend: React 19, Vite"]
+        direction TB
+        P["Pagina's<br/>React Router"]
+        C["Componenten en hooks"]
+        A["api/client.ts<br/>apiFetch, ApiError"]
+        T["types/api.ts<br/>gegenereerd uit OpenAPI"]
+        P --> C --> A
+        T -.-> A
+    end
+    BE["Backend: Fastify API<br/>smart-reading-coach-api"]
+    A -- "REST, JSON, Bearer token" --> BE
+    BE -. "openapi.json" .-> T
+```
+
+De volledige architectuur en de ERD staan in de README van de backend.
+
+**Contract met de backend.** De types van de API worden niet met de hand geschreven. `npm run api:types` leest `../smart-reading-coach-api/openapi.json` en schrijft `src/api/schema.d.ts`. `types/api.ts` geeft die types onder korte namen door (`Book`, `ReadingListItem` en andere), zodat de rest van de code er niets van merkt. Verandert de backend een veld, dan draai je `npm run api:types` en laat de compiler zien welke plekken in de frontend mee moeten. Het gegenereerde bestand wordt niet met de hand bewerkt en staat in `.prettierignore` en de ESLint ignore.
 
 **Pagina's en componenten.** Een pagina haalt data op en zet het scherm in elkaar. Herbruikbare onderdelen staan in `components/` en bevatten geen eigen dataverkeer. Zo bestaat elke knop, elk formulierveld en elke boekkaart maar één keer (`Button`, `TextField`, `SelectField`, `BookCard`, `Alert`, `Skeleton`, `Pagination` en meer). Wil je iets aan de stijl van alle knoppen veranderen, dan doe je dat op één plek.
 
