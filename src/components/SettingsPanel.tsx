@@ -4,8 +4,9 @@ import { apiFetch, errorMessage } from '../api/client.ts';
 import { useAuth } from '../auth/AuthContext.tsx';
 import type { ReadingProfile, User } from '../types/api.ts';
 import Alert from './Alert.tsx';
+import BoSays from './BoSays.tsx';
 import Button from './Button.tsx';
-import Mascot from './Mascot.tsx';
+import DeleteAccountDialog from './DeleteAccountDialog.tsx';
 import TextField from './TextField.tsx';
 import { useTranslation } from 'react-i18next';
 
@@ -19,9 +20,12 @@ interface Notice {
     text: string;
 }
 
+type Form = 'name' | 'email' | 'password';
 type AiStatus = 'ok' | 'unavailable' | 'disabled' | 'unknown';
 
-// A small form inside a collapsible section, with its own message.
+const BO_POINTS = ['learned', 'private', 'wrong', 'teacher', 'fallback'] as const;
+
+// A small form inside a collapsible section.
 function SettingSection({
     title,
     current,
@@ -51,8 +55,9 @@ function SettingSection({
 }
 
 // Settings of the logged in user as a panel on the right: reading profile (with Bo), name, email,
-// password, logging out and information about the app. A native <dialog>, so it traps the focus,
-// closes on Escape and gives the focus back to the button that opened it.
+// password, logging out, what Bo is, information about the app and removing the account.
+// A native <dialog>, so it traps the focus, closes on Escape and gives the focus back.
+// Layout mounts it again on every opening, so the forms always start fresh.
 export default function SettingsPanel({ open, onClose }: SettingsPanelProps) {
     const { t, i18n } = useTranslation();
     const { token, user, logout, updateUser } = useAuth();
@@ -63,17 +68,17 @@ export default function SettingsPanel({ open, onClose }: SettingsPanelProps) {
     const [profile, setProfile] = useState<ReadingProfile | null | undefined>(undefined);
     const [aiStatus, setAiStatus] = useState<AiStatus>('unknown');
 
-    // The panel is mounted again on every opening (see Layout), so these start fresh.
-    const [name, setName] = useState(user?.name ?? '');
+    const [firstName, setFirstName] = useState(user?.firstName ?? '');
+    const [infix, setInfix] = useState(user?.infix ?? '');
+    const [lastName, setLastName] = useState(user?.lastName ?? '');
     const [email, setEmail] = useState(user?.email ?? '');
     const [emailPassword, setEmailPassword] = useState('');
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [repeatPassword, setRepeatPassword] = useState('');
-    const [busy, setBusy] = useState<'name' | 'email' | 'password' | null>(null);
-    const [notices, setNotices] = useState<Partial<Record<'name' | 'email' | 'password', Notice>>>(
-        {},
-    );
+    const [busy, setBusy] = useState<Form | null>(null);
+    const [notices, setNotices] = useState<Partial<Record<Form, Notice>>>({});
+    const [deleteOpen, setDeleteOpen] = useState(false);
 
     const isStudent = user?.role === 'student';
 
@@ -82,6 +87,13 @@ export default function SettingsPanel({ open, onClose }: SettingsPanelProps) {
         if (!dialog) return;
         if (open && !dialog.open) dialog.showModal();
         if (!open && dialog.open) dialog.close();
+    }, [open]);
+
+    // The page behind the panel does not scroll while the panel is open.
+    useEffect(() => {
+        if (!open) return undefined;
+        document.documentElement.classList.add('scroll-locked');
+        return () => document.documentElement.classList.remove('scroll-locked');
     }, [open]);
 
     // A click on the dark backdrop (the dialog element itself, outside the panel) closes it.
@@ -125,7 +137,7 @@ export default function SettingsPanel({ open, onClose }: SettingsPanelProps) {
 
     if (!user) return null;
 
-    function notify(form: 'name' | 'email' | 'password', notice: Notice) {
+    function notify(form: Form, notice: Notice) {
         setNotices((current) => ({ ...current, [form]: notice }));
     }
 
@@ -149,7 +161,11 @@ export default function SettingsPanel({ open, onClose }: SettingsPanelProps) {
 
     function handleName(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault();
-        void saveAccount('name', { name: name.trim() }, t('settings.account.nameSaved'));
+        void saveAccount(
+            'name',
+            { firstName: firstName.trim(), infix: infix.trim(), lastName: lastName.trim() },
+            t('settings.account.nameSaved'),
+        );
     }
 
     function handleEmail(event: SubmitEvent<HTMLFormElement>) {
@@ -200,11 +216,11 @@ export default function SettingsPanel({ open, onClose }: SettingsPanelProps) {
         dateStyle: 'long',
         timeStyle: 'short',
     });
-    const aiText = {
-        ok: t('settings.about.aiOk'),
-        unavailable: t('settings.about.aiUnavailable'),
-        disabled: t('settings.about.aiDisabled'),
-        unknown: t('settings.about.aiUnknown'),
+    const boStatus = {
+        ok: t('settings.bo.online'),
+        unavailable: t('settings.bo.offline'),
+        disabled: t('settings.bo.disabled'),
+        unknown: t('settings.bo.unknown'),
     }[aiStatus];
 
     return (
@@ -220,7 +236,8 @@ export default function SettingsPanel({ open, onClose }: SettingsPanelProps) {
             <div className="settings-inner">
                 <header className="settings-header">
                     <span className="avatar avatar-lg" aria-hidden="true">
-                        {user.name.charAt(0).toUpperCase()}
+                        {user.firstName.charAt(0).toUpperCase() ||
+                            user.name.charAt(0).toUpperCase()}
                     </span>
                     <div className="flex-grow-1 min-w-0">
                         <h2 id={titleId} className="h5 mb-0 text-truncate">
@@ -244,16 +261,17 @@ export default function SettingsPanel({ open, onClose }: SettingsPanelProps) {
                             <h3 id={`${titleId}-profile`} className="settings-heading">
                                 {t('settings.profile.heading')}
                             </h3>
-                            <div className="settings-bo">
-                                <Mascot mood={profile ? 'happy' : 'wave'} size={72} />
-                                <p className="speech-bubble speech-bubble-sm mb-0">
-                                    {profile === undefined
-                                        ? t('settings.profile.loading')
-                                        : profile
-                                          ? t('settings.profile.filledBubble')
-                                          : t('settings.profile.emptyBubble')}
-                                </p>
-                            </div>
+                            <BoSays
+                                mood={profile ? 'happy' : 'wave'}
+                                size={72}
+                                className="bo-says-sm"
+                            >
+                                {profile === undefined
+                                    ? t('settings.profile.loading')
+                                    : profile
+                                      ? t('settings.profile.filledBubble')
+                                      : t('settings.profile.emptyBubble')}
+                            </BoSays>
                             {profile && (
                                 <ul
                                     className="list-unstyled d-flex flex-wrap gap-1 mt-3 mb-0"
@@ -307,12 +325,28 @@ export default function SettingsPanel({ open, onClose }: SettingsPanelProps) {
                             )}
                             <form onSubmit={handleName}>
                                 <TextField
-                                    label={t('settings.account.name')}
-                                    autoComplete="name"
+                                    label={t('settings.account.firstName')}
+                                    autoComplete="given-name"
                                     required
-                                    maxLength={100}
-                                    value={name}
-                                    onChange={(event) => setName(event.target.value)}
+                                    maxLength={60}
+                                    value={firstName}
+                                    onChange={(event) => setFirstName(event.target.value)}
+                                />
+                                <TextField
+                                    label={t('settings.account.infix')}
+                                    autoComplete="additional-name"
+                                    maxLength={20}
+                                    hint={t('settings.account.infixHint')}
+                                    value={infix}
+                                    onChange={(event) => setInfix(event.target.value)}
+                                />
+                                <TextField
+                                    label={t('settings.account.lastName')}
+                                    autoComplete="family-name"
+                                    required
+                                    maxLength={80}
+                                    value={lastName}
+                                    onChange={(event) => setLastName(event.target.value)}
                                 />
                                 <Button type="submit" size="sm" disabled={busy === 'name'}>
                                     {busy === 'name'
@@ -403,13 +437,39 @@ export default function SettingsPanel({ open, onClose }: SettingsPanelProps) {
                         </SettingSection>
 
                         <Button
-                            variant="outline-danger"
+                            variant="secondary"
                             icon="bi-box-arrow-right"
                             className="w-100 mt-3"
                             onClick={handleLogout}
                         >
                             {t('nav.logout')}
                         </Button>
+                    </section>
+
+                    {/* Transparency (AI Act): what Bo is, what Bo uses and what Bo cannot do. */}
+                    <section aria-labelledby={`${titleId}-bo`} className="settings-block">
+                        <h3 id={`${titleId}-bo`} className="settings-heading">
+                            {t('settings.bo.heading')}
+                        </h3>
+                        <div className="bo-disclaimer">
+                            <p className="fw-semibold mb-2">
+                                <i className="bi bi-cpu me-2" aria-hidden="true" />
+                                {t('settings.bo.intro')}
+                            </p>
+                            <ul className="mb-3">
+                                {BO_POINTS.map((point) => (
+                                    <li key={point}>{t(`settings.bo.points.${point}`)}</li>
+                                ))}
+                            </ul>
+                            <p className="small mb-0">
+                                <span className="fw-semibold">{t('settings.bo.status')}: </span>
+                                <i
+                                    className={`bi ${aiStatus === 'ok' ? 'bi-circle-fill text-success' : 'bi-circle text-secondary'} mx-1 small`}
+                                    aria-hidden="true"
+                                />
+                                {boStatus}
+                            </p>
+                        </div>
                     </section>
 
                     <section
@@ -419,7 +479,7 @@ export default function SettingsPanel({ open, onClose }: SettingsPanelProps) {
                         <h3 id={`${titleId}-about`} className="settings-heading">
                             {t('settings.about.heading')}
                         </h3>
-                        <dl className="mb-2">
+                        <dl className="mb-0">
                             <div>
                                 <dt>{t('settings.about.version')}</dt>
                                 <dd>{__APP_VERSION__}</dd>
@@ -434,21 +494,26 @@ export default function SettingsPanel({ open, onClose }: SettingsPanelProps) {
                                     <code>{__GIT_COMMIT__}</code>
                                 </dd>
                             </div>
-                            <div>
-                                <dt>{t('settings.about.ai')}</dt>
-                                <dd>
-                                    <i
-                                        className={`bi ${aiStatus === 'ok' ? 'bi-circle-fill text-success' : 'bi-circle text-secondary'} me-1 small`}
-                                        aria-hidden="true"
-                                    />
-                                    {aiText}
-                                </dd>
-                            </div>
                         </dl>
-                        <p className="small text-body-secondary mb-0">{t('settings.about.text')}</p>
+                    </section>
+
+                    <section aria-labelledby={`${titleId}-delete`} className="settings-block">
+                        <h3 id={`${titleId}-delete`} className="settings-heading text-danger">
+                            {t('settings.delete.heading')}
+                        </h3>
+                        <Button
+                            variant="outline-danger"
+                            icon="bi-trash3"
+                            className="w-100"
+                            onClick={() => setDeleteOpen(true)}
+                        >
+                            {t('settings.delete.button')}
+                        </Button>
                     </section>
                 </div>
             </div>
+
+            <DeleteAccountDialog open={deleteOpen} onClose={() => setDeleteOpen(false)} />
         </dialog>
     );
 }

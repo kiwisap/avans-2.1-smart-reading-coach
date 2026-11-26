@@ -1066,28 +1066,6 @@ $navbar-light-active-color: $forest;
     color: $secondary;
 }
 
-.settings-bo {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-
-    .mascot {
-        flex-shrink: 0;
-    }
-}
-
-.speech-bubble-sm {
-    padding: 0.65rem 0.85rem;
-    font-size: 0.9rem;
-    border-radius: 1rem;
-
-    &::before {
-        width: 0.9rem;
-        height: 0.9rem;
-        left: -0.55rem;
-    }
-}
-
 .setting-section {
     background: $paper-card;
     border: 1px solid $border-color;
@@ -1167,5 +1145,110 @@ $navbar-light-active-color: $forest;
     .setting-chevron {
         animation: none;
         transition: none;
+    }
+}
+
+// The page behind the settings panel does not scroll while it is open.
+html.scroll-locked {
+    overflow: hidden;
+    scrollbar-gutter: stable;
+}
+
+// Bo, the AI, with a speech bubble ------------------------------------------------------------
+
+.bo-says {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .mascot {
+        flex-shrink: 0;
+    }
+
+    .speech-bubble {
+        flex-grow: 1;
+        min-width: 0;
+    }
+}
+
+.bo-says-sm {
+    gap: 0.75rem;
+
+    .speech-bubble {
+        padding: 0.65rem 0.85rem;
+        font-size: 0.9rem;
+        border-radius: 1rem;
+
+        &::before {
+            width: 0.9rem;
+            height: 0.9rem;
+            left: -0.55rem;
+        }
+    }
+}
+
+.hero-bo {
+    position: relative;
+
+    .bo-says {
+        position: relative;
+        z-index: 1;
+    }
+}
+
+.hero-bo-shelf {
+    margin-top: -1.5rem;
+    opacity: 0.55;
+}
+
+.bo-disclaimer {
+    padding: 1rem;
+    background: rgba($ocean, 0.08);
+    border-left: 4px solid $ocean;
+    border-radius: 0.25rem $border-radius $border-radius 0.25rem;
+    font-size: 0.9rem;
+
+    ul {
+        padding-left: 1.1rem;
+    }
+
+    li + li {
+        margin-top: 0.3rem;
+    }
+}
+
+.delete-dialog {
+    width: min(32rem, calc(100% - 2rem));
+}
+
+.delete-icon {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: rgba($terracotta, 0.12);
+    color: $terracotta;
+    font-size: 1.4rem;
+}
+
+.delete-consequences {
+    padding-left: 1.1rem;
+
+    li + li {
+        margin-top: 0.25rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .bo-says:not(.bo-says-sm) {
+        flex-direction: column;
+        text-align: center;
+
+        .speech-bubble::before {
+            left: 50%;
+            top: -0.7rem;
+            transform: translateX(-50%) rotate(135deg);
+        }
     }
 }

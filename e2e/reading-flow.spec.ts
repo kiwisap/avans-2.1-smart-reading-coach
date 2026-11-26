@@ -9,13 +9,13 @@ test.describe('profile, advice and reading list', () => {
 
         // Advice without a profile points the student to the profile page.
         await openFromMenu(page, 'Advies');
-        await expect(page.getByRole('link', { name: 'Ga naar je leesprofiel' })).toBeVisible();
+        await expect(page.getByRole('link', { name: 'Leesprofiel invullen met Bo' })).toBeVisible();
 
         await fillAndSaveProfile(page);
 
         await page.getByRole('link', { name: 'Bekijk je leesadvies' }).click();
         await expect(page).toHaveURL(/\/advice$/);
-        await expect(page.getByRole('heading', { name: 'Jouw leesadvies' })).toBeVisible();
+        await expect(page.getByRole('heading', { name: 'Bo’s leesadvies' })).toBeVisible();
         await expect(
             page.getByRole('status').filter({ hasText: 'suggesties op basis van' }),
         ).toBeVisible();

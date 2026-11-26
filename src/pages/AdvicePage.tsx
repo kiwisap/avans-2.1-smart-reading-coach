@@ -4,6 +4,8 @@ import { ApiError, apiFetch } from '../api/client.ts';
 import { useAuth } from '../auth/AuthContext.tsx';
 import AddToListButton from '../components/AddToListButton.tsx';
 import Alert from '../components/Alert.tsx';
+import BoSays from '../components/BoSays.tsx';
+import type { MascotMood } from '../components/Mascot.tsx';
 import BookCard from '../components/BookCard.tsx';
 import BookGrid from '../components/BookGrid.tsx';
 import Skeleton from '../components/Skeleton.tsx';
@@ -40,6 +42,14 @@ export default function AdvicePage() {
     }
 
     const suggestions = advice?.suggestions;
+    const noProfile = error?.status === 409;
+
+    // What Bo says depends on the state of the advice.
+    let bo: { mood: MascotMood; text: string } = { mood: 'think', text: t('advice.boLoading') };
+    if (noProfile) bo = { mood: 'wave', text: t('advice.boNoProfile') };
+    else if (error) bo = { mood: 'think', text: t('advice.boError') };
+    else if (advice?.source === 'ai') bo = { mood: 'happy', text: t('advice.boAi') };
+    else if (advice) bo = { mood: 'think', text: t('advice.boRules') };
 
     return (
         <section>
@@ -51,16 +61,17 @@ export default function AdvicePage() {
                 <p className="text-body-secondary mb-0">{t('advice.intro')}</p>
             </header>
 
-            {error?.status === 409 && (
-                <Alert type="info">
-                    <Trans
-                        i18nKey="advice.goToProfile"
-                        values={{ message: error.message }}
-                        components={{ profile: <Link to="/profile" /> }}
-                    />
-                </Alert>
-            )}
-            {error && error.status !== 409 && <Alert onRetry={retry}>{error.message}</Alert>}
+            <BoSays mood={bo.mood} live className="mb-4">
+                <p className="mb-0">{bo.text}</p>
+                {noProfile && (
+                    <Link to="/welcome" className="btn btn-accent btn-sm mt-2">
+                        <i className="bi bi-controller me-2" aria-hidden="true" />
+                        {t('advice.startProfile')}
+                    </Link>
+                )}
+            </BoSays>
+
+            {error && !noProfile && <Alert onRetry={retry}>{error.message}</Alert>}
             {readingList.error && <Alert>{readingList.error}</Alert>}
             {readingList.notice && <Alert type="success">{readingList.notice}</Alert>}
 
@@ -74,16 +85,13 @@ export default function AdvicePage() {
                         <Trans
                             i18nKey="advice.count"
                             count={suggestions.length}
-                            components={{ profile: <Link to="/profile" /> }}
+                            components={{ profile: <Link to="/welcome" /> }}
                         />
                     </p>
-                    {/* Transparency: the student can see whether an AI model made the advice. */}
+                    {/* Transparency (AI Act): the student knows an AI chose these titles. */}
                     <p className="advice-source small text-body-secondary mb-3">
-                        <i
-                            className={`bi ${advice.source === 'ai' ? 'bi-cpu' : 'bi-list-check'} me-1`}
-                            aria-hidden="true"
-                        />
-                        {advice.source === 'ai' ? t('advice.sourceAi') : t('advice.sourceRules')}
+                        <i className="bi bi-cpu me-1" aria-hidden="true" />
+                        {t('advice.disclaimer')}
                     </p>
                     <BookGrid>
                         {suggestions.map((book) => (

@@ -29,7 +29,7 @@
         "mainMenu": "Hoofdmenu",
         "toggleMenu": "Menu in- of uitklappen",
         "catalog": "Catalogus",
-        "advice": "Advies",
+        "advice": "Advies van Bo",
         "readingList": "Leeslijst",
         "profile": "Mijn profiel",
         "teachers": "Mijn docenten",
@@ -57,7 +57,10 @@
         "register": {
             "title": "Account aanmaken",
             "subtitle": "Het duurt maar een minuutje. Daarna kunnen we adviseren.",
-            "name": "Naam",
+            "firstName": "Voornaam",
+            "infix": "Tussenvoegsel",
+            "infixHint": "Bijvoorbeeld \"van\" of \"de\". Mag leeg blijven.",
+            "lastName": "Achternaam",
             "passwordHint": "Minimaal 8 tekens",
             "submit": "Registreren",
             "submitting": "Account aanmaken...",
@@ -67,7 +70,7 @@
     "catalog": {
         "eyebrow": "Vrij lezen op maat",
         "heading": "Vind je volgende leestip",
-        "heroStudent": "Hoi {{name}}! Zoek in de catalogus, of <advice>laat ons iets voor je uitkiezen</advice>.",
+        "heroStudent": "Hoi {{name}}! Zoek zelf in de catalogus, of <advice>laat Bo iets voor je uitkiezen</advice>.",
         "heroTeacher": "Zoek in de catalogus met boeken, artikelen en meer.",
         "searchLabel": "Zoek op titel, auteur of thema",
         "searchPlaceholder": "Titel, auteur of thema",
@@ -84,7 +87,9 @@
         "results_other": "{{count}} resultaten",
         "loadingCatalog": "Catalogus laden",
         "emptyTitle": "Niets gevonden",
-        "emptyHint": "Probeer andere woorden of haal een filter weg."
+        "emptyHint": "Probeer andere woorden of haal een filter weg.",
+        "boBubble": "Geen idee wat je wilt lezen? Ik zoek iets uit dat bij jou past!",
+        "boLink": "Vraag Bo om advies"
     },
     "combobox": {
         "all": "Alle",
@@ -142,7 +147,7 @@
         "title": "Mijn leeslijst",
         "loading": "Leeslijst laden",
         "emptyTitle": "Je leeslijst is leeg",
-        "emptyHint": "Voeg titels toe vanuit de <catalog>catalogus</catalog> of vanuit je <advice>leesadvies</advice>.",
+        "emptyHint": "Voeg titels toe vanuit de <catalog>catalogus</catalog> of laat <advice>Bo iets voor je uitkiezen</advice>.",
         "progress": "{{read}} van de {{total}} titels gelezen",
         "progressLabel": "Leesvoortgang",
         "markRead": "Gelezen",
@@ -155,14 +160,18 @@
         "removed": "\"{{title}}\" is van je leeslijst verwijderd."
     },
     "advice": {
-        "title": "Jouw leesadvies",
-        "intro": "Titels die passen bij je leesprofiel, met een korte reden erbij.",
-        "goToProfile": "{{message}}. <profile>Ga naar je leesprofiel</profile>",
-        "loading": "Suggesties voor je zoeken",
+        "title": "Bo’s leesadvies",
+        "intro": "Bo zoekt titels die passen bij jouw leesprofiel en wat je al gelezen hebt.",
+        "loading": "Bo zoekt titels voor je uit",
         "count_one": "{{count}} suggestie op basis van je leesprofiel. <profile>Pas je profiel aan</profile> voor ander advies.",
         "count_other": "{{count}} suggesties op basis van je leesprofiel. <profile>Pas je profiel aan</profile> voor ander advies.",
-        "sourceAi": "Dit advies is gemaakt door een AI model, op basis van je leesprofiel en je leeslijst. Het is een suggestie: jij kiest zelf wat je leest.",
-        "sourceRules": "Dit advies is gemaakt met vaste regels op basis van je leesprofiel."
+        "boLoading": "Even zoeken in de boekenkast...",
+        "boAi": "Deze titels heb ik voor je uitgezocht! Bij elke titel zie je waarom ik denk dat hij bij je past.",
+        "boRules": "Ik ben even offline, dus deze tips komen van vaste regels. Straks kijk ik weer zelf mee!",
+        "boNoProfile": "Ik ken je nog niet zo goed. Vertel me wat je leuk vindt, dan zoek ik titels voor je uit.",
+        "boError": "Oeps, er ging iets mis. Probeer het nog een keer.",
+        "startProfile": "Leesprofiel invullen met Bo",
+        "disclaimer": "Bo is een AI en kan het mis hebben. Jij kiest zelf wat je leest."
     },
     "profile": {
         "title": "Mijn leesprofiel",
@@ -239,10 +248,10 @@
         "listHeading": "Leeslijst",
         "emptyList": "Er staat nog niets op de leeslijst.",
         "added": "\"{{title}}\" is toegevoegd aan de leeslijst van {{name}}.",
-        "adviceHeading": "Leesadvies",
+        "adviceHeading": "Leesadvies van Bo",
         "adviceLoading": "Leesadvies laden",
-        "adviceSourceAi": "Gemaakt door het AI model. De leerling ziet hetzelfde advies.",
-        "adviceSourceRules": "Gemaakt met vaste regels, omdat het AI model niet beschikbaar was. De leerling ziet hetzelfde advies.",
+        "adviceSourceAi": "Bo (de AI) heeft deze titels gekozen. De leerling ziet hetzelfde advies.",
+        "adviceSourceRules": "Bo was even niet bereikbaar, deze tips komen van vaste regels. De leerling ziet hetzelfde advies.",
         "noAdvice": "Er is nog geen leesadvies, omdat de leerling nog geen leesprofiel heeft ingevuld.",
         "addToList": "Op leeslijst zetten",
         "addToListLabel": "Zet {{title}} op de leeslijst van {{name}}",
@@ -377,7 +386,7 @@
             "badge": "Je hebt de badge Leesstarter verdiend.",
             "xpTotal": "{{xp}} XP binnengehaald",
             "advice": "Bekijk mijn leesadvies",
-            "catalog": "Eerst rondkijken"
+            "catalog": "Eerst zelf rondkijken"
         },
         "stop": "Stoppen"
     },
@@ -400,7 +409,6 @@
             "name": "Naam",
             "email": "E-mailadres",
             "password": "Wachtwoord",
-            "passwordCurrent": "Kies een nieuw wachtwoord",
             "newEmail": "Nieuw e-mailadres",
             "currentPassword": "Huidig wachtwoord",
             "currentPasswordHint": "Nodig om je e-mailadres te wijzigen, zodat niemand anders dat kan.",
@@ -413,19 +421,57 @@
             "saving": "Opslaan...",
             "nameSaved": "Je naam is aangepast.",
             "emailSaved": "Je e-mailadres is aangepast. Log voortaan in met je nieuwe adres.",
-            "passwordSaved": "Je wachtwoord is gewijzigd."
+            "passwordSaved": "Je wachtwoord is gewijzigd.",
+            "firstName": "Voornaam",
+            "infix": "Tussenvoegsel",
+            "infixHint": "Bijvoorbeeld \"van\" of \"de\". Mag leeg blijven.",
+            "lastName": "Achternaam",
+            "passwordCurrent": "Kies een nieuw wachtwoord"
         },
         "about": {
             "heading": "Over de app",
             "version": "Versie",
             "built": "Gebouwd op",
-            "commit": "Commit",
-            "ai": "AI advies",
-            "aiOk": "Actief",
-            "aiUnavailable": "Even niet bereikbaar, het advies komt nu van vaste regels",
-            "aiDisabled": "Uit, het advies komt van vaste regels",
-            "aiUnknown": "Onbekend",
-            "text": "Smart Reading Coach is gemaakt voor het project Vrij lezen op maat (Avans Hogeschool, ICT SE2.1), voor het Lectoraat Digitale Didactiek en Curio."
+            "commit": "Commit"
+        },
+        "bo": {
+            "heading": "Over Bo",
+            "intro": "Bo is een AI: een computerprogramma, geen mens. Goed om te weten:",
+            "points": {
+                "learned": "Bo heeft geleerd van de leeskeuzes van andere studenten en kiest titels op basis van jouw leesprofiel en leeslijst.",
+                "private": "Bo krijgt je naam en e-mailadres niet te zien.",
+                "wrong": "Bo kan het mis hebben. Het advies is een suggestie: jij beslist wat je leest.",
+                "teacher": "Je docent kan zien welke titels Bo je aanraadt.",
+                "fallback": "Is Bo even niet bereikbaar? Dan komen de tips van vaste regels."
+            },
+            "status": "Status",
+            "online": "Bo is online",
+            "offline": "Bo is offline, de tips komen van vaste regels",
+            "disabled": "Bo staat uit, de tips komen van vaste regels",
+            "unknown": "Onbekend"
+        },
+        "delete": {
+            "heading": "Account verwijderen",
+            "button": "Account verwijderen",
+            "title": "Weet je het zeker?",
+            "intro": "Als je je account verwijdert, gebeurt dit:",
+            "student": {
+                "a": "Je leesprofiel en je leeslijst worden verwijderd.",
+                "b": "Bo vergeet alles wat hij over jou weet, je krijgt geen leesadvies meer.",
+                "c": "Je docenten zijn niet meer aan je gekoppeld en kunnen je niet meer zien."
+            },
+            "teacher": {
+                "a": "Je leerlingen zijn niet meer aan je gekoppeld.",
+                "b": "Je kunt hun leesprofiel, leeslijst en advies niet meer zien."
+            },
+            "final": "Dit kun je niet ongedaan maken. Je kunt later wel een nieuw account maken.",
+            "typeLabel": "Typ {{word}} om te bevestigen",
+            "word": "VERWIJDEREN",
+            "password": "Je wachtwoord",
+            "confirm": "Account definitief verwijderen",
+            "deleting": "Verwijderen...",
+            "cancel": "Toch niet",
+            "done": "Je account is verwijderd. Bedankt voor het lezen met Bo!"
         }
     }
 }

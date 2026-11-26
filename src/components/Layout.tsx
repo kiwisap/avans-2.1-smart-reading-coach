@@ -101,7 +101,7 @@ export default function Layout() {
                                         onClick={openSettings}
                                     >
                                         <span className="avatar" aria-hidden="true">
-                                            {user.name.charAt(0).toUpperCase()}
+                                            {(user.firstName || user.name).charAt(0).toUpperCase()}
                                         </span>
                                         <span className="lh-sm text-start" aria-hidden="true">
                                             {user.name}

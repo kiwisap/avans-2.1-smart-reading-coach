@@ -10,7 +10,7 @@ import { Trans, useTranslation } from 'react-i18next';
 
 export default function LoginPage() {
     const { t } = useTranslation();
-    const { user, login } = useAuth();
+    const { user, login, notice } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
     const [email, setEmail] = useState('');
@@ -39,6 +39,7 @@ export default function LoginPage() {
 
     return (
         <AuthLayout title={t('auth.login.title')} subtitle={t('auth.login.subtitle')}>
+            {notice && !error && <Alert type="success">{notice}</Alert>}
             {error && <Alert>{error}</Alert>}
             <form onSubmit={handleSubmit}>
                 <TextField

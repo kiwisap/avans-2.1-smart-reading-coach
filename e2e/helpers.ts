@@ -15,7 +15,10 @@ export async function register(
     { skipOnboarding = true } = {},
 ) {
     await page.goto('/register');
-    await page.getByLabel('Naam').fill(name);
+    // The name in parts: the first word is the first name, the rest the last name.
+    const [firstName = name, ...rest] = name.split(' ');
+    await page.getByLabel('Voornaam').fill(firstName);
+    await page.getByLabel('Achternaam').fill(rest.join(' ') || 'Student');
     await page.getByLabel('E-mail').fill(email);
     await page.getByLabel('Wachtwoord').fill(PASSWORD);
     await page.getByRole('button', { name: 'Registreren' }).click();

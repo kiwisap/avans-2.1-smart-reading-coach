@@ -66,7 +66,12 @@ export interface paths {
                         /** Format: email */
                         email: string;
                         password: string;
-                        name: string;
+                        /** @description Voornaam. */
+                        firstName: string;
+                        /** @description Tussenvoegsel, for example "van der". */
+                        infix?: string;
+                        /** @description Achternaam. */
+                        lastName: string;
                     };
                 };
             };
@@ -209,11 +214,56 @@ export interface paths {
         };
         put?: never;
         post?: never;
-        delete?: never;
+        /**
+         * Delete the account of the logged in user
+         * @description Removes the account with its reading profile, reading list and teacher links. Cannot be undone. Needs the current password.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        currentPassword: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Account removed. The token no longer works. */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Invalid input. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not logged in, or the token is invalid or expired. */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
         options?: never;
         head?: never;
         /**
-         * Change the name or email address of the logged in user
+         * Change the name (first name, infix, last name) or email address of the logged in user
          * @description Send only what changes. A new email address also needs the current password, so nobody can take over an account from an unlocked computer.
          */
         patch: {
@@ -226,7 +276,12 @@ export interface paths {
             requestBody: {
                 content: {
                     "application/json": {
-                        name?: string;
+                        /** @description Voornaam. */
+                        firstName?: string;
+                        /** @description Tussenvoegsel, for example "van der". */
+                        infix?: string;
+                        /** @description Achternaam. */
+                        lastName?: string;
                         /** Format: email */
                         email?: string;
                         currentPassword?: string;
@@ -1570,8 +1625,14 @@ export interface components {
              * @description Email address.
              */
             email: string;
-            /** @description Display name. */
+            /** @description Display name: first name, infix and last name together. */
             name: string;
+            /** @description Voornaam. */
+            firstName: string;
+            /** @description Tussenvoegsel, for example "van der". Null when there is none. */
+            infix: string | null;
+            /** @description Achternaam. */
+            lastName: string;
             role: components["schemas"]["Role"];
         };
         AuthResponse: {

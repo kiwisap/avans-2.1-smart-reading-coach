@@ -12,7 +12,9 @@ export default function RegisterPage() {
     const { t } = useTranslation();
     const { user, register } = useAuth();
     const navigate = useNavigate();
-    const [name, setName] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [infix, setInfix] = useState('');
+    const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
@@ -29,7 +31,7 @@ export default function RegisterPage() {
         setSubmitting(true);
         setJustRegistered(true);
         try {
-            await register(name, email, password);
+            await register({ firstName, infix, lastName }, email, password);
             // New students start with their reading profile (they can skip it there).
             navigate('/welcome', { replace: true });
         } catch (err) {
@@ -44,14 +46,37 @@ export default function RegisterPage() {
         <AuthLayout title={t('auth.register.title')} subtitle={t('auth.register.subtitle')}>
             {error && <Alert>{error}</Alert>}
             <form onSubmit={handleSubmit}>
-                <TextField
-                    label={t('auth.register.name')}
-                    autoComplete="name"
-                    required
-                    maxLength={100}
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                />
+                <div className="row g-2">
+                    <div className="col-sm-5">
+                        <TextField
+                            label={t('auth.register.firstName')}
+                            autoComplete="given-name"
+                            required
+                            maxLength={60}
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
+                        />
+                    </div>
+                    <div className="col-sm-3">
+                        <TextField
+                            label={t('auth.register.infix')}
+                            autoComplete="additional-name"
+                            maxLength={20}
+                            value={infix}
+                            onChange={(e) => setInfix(e.target.value)}
+                        />
+                    </div>
+                    <div className="col-sm-4">
+                        <TextField
+                            label={t('auth.register.lastName')}
+                            autoComplete="family-name"
+                            required
+                            maxLength={80}
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
+                        />
+                    </div>
+                </div>
                 <TextField
                     label={t('auth.email')}
                     type="email"
