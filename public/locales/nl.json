@@ -160,7 +160,9 @@
         "goToProfile": "{{message}}. <profile>Ga naar je leesprofiel</profile>",
         "loading": "Suggesties voor je zoeken",
         "count_one": "{{count}} suggestie op basis van je leesprofiel. <profile>Pas je profiel aan</profile> voor ander advies.",
-        "count_other": "{{count}} suggesties op basis van je leesprofiel. <profile>Pas je profiel aan</profile> voor ander advies."
+        "count_other": "{{count}} suggesties op basis van je leesprofiel. <profile>Pas je profiel aan</profile> voor ander advies.",
+        "sourceAi": "Dit advies is gemaakt door een AI model, op basis van je leesprofiel en je leeslijst. Het is een suggestie: jij kiest zelf wat je leest.",
+        "sourceRules": "Dit advies is gemaakt met vaste regels op basis van je leesprofiel."
     },
     "profile": {
         "title": "Mijn leesprofiel",
@@ -235,7 +237,15 @@
         "noProfile": "Deze leerling heeft nog geen leesprofiel ingevuld.",
         "listHeading": "Leeslijst",
         "emptyList": "Er staat nog niets op de leeslijst.",
-        "added": "\"{{title}}\" is toegevoegd aan de leeslijst van {{name}}."
+        "added": "\"{{title}}\" is toegevoegd aan de leeslijst van {{name}}.",
+        "adviceHeading": "Leesadvies",
+        "adviceLoading": "Leesadvies laden",
+        "adviceSourceAi": "Gemaakt door het AI model. De leerling ziet hetzelfde advies.",
+        "adviceSourceRules": "Gemaakt met vaste regels, omdat het AI model niet beschikbaar was. De leerling ziet hetzelfde advies.",
+        "noAdvice": "Er is nog geen leesadvies, omdat de leerling nog geen leesprofiel heeft ingevuld.",
+        "addToList": "Op leeslijst zetten",
+        "addToListLabel": "Zet {{title}} op de leeslijst van {{name}}",
+        "onList": "Op de leeslijst"
     },
     "teacherAdd": {
         "heading": "Voeg een titel toe aan de leeslijst van {{name}}",

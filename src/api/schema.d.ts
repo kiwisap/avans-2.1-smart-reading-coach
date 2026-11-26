@@ -11,7 +11,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Check that the API and both databases respond */
+        /** Check that the API, both databases and the AI service respond */
         get: {
             parameters: {
                 query?: never;
@@ -332,6 +332,93 @@ export interface paths {
                 };
                 /** @description Not found. */
                 404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/students/{studentId}/advice": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * See the reading advice of one student
+         * @description The same advice the student sees on the advice page. Only for students who linked this teacher.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description Student id. */
+                    studentId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Recommended books for the student and where the advice comes from. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Advice"];
+                    };
+                };
+                /** @description Invalid input. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not logged in, or the token is invalid or expired. */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description The role of this user is not allowed to do this. */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not found. */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict with the current state. */
+                409: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -791,7 +878,7 @@ export interface paths {
         };
         /**
          * Get book recommendations for the logged in student
-         * @description Based on the saved reading profile. Each suggestion explains why it was recommended.
+         * @description Based on the saved reading profile and the reading list. The AI model gives the advice when the AI service is available, otherwise the rule based scoring does. Each suggestion explains why it was recommended.
          */
         get: {
             parameters: {
@@ -802,15 +889,13 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description Recommended books, best match first. */
+                /** @description Recommended books, best match first, and where the advice comes from. */
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
-                            suggestions: components["schemas"]["Suggestion"][];
-                        };
+                        "application/json": components["schemas"]["Advice"];
                     };
                 };
                 /** @description Not logged in, or the token is invalid or expired. */
@@ -1420,8 +1505,21 @@ export interface components {
             levelLabel: string | null;
             /** @description Link to the title, when there is one. */
             url: string | null;
-            /** @description Why this title fits the reading profile. */
+            /** @description Why this title fits the reading profile, in one short sentence. */
             motivation: string;
+            /** @description All reasons why this title fits, most important first. */
+            reasons: string[];
+        };
+        /**
+         * @description ai: the advice comes from the AI model. rules: the AI service was not available, the rule based scoring was used.
+         * @enum {string}
+         */
+        AdviceSource: "ai" | "rules";
+        /** @description Reading advice for a student. */
+        Advice: {
+            source: components["schemas"]["AdviceSource"];
+            /** @description Recommended titles, best match first. */
+            suggestions: components["schemas"]["Suggestion"][];
         };
         BookPage: {
             items: components["schemas"]["Book"][];
@@ -1539,6 +1637,11 @@ export interface components {
             postgres: boolean;
             /** @description MongoDB answered the ping. */
             mongo: boolean;
+            /**
+             * @description ok: the AI service answers and has a model. unavailable: it is configured but does not answer, the advice uses the rules. disabled: AI_SERVICE_URL is not set.
+             * @enum {string}
+             */
+            ai: "ok" | "unavailable" | "disabled";
         };
     };
     responses: never;

@@ -8,22 +8,22 @@ import BookCard from '../components/BookCard.tsx';
 import BookGrid from '../components/BookGrid.tsx';
 import Skeleton from '../components/Skeleton.tsx';
 import { useReadingList } from '../hooks/useReadingList.ts';
-import type { Suggestion } from '../types/api.ts';
+import type { Advice } from '../types/api.ts';
 import { Trans, useTranslation } from 'react-i18next';
 
 export default function AdvicePage() {
     const { t } = useTranslation();
     const { token } = useAuth();
     const readingList = useReadingList();
-    const [suggestions, setSuggestions] = useState<Suggestion[] | null>(null);
+    const [advice, setAdvice] = useState<Advice | null>(null);
     const [error, setError] = useState<ApiError | null>(null);
     const [reloadKey, setReloadKey] = useState(0); // raised by the retry button
 
     useEffect(() => {
         let cancelled = false;
-        apiFetch<{ suggestions: Suggestion[] }>('/advice', { token })
+        apiFetch<Advice>('/advice', { token })
             .then((data) => {
-                if (!cancelled) setSuggestions(data.suggestions);
+                if (!cancelled) setAdvice(data);
             })
             .catch((err: unknown) => {
                 if (cancelled) return;
@@ -38,6 +38,8 @@ export default function AdvicePage() {
         setError(null);
         setReloadKey((key) => key + 1);
     }
+
+    const suggestions = advice?.suggestions;
 
     return (
         <section>
@@ -62,22 +64,35 @@ export default function AdvicePage() {
             {readingList.error && <Alert>{readingList.error}</Alert>}
             {readingList.notice && <Alert type="success">{readingList.notice}</Alert>}
 
-            {!suggestions && !error && (
+            {!advice && !error && (
                 <Skeleton variant="cards" lines={3} label={t('advice.loading')} />
             )}
 
-            {suggestions && (
+            {advice && suggestions && (
                 <>
-                    <p role="status" className="mb-3">
+                    <p role="status" className="mb-1">
                         <Trans
                             i18nKey="advice.count"
                             count={suggestions.length}
                             components={{ profile: <Link to="/profile" /> }}
                         />
                     </p>
+                    {/* Transparency: the student can see whether an AI model made the advice. */}
+                    <p className="advice-source small text-body-secondary mb-3">
+                        <i
+                            className={`bi ${advice.source === 'ai' ? 'bi-cpu' : 'bi-list-check'} me-1`}
+                            aria-hidden="true"
+                        />
+                        {advice.source === 'ai' ? t('advice.sourceAi') : t('advice.sourceRules')}
+                    </p>
                     <BookGrid>
                         {suggestions.map((book) => (
-                            <BookCard key={book.id} book={book} motivation={book.motivation}>
+                            <BookCard
+                                key={book.id}
+                                book={book}
+                                motivation={book.motivation}
+                                reasons={book.reasons}
+                            >
                                 <AddToListButton
                                     book={book}
                                     onList={readingList.bookIds.has(book.id)}

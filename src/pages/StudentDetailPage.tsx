@@ -9,6 +9,7 @@ import MissingBookCard from '../components/MissingBookCard.tsx';
 import ProfileSummary from '../components/ProfileSummary.tsx';
 import Skeleton from '../components/Skeleton.tsx';
 import StatusBadge from '../components/StatusBadge.tsx';
+import StudentAdvice from '../components/StudentAdvice.tsx';
 import TeacherAddBook from '../components/TeacherAddBook.tsx';
 import type { Book, ReadingListItem, StudentOverview } from '../types/api.ts';
 import { useTranslation } from 'react-i18next';
@@ -113,6 +114,15 @@ function StudentDetail({ studentId }: { studentId: string | undefined }) {
                 <ProfileSummary profile={profile} />
             ) : (
                 <p className="text-body-secondary">{t('studentDetail.noProfile')}</p>
+            )}
+
+            {profile && (
+                <StudentAdvice
+                    studentId={student.id}
+                    studentName={student.name}
+                    existingBookIds={existingBookIds}
+                    onAdd={addTitle}
+                />
             )}
 
             <h2 className="h4 mt-4 mb-3">{t('studentDetail.listHeading')}</h2>

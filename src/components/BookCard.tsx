@@ -9,16 +9,18 @@ const LONG_DESCRIPTION = 180;
 interface BookCardProps {
     book: Book;
     motivation?: string; // only set on the advice page ("why this fits you")
+    reasons?: string[]; // the separate reasons of an advice; shown as a list instead of the motivation
     children?: ReactNode; // slot for actions, such as the add to reading list button
 }
 
 // One catalog item. Renders its own grid column, so wrap cards in <BookGrid>.
-export default function BookCard({ book, motivation, children }: BookCardProps) {
+export default function BookCard({ book, motivation, reasons, children }: BookCardProps) {
     const { t } = useTranslation();
     const [expanded, setExpanded] = useState(false);
     const style = TYPE_STYLES[book.type] ?? DEFAULT_TYPE_STYLE;
     const description = book.description ?? '';
     const isLong = description.length > LONG_DESCRIPTION;
+    const reasonList = reasons?.filter((reason) => reason.trim() !== '') ?? [];
 
     return (
         <div className="col">
@@ -63,13 +65,21 @@ export default function BookCard({ book, motivation, children }: BookCardProps) 
                         </div>
                     )}
 
-                    {motivation && (
+                    {(reasonList.length > 0 || motivation) && (
                         <div className="motivation p-3 mb-3">
                             <h3 className="h6 mb-1">
                                 <i className="bi bi-stars me-2" aria-hidden="true" />
                                 {t('book.whyFits')}
                             </h3>
-                            <p className="mb-0">{motivation}</p>
+                            {reasonList.length > 1 ? (
+                                <ul className="reasons mb-0 ps-3">
+                                    {reasonList.map((reason) => (
+                                        <li key={reason}>{reason}</li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p className="mb-0">{reasonList[0] ?? motivation}</p>
+                            )}
                         </div>
                     )}
 

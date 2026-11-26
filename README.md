@@ -87,16 +87,16 @@ Wat wel getest wordt: de flows waar uitval het meest schaadt (profiel, advies, l
 
 ## Pagina's en toegang
 
-| Pad                    | Pagina                                    | Wie      |
-| ---------------------- | ----------------------------------------- | -------- |
-| `/login`, `/register`  | Inloggen en registreren                   | iedereen |
-| `/`                    | Catalogus (startpagina)                   | ingelogd |
-| `/advice`              | Leesadvies                                | leerling |
-| `/reading-list`        | Leeslijst                                 | leerling |
-| `/profile`             | Leesprofiel                               | leerling |
-| `/teachers`            | Mijn docenten (koppelen)                  | leerling |
-| `/students`            | Leerlingen van de docent                  | docent   |
-| `/students/:studentId` | Leesprofiel en leeslijst van één leerling | docent   |
+| Pad                    | Pagina                                                                                           | Wie      |
+| ---------------------- | ------------------------------------------------------------------------------------------------ | -------- |
+| `/login`, `/register`  | Inloggen en registreren                                                                          | iedereen |
+| `/`                    | Catalogus (startpagina)                                                                          | ingelogd |
+| `/advice`              | Leesadvies van het AI model met redenen, en of het advies van het AI model of van de regels komt | leerling |
+| `/reading-list`        | Leeslijst                                                                                        | leerling |
+| `/profile`             | Leesprofiel                                                                                      | leerling |
+| `/teachers`            | Mijn docenten (koppelen)                                                                         | leerling |
+| `/students`            | Leerlingen van de docent                                                                         | docent   |
+| `/students/:studentId` | Leesprofiel, leesadvies en leeslijst van één leerling                                            | docent   |
 
 `ProtectedRoute` bewaakt de paden. Wie niet is ingelogd gaat naar `/login` en komt na het inloggen terug op de pagina waar hij heen wilde, inclusief filters. Wie de verkeerde rol heeft, gaat naar de startpagina met een duidelijke melding. De echte afscherming zit in de backend, dit is de gebruikersvriendelijke laag erbovenop.
 
@@ -186,7 +186,7 @@ De sleutels zijn getypeerd (`i18n/i18next.d.ts`): een sleutel die niet in `nl.js
 
 **Hoe de teksten geladen worden.** De teksten zitten niet in de JavaScript, het zijn gewone bestanden in `public/locales` die Vite ongewijzigd meekopieert naar `dist/locales`. `i18n/index.ts` haalt het bestand van de actieve taal op bij het opstarten en `main.tsx` toont de app pas daarna, zodat je geen ruwe sleutels ziet. Lukt het laden niet, dan start de app toch en staat de fout in de console. Een tekst aanpassen kan dus zonder de app opnieuw te bouwen, maar de browser kan het oude bestand nog even in de cache houden. De sleutels blijven getypeerd: `i18n/i18next.d.ts` leidt het type af van `nl.json`.
 
-**Teksten van de backend.** De frontend vertaalt geen foutcodes. Elk verzoek stuurt de huidige taal mee in de `Accept-Language` header (`api/client.ts`) en de backend antwoordt in die taal. Een fout komt terug als problem details (RFC 9457, `application/problem+json`) en `api/client.ts` toont het veld `detail` als `message` van de `ApiError`. Ook de tekst bij een advies ("Waarom dit bij je past") is al vertaald. Voeg je een taal toe, dan moet de backend die taal ook hebben (zie de README van de API). Code die op een bepaalde fout reageert, vergelijkt op `error.status` en niet op de tekst, zoals `AdvicePage` doet met 409 (leesprofiel ontbreekt).
+**Teksten van de backend.** De frontend vertaalt geen foutcodes. Elk verzoek stuurt de huidige taal mee in de `Accept-Language` header (`api/client.ts`) en de backend antwoordt in die taal. Een fout komt terug als problem details (RFC 9457, `application/problem+json`) en `api/client.ts` toont het veld `detail` als `message` van de `ApiError`. Ook de tekst bij een advies ("Waarom dit bij je past") is al vertaald. Bij een AI advies komen de redenen in het Nederlands uit de AI service. Het advies laat altijd zien of een AI model het heeft gemaakt (`source` in het antwoord), zodat de leerling weet dat het om een suggestie van AI gaat. Voeg je een taal toe, dan moet de backend die taal ook hebben (zie de README van de API). Code die op een bepaalde fout reageert, vergelijkt op `error.status` en niet op de tekst, zoals `AdvicePage` doet met 409 (leesprofiel ontbreekt).
 
 ## Toegankelijkheid en responsive
 
@@ -236,18 +236,18 @@ Wil je een nieuw label voor een soort tekst, voeg het dan toe onder `types` in `
 
 ## Requirements
 
-| Requirement                              | Waar te vinden                                          |
-| ---------------------------------------- | ------------------------------------------------------- |
-| FR1 en FR2, leesprofiel                  | `ProfilePage`, `ProfileForm`, `profile/`                |
-| FR3, advies met motivatie                | `AdvicePage`, `BookCard`                                |
-| FR4, catalogus met filters en paginering | `CatalogPage`, `Pagination`, `useCatalogQuery`          |
-| FR5, leeslijst                           | `ReadingListPage`, `useReadingList`                     |
-| FR6, docenten                            | `TeachersPage`, `StudentsPage`, `StudentDetailPage`     |
-| NFR1, herbruikbare componenten           | `components/`                                           |
-| NFR2, README en coding style             | Dit bestand                                             |
-| NFR4, responsive                         | Bootstrap raster, inklapbare navigatie                  |
-| NFR5, toegankelijkheid                   | Zie [Toegankelijkheid](#toegankelijkheid-en-responsive) |
-| NFR6, afgeschermde paden                 | `ProtectedRoute`                                        |
+| Requirement                              | Waar te vinden                                                               |
+| ---------------------------------------- | ---------------------------------------------------------------------------- |
+| FR1 en FR2, leesprofiel                  | `ProfilePage`, `ProfileForm`, `profile/`                                     |
+| FR3, advies met motivatie                | `AdvicePage`, `BookCard` (redenen als lijst), `StudentAdvice` voor de docent |
+| FR4, catalogus met filters en paginering | `CatalogPage`, `Pagination`, `useCatalogQuery`                               |
+| FR5, leeslijst                           | `ReadingListPage`, `useReadingList`                                          |
+| FR6, docenten                            | `TeachersPage`, `StudentsPage`, `StudentDetailPage`                          |
+| NFR1, herbruikbare componenten           | `components/`                                                                |
+| NFR2, README en coding style             | Dit bestand                                                                  |
+| NFR4, responsive                         | Bootstrap raster, inklapbare navigatie                                       |
+| NFR5, toegankelijkheid                   | Zie [Toegankelijkheid](#toegankelijkheid-en-responsive)                      |
+| NFR6, afgeschermde paden                 | `ProtectedRoute`                                                             |
 
 ## Bekende beperkingen
 
