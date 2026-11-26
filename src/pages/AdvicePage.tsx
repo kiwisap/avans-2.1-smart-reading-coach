@@ -99,12 +99,7 @@ export default function AdvicePage() {
                     </p>
                     <BookGrid>
                         {suggestions.map((book) => (
-                            <BookCard
-                                key={book.id}
-                                book={book}
-                                motivation={book.motivation}
-                                reasons={book.reasons}
-                            >
+                            <BookCard key={book.id} book={book} motivation={book.motivation}>
                                 <AddToListButton
                                     book={book}
                                     onList={readingList.bookIds.has(book.id)}
