@@ -177,6 +177,12 @@ export default function ProfilePage() {
                 <p className="text-body-secondary mb-0">{t('profile.intro')}</p>
             </header>
             {message && <Alert type={message.type}>{message.text}</Alert>}
+            {!saved && saved !== undefined && (
+                <p className="profile-quest-link">
+                    <i className="bi bi-controller me-2" aria-hidden="true" />
+                    <Trans i18nKey="profile.quest" components={{ quest: <Link to="/welcome" /> }} />
+                </p>
+            )}
 
             {options && editing && (
                 <ProfileForm

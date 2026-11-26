@@ -8,14 +8,24 @@ export function uniqueEmail(prefix = 'student'): string {
     return `${prefix}.${Date.now()}.${random}@e2e.test`;
 }
 
-export async function register(page: Page, name: string, email = uniqueEmail()) {
+export async function register(
+    page: Page,
+    name: string,
+    email = uniqueEmail(),
+    { skipOnboarding = true } = {},
+) {
     await page.goto('/register');
     await page.getByLabel('Naam').fill(name);
     await page.getByLabel('E-mail').fill(email);
     await page.getByLabel('Wachtwoord').fill(PASSWORD);
     await page.getByRole('button', { name: 'Registreren' }).click();
-    // After registering the app opens the catalogue and shows the user in the menu.
-    await expect(page).toHaveURL('/');
+    // After registering the app starts the reading profile game. Most tests skip it and go on
+    // to the catalogue; onboarding.spec.ts plays it.
+    await expect(page).toHaveURL('/welcome');
+    if (skipOnboarding) {
+        await page.getByRole('button', { name: 'Later invullen' }).click();
+        await expect(page).toHaveURL('/');
+    }
     return email;
 }
 
@@ -52,10 +62,19 @@ export async function openFromMenu(page: Page, linkName: string) {
         .click();
 }
 
-export async function logout(page: Page) {
+// Opens the settings panel through the name in the menu.
+export async function openSettings(page: Page) {
     const toggle = page.getByRole('button', { name: 'Menu in- of uitklappen' });
     if (await toggle.isVisible()) await toggle.click();
-    await page.getByRole('button', { name: 'Uitloggen' }).click();
+    await page.getByRole('button', { name: /^Instellingen van .+ openen$/ }).click();
+    const panel = page.getByRole('dialog');
+    await expect(panel).toBeVisible();
+    return panel;
+}
+
+export async function logout(page: Page) {
+    const panel = await openSettings(page);
+    await panel.getByRole('button', { name: 'Uitloggen' }).click();
     await expect(page).toHaveURL(/\/login$/);
 }
 

@@ -5,6 +5,7 @@ import AdvicePage from './pages/AdvicePage.tsx';
 import CatalogPage from './pages/CatalogPage.tsx';
 import LoginPage from './pages/LoginPage.tsx';
 import NotFoundPage from './pages/NotFoundPage.tsx';
+import OnboardingPage from './pages/OnboardingPage.tsx';
 import ProfilePage from './pages/ProfilePage.tsx';
 import ReadingListPage from './pages/ReadingListPage.tsx';
 import RegisterPage from './pages/RegisterPage.tsx';
@@ -21,6 +22,15 @@ function CatalogRedirect() {
 export default function App() {
     return (
         <Routes>
+            {/* Right after registering: the reading profile as a game, without the menu of the app. */}
+            <Route
+                path="/welcome"
+                element={
+                    <ProtectedRoute roles={['student']}>
+                        <OnboardingPage />
+                    </ProtectedRoute>
+                }
+            />
             <Route element={<Layout />}>
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />

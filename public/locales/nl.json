@@ -207,7 +207,8 @@
             "confirm": "Wijzigingen weggooien",
             "keepEditing": "Verder bewerken",
             "text": "Je hebt je profiel aangepast maar niet opgeslagen. Als je doorgaat, gaan de wijzigingen verloren."
-        }
+        },
+        "quest": "Liever stap voor stap? <quest>Vul je profiel in met Bo</quest>, onze boekenuil."
     },
     "teachers": {
         "title": "Mijn docenten",
@@ -260,5 +261,171 @@
         "onList": "Staat op de lijst",
         "add": "Toevoegen",
         "addLabel": "Voeg {{title}} toe aan de leeslijst van {{name}}"
+    },
+    "onboarding": {
+        "skip": "Later invullen",
+        "mascotName": "Bo",
+        "progress": "Vraag {{current}} van {{total}}",
+        "progressStart": "Start",
+        "progressLabel": "Voortgang van je leesprofiel",
+        "xp": "{{xp}} XP",
+        "xpOf": "{{xp}} van {{max}} XP",
+        "back": "Terug",
+        "next": "Volgende",
+        "finish": "Klaar!",
+        "saving": "Opslaan...",
+        "needAnswer": "Bijna! Kies eerst een antwoord, dan gaan we verder.",
+        "cheers": {
+            "a": "Goeie keuze!",
+            "b": "Nice, die onthoud ik.",
+            "c": "Top, we gaan lekker.",
+            "d": "Ooh, interessant!"
+        },
+        "intro": {
+            "title": "Hoi {{name}}!",
+            "bubble": "Ik ben Bo, jouw leesmaatje. Beantwoord vijf snelle vragen en ik zoek boeken en artikelen die echt bij jou passen.",
+            "time": "Duurt ongeveer een minuut",
+            "rewards": "Elke vraag levert XP op. Haal ze allemaal en ontgrendel je leesadvies.",
+            "change": "Je kunt je antwoorden later altijd nog aanpassen",
+            "start": "Ik doe mee",
+            "editTitle": "Welkom terug, {{name}}!",
+            "editBubble": "Wil je je antwoorden aanpassen? Loop de vragen nog eens met me door. Je vorige antwoorden staan al klaar."
+        },
+        "level": {
+            "question": "Hoe makkelijk gaat lezen voor jou?",
+            "bubble": "Geen stress, dit is geen toets. Kies wat het best bij je past.",
+            "hint": "Twijfel je? Vraag je docent welk niveau je hebt.",
+            "options": {
+                "2F": {
+                    "title": "Rustig aan",
+                    "text": "Ik lees het liefst korte zinnen en makkelijke woorden (2F)"
+                },
+                "3F": {
+                    "title": "Gaat prima",
+                    "text": "Ik lees vlot, ook langere teksten (3F)"
+                },
+                "3F+": {
+                    "title": "Lezen is mijn ding",
+                    "text": "Moeilijke woorden en lange verhalen? Geen probleem (3F+)"
+                }
+            }
+        },
+        "types": {
+            "question": "Wat lees je graag?",
+            "bubble": "Kies er zoveel als je wilt. Hoe meer je kiest, hoe meer ik voor je kan vinden.",
+            "options": {
+                "boek": "Een spannend verhaal of een boek vol weetjes",
+                "online-artikel": "Kort en actueel, gewoon op je telefoon",
+                "blogpost": "Persoonlijke verhalen en meningen",
+                "dichtbundel": "Korte gedichten, soms grappig, soms diep",
+                "tijdschrift": "Bladeren door van alles wat",
+                "krant": "Weten wat er in de wereld gebeurt"
+            }
+        },
+        "topics": {
+            "question": "Waar word jij blij van?",
+            "bubble": "Kies maximaal {{max}} onderwerpen. Dan weet ik precies waar ik moet zoeken.",
+            "search": "Zoek een onderwerp",
+            "searchPlaceholder": "Bijvoorbeeld vriendschap of sport",
+            "chosen": "{{count}} van {{max}} onderwerpen gekozen",
+            "full": "Vol! Je hebt er {{max}}. Haal er eentje weg als je wilt wisselen.",
+            "none": "Geen onderwerp gevonden. Probeer een ander woord."
+        },
+        "length": {
+            "question": "Hoeveel tijd heb jij?",
+            "bubble": "Een snelle hap of een lekker lang verhaal?",
+            "options": {
+                "short": {
+                    "title": "Snelle hap",
+                    "text": "Een gedicht, artikel of een paar bladzijden"
+                },
+                "medium": {
+                    "title": "Lekker tussendoor",
+                    "text": "Een kort verhaal of een dun boek"
+                },
+                "long": {
+                    "title": "Ik ga ervoor",
+                    "text": "Een heel boek"
+                }
+            }
+        },
+        "goal": {
+            "question": "Waarom wil je lezen?",
+            "bubble": "Laatste vraag! Wat is jouw reden?",
+            "options": {
+                "enjoyment": {
+                    "title": "Voor de fun",
+                    "text": "Gewoon omdat het leuk is"
+                },
+                "learn": {
+                    "title": "Nieuwe dingen leren",
+                    "text": "Weten hoe de wereld in elkaar zit"
+                },
+                "language": {
+                    "title": "Beter worden in taal",
+                    "text": "Oefenen met lezen en nieuwe woorden"
+                },
+                "work": {
+                    "title": "Voor school of werk",
+                    "text": "Handig voor je opleiding of stage"
+                }
+            }
+        },
+        "done": {
+            "title": "Leesprofiel ontgrendeld!",
+            "bubble": "Yes! Je hebt alle vragen gehaald. Ik heb al titels voor je klaarstaan.",
+            "badge": "Je hebt de badge Leesstarter verdiend.",
+            "xpTotal": "{{xp}} XP binnengehaald",
+            "advice": "Bekijk mijn leesadvies",
+            "catalog": "Eerst rondkijken"
+        },
+        "stop": "Stoppen"
+    },
+    "settings": {
+        "open": "Instellingen van {{name}} openen",
+        "close": "Instellingen sluiten",
+        "profile": {
+            "heading": "Mijn leesprofiel",
+            "loading": "Even kijken wat je al hebt ingevuld...",
+            "emptyBubble": "Je hebt nog geen leesprofiel. Vul het samen met mij in, dan krijg je advies dat echt bij je past!",
+            "filledBubble": "Zin in iets anders? Pas je antwoorden aan, dan zoek ik nieuwe titels voor je.",
+            "summary": "Je leesprofiel in het kort",
+            "level": "Niveau {{level}}",
+            "start": "Invullen met Bo",
+            "edit": "Wijzigen met Bo",
+            "form": "Liever alles op één pagina"
+        },
+        "account": {
+            "heading": "Account",
+            "name": "Naam",
+            "email": "E-mailadres",
+            "password": "Wachtwoord",
+            "passwordCurrent": "Kies een nieuw wachtwoord",
+            "newEmail": "Nieuw e-mailadres",
+            "currentPassword": "Huidig wachtwoord",
+            "currentPasswordHint": "Nodig om je e-mailadres te wijzigen, zodat niemand anders dat kan.",
+            "newPassword": "Nieuw wachtwoord",
+            "repeatPassword": "Herhaal je nieuwe wachtwoord",
+            "passwordsDiffer": "De twee nieuwe wachtwoorden zijn niet hetzelfde.",
+            "saveName": "Naam opslaan",
+            "saveEmail": "E-mailadres opslaan",
+            "savePassword": "Wachtwoord wijzigen",
+            "saving": "Opslaan...",
+            "nameSaved": "Je naam is aangepast.",
+            "emailSaved": "Je e-mailadres is aangepast. Log voortaan in met je nieuwe adres.",
+            "passwordSaved": "Je wachtwoord is gewijzigd."
+        },
+        "about": {
+            "heading": "Over de app",
+            "version": "Versie",
+            "built": "Gebouwd op",
+            "commit": "Commit",
+            "ai": "AI advies",
+            "aiOk": "Actief",
+            "aiUnavailable": "Even niet bereikbaar, het advies komt nu van vaste regels",
+            "aiDisabled": "Uit, het advies komt van vaste regels",
+            "aiUnknown": "Onbekend",
+            "text": "Smart Reading Coach is gemaakt voor het project Vrij lezen op maat (Avans Hogeschool, ICT SE2.1), voor het Lectoraat Digitale Didactiek en Curio."
+        }
     }
 }
