@@ -64,6 +64,25 @@
             "submit": "Registreren",
             "submitting": "Account aanmaken...",
             "haveAccount": "Heb je al een account? <login>Inloggen</login>"
+        },
+        "perks": {
+            "advice": "Tips van Bo die passen bij jouw niveau",
+            "feathers": "Verdien veren en badges met lezen",
+            "list": "Houd bij wat je wilt lezen en wat je uit hebt"
+        },
+        "bo": {
+            "loginHello": "Hoi! Fijn dat je er weer bent. Ik heb je boeken goed bewaard.",
+            "loginEmail": "Even kijken of ik je herken...",
+            "loginNotice": "Tot de volgende keer! Of log meteen weer in, dat mag ook.",
+            "loginError": "Hmm, dat klopt niet helemaal. Kijk je e-mailadres en wachtwoord nog even na?",
+            "loginGo": "Yes, daar ben je! Ik pak je leeslijst erbij.",
+            "noPeeking": "Ik kijk niet mee hoor, ik lees even in mijn boek.",
+            "passwordLong": "Lang genoeg, top! En ik heb echt niet gekeken.",
+            "registerHello": "Hoi! Ik ben Bo, de leesuil. Maak een account, dan zoek ik boeken die bij jou passen.",
+            "registerHi": "Hoi {{name}}! Leuk je te ontmoeten. Nog even je e-mailadres en een wachtwoord.",
+            "registerEmail": "Hiermee log je straks in. Ik deel het met niemand, beloofd.",
+            "registerError": "Oeps, er ging iets mis. Kijk even wat er boven het formulier staat.",
+            "registerGo": "Daar gaan we, {{name}}! Zo meteen stel ik je een paar vragen."
         }
     },
     "catalog": {
