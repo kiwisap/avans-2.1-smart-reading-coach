@@ -521,7 +521,8 @@
     },
     "game": {
         "xp": "{{xp}} veren",
-        "chipLabel": "Je hebt {{xp}} veren. Bekijk je badges",
+        "chipLabel": "Je hebt {{xp}} veren, op weg naar je volgende badge ben je op {{percent}} procent. Bekijk je badges",
+        "chipLabelAll": "Je hebt {{xp}} veren en alle badges. Bekijk je badges",
         "gained": "+{{xp}} veren",
         "newBadge": "Nieuwe badge: {{name}}!",
         "close": "Melding sluiten",

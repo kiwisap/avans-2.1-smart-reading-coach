@@ -45,9 +45,21 @@ test.describe('authentication and route guards', () => {
     test('a student cannot open the teacher pages by typing the address', async ({ page }) => {
         await register(page, 'Student Guard');
         await page.goto('/students');
-        // No previous page in the app, so the guard sends the student to the home page.
+        // The guard sends the student to the catalog.
         await expect(page).toHaveURL('/');
         await expect(page.getByRole('heading', { name: 'Jouw leerlingen' })).toHaveCount(0);
+    });
+
+    test('a student who logs in on a teacher page lands in the catalog', async ({ page }) => {
+        const email = uniqueEmail();
+        await register(page, 'Student Afterwards', email);
+        await logout(page);
+        // As if a teacher logged out on the students page: the login remembers that page.
+        await page.goto('/students');
+        await expect(page).toHaveURL(/\/login$/);
+        await loginAndWait(page, email, PASSWORD, { openPage: false });
+        await expect(page).toHaveURL('/');
+        await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     });
 
     test('an unknown address shows the not found page with a way back', async ({ page }) => {

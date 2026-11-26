@@ -108,11 +108,30 @@ export default function SettingsPanel({ open, onClose }: SettingsPanelProps) {
 
     const isStudent = user?.role === 'student';
 
+    // Opening and closing both slide. A dialog disappears at once on close(), so the panel first
+    // plays its closing animation and closes when that is done. With reduced motion there is no
+    // animation, so it closes right away.
     useEffect(() => {
         const dialog = dialogRef.current;
-        if (!dialog) return;
-        if (open && !dialog.open) dialog.showModal();
-        if (!open && dialog.open) dialog.close();
+        if (!dialog) return undefined;
+        if (open) {
+            dialog.classList.remove('is-closing');
+            if (!dialog.open) dialog.showModal();
+            return undefined;
+        }
+        if (!dialog.open) return undefined;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            dialog.close();
+            return undefined;
+        }
+        const finish = (event: AnimationEvent) => {
+            if (event.target !== dialog) return;
+            dialog.classList.remove('is-closing');
+            dialog.close();
+        };
+        dialog.addEventListener('animationend', finish);
+        dialog.classList.add('is-closing');
+        return () => dialog.removeEventListener('animationend', finish);
     }, [open]);
 
     // Moving between the profile and the settings moves the focus along: to the back button when
@@ -120,8 +139,10 @@ export default function SettingsPanel({ open, onClose }: SettingsPanelProps) {
     useEffect(() => {
         if (shownView.current === view) return;
         shownView.current = view;
-        if (view === 'settings') backRef.current?.focus();
-        else openSettingsRef.current?.focus();
+        // preventScroll: focusing a button that is still sliding in would make the browser scroll
+        // the hidden overflow of the panel to it, and the panel would jump back and forth.
+        if (view === 'settings') backRef.current?.focus({ preventScroll: true });
+        else openSettingsRef.current?.focus({ preventScroll: true });
     }, [view]);
 
     // The page behind the panel does not scroll while the panel is open.

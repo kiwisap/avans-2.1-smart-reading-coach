@@ -46,11 +46,9 @@ export default function Layout() {
                 {t('nav.skipLink')}
             </a>
 
-            <header>
-                <nav
-                    className="navbar navbar-expand-lg site-nav sticky-top"
-                    aria-label={t('nav.mainMenu')}
-                >
+            {/* Sticky on the header itself: a sticky child only sticks inside its parent. */}
+            <header className="sticky-top site-header">
+                <nav className="navbar navbar-expand-lg site-nav" aria-label={t('nav.mainMenu')}>
                     <div className="container">
                         <Link to="/" className="navbar-brand" onClick={close}>
                             <BrandMark />

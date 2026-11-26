@@ -475,6 +475,20 @@ $navbar-light-active-color: $forest;
     }
 }
 
+// The header stays at the top of the screen. Anything the browser scrolls to (a link to an
+// anchor, a focused field) stays clear of it.
+html {
+    scroll-padding-top: 5rem;
+}
+
+// On a phone the opened menu can be longer than the screen; then the menu itself scrolls.
+@media (max-width: 991.98px) {
+    .site-header .navbar-collapse {
+        max-height: calc(100dvh - 4.5rem);
+        overflow-y: auto;
+    }
+}
+
 // Where the catalog scrolls to after switching page. Leaves room for the sticky navbar.
 .results-anchor {
     scroll-margin-top: 5rem;
@@ -1080,9 +1094,23 @@ $navbar-light-active-color: $forest;
     border: 0;
     background: $paper;
     box-shadow: -1rem 0 3rem rgba($ink, 0.2);
+    will-change: transform;
 
     &[open] {
-        animation: panel-in 0.25s ease-out;
+        animation: panel-in 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    &[open]::backdrop {
+        animation: backdrop-in 0.32s ease-out;
+    }
+
+    &.is-closing {
+        animation: panel-out 0.22s cubic-bezier(0.55, 0, 1, 0.45) forwards;
+        pointer-events: none;
+    }
+
+    &.is-closing::backdrop {
+        animation: backdrop-out 0.22s ease-in forwards;
     }
 
     &::backdrop {
@@ -1097,11 +1125,12 @@ $navbar-light-active-color: $forest;
 }
 
 // The profile and the settings lie on top of each other; the settings slide in from the right.
+// overflow: clip instead of hidden, so the browser can never scroll this box sideways.
 .settings-views {
     position: relative;
     flex-grow: 1;
     min-height: 0;
-    overflow: hidden;
+    overflow: clip;
 }
 
 .settings-view {
@@ -1116,14 +1145,15 @@ $navbar-light-active-color: $forest;
     transform: translateX(100%);
     visibility: hidden;
     transition:
-        transform 0.25s ease-out,
-        visibility 0s linear 0.25s;
+        transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+        visibility 0s linear 0.3s;
     box-shadow: -0.5rem 0 1.5rem rgba($ink, 0.12);
+    will-change: transform;
 
     &.is-open {
         transform: none;
         visibility: visible;
-        transition: transform 0.25s ease-out;
+        transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
     }
 }
 
@@ -1292,8 +1322,38 @@ $navbar-light-active-color: $forest;
     }
 }
 
+@keyframes panel-out {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes backdrop-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes backdrop-out {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
     .settings-panel[open],
+    .settings-panel[open]::backdrop,
+    .settings-panel.is-closing,
+    .settings-panel.is-closing::backdrop,
     .settings-sub,
     .setting-chevron,
     .settings-fold-arrow {
@@ -1423,20 +1483,35 @@ html.scroll-locked {
 
 // Game: XP, badges and ratings -------------------------------------------------------------
 
+@property --xp-progress {
+    syntax: '<percentage>';
+    inherits: false;
+    initial-value: 0%;
+}
+
+// The border of the chip fills up from left to right on the way to the next badge
+// (--xp-progress, 0% to 100%), so the student sees roughly how far there is still to go.
 .xp-chip {
+    --xp-progress: 0%;
+    --xp-fill: #{mix($ochre, $paper, 14%)};
+
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    padding: 0.35rem 0.75rem;
-    border: 1px solid rgba($ochre, 0.5);
+    padding: 0.3rem 0.7rem;
+    border: 3px solid transparent;
     border-radius: 999px;
-    background: rgba($ochre, 0.14);
+    background:
+        linear-gradient(var(--xp-fill), var(--xp-fill)) padding-box,
+        linear-gradient(90deg, $terracotta var(--xp-progress), rgba($ochre, 0.3) var(--xp-progress))
+            border-box;
     color: $ink;
     font-weight: 700;
     font-size: 0.9rem;
+    transition: --xp-progress 0.6s ease-out;
 
     &:hover {
-        background: rgba($ochre, 0.24);
+        --xp-fill: #{mix($ochre, $paper, 24%)};
     }
 
     &:focus-visible {
@@ -1734,6 +1809,10 @@ html.scroll-locked {
     .xp-chip-value,
     .xp-toast {
         animation: none;
+    }
+
+    .xp-chip {
+        transition: none;
     }
 
     .star-input label {
