@@ -51,7 +51,8 @@
             "subtitle": "Welkom terug. Ga verder waar je gebleven was.",
             "submit": "Inloggen",
             "submitting": "Bezig met inloggen...",
-            "noAccount": "Nog geen account? <register>Registreer</register>"
+            "noAccount": "Nog geen account? <register>Registreer</register>",
+            "forgot": "Wachtwoord vergeten?"
         },
         "register": {
             "title": "Account aanmaken",
@@ -82,7 +83,8 @@
             "registerHi": "Hoi {{name}}! Leuk je te ontmoeten. Nog even je e-mailadres en een wachtwoord.",
             "registerEmail": "Hiermee log je straks in. Ik deel het met niemand, beloofd.",
             "registerError": "Oeps, er ging iets mis. Kijk even wat er boven het formulier staat.",
-            "registerGo": "Daar gaan we, {{name}}! Zo meteen stel ik je een paar vragen."
+            "registerGo": "Daar gaan we, {{name}}! Zo meteen stel ik je een paar vragen.",
+            "loginUnconfirmed": "Je bent er bijna! Klik eerst op de link in de mail die ik je stuurde. Geen mail gehad? Ik stuur hem graag nog een keer."
         }
     },
     "catalog": {
@@ -461,13 +463,15 @@
             "savePassword": "Wachtwoord wijzigen",
             "saving": "Opslaan...",
             "nameSaved": "Je naam is aangepast.",
-            "emailSaved": "Je e-mailadres is aangepast. Log voortaan in met je nieuwe adres.",
-            "passwordSaved": "Je wachtwoord is gewijzigd.",
+            "emailSaved": "Bijna klaar: ik heb een link gestuurd naar {{email}}. Je e-mailadres verandert pas als je daarop klikt. Je huidige adres krijgt ook een bericht.",
+            "passwordSaved": "Je wachtwoord is gewijzigd. Je krijgt hierover ook een mail, voor de zekerheid.",
             "firstName": "Voornaam",
             "infix": "Tussenvoegsel",
             "infixHint": "Bijvoorbeeld \"van\" of \"de\". Mag leeg blijven.",
             "lastName": "Achternaam",
-            "passwordCurrent": "Kies een nieuw wachtwoord"
+            "passwordCurrent": "Kies een nieuw wachtwoord",
+            "emailPending": "{{email}} wacht nog op bevestiging. Klik op de link in de mail naar dat adres. Tot die tijd log je in met je huidige adres.",
+            "emailWithPending": "{{email}} · nieuw adres wacht op bevestiging"
         },
         "about": {
             "built": "Gebouwd op",
@@ -640,5 +644,63 @@
         },
         "alsoSuggested_one": "{{count}} titel kwam via de catalogus op een leeslijst, terwijl Bo hem ook had getipt.",
         "alsoSuggested_other": "{{count}} titels kwamen via de catalogus op een leeslijst, terwijl Bo ze ook had getipt."
+    },
+    "verify": {
+        "resend": "Stuur de mail opnieuw",
+        "resendWait": "Opnieuw sturen kan over {{seconds}} s",
+        "resent": "Verstuurd! Kijk in je mail bij {{email}}, ook in de map spam.",
+        "check": {
+            "title": "Check je mail",
+            "subtitle": "Nog één stap en je account is klaar.",
+            "bo": "Ik heb je een mailtje gestuurd! Klik op de knop in die mail, dan kunnen we beginnen.",
+            "boName": "Bijna klaar, {{name}}! Ik heb een mailtje gestuurd naar {{email}}. Klik op de knop erin, dan gaan we beginnen.",
+            "yourAddress": "je e-mailadres",
+            "step1": "Open de mail die we stuurden naar <strong>{{email}}</strong>.",
+            "step2": "Klik op de knop \"E-mailadres bevestigen\".",
+            "step3": "Je bent meteen ingelogd en Bo stelt je een paar vragen.",
+            "noMail": "Geen mail gekregen?",
+            "spam": "Kijk ook in de map spam of reclame. Het kan een paar minuten duren.",
+            "other": "Verkeerd adres getypt? <register>Maak opnieuw een account</register>. Al bevestigd? <login>Inloggen</login>"
+        },
+        "link": {
+            "title": "E-mailadres bevestigen",
+            "subtitle": "Even geduld, ik controleer je link.",
+            "checking": "Link controleren...",
+            "boChecking": "Even kijken of deze link klopt...",
+            "failedTitle": "Deze link werkt niet",
+            "failedSubtitle": "Geen zorgen, je kunt een nieuwe aanvragen.",
+            "boFailed": "Oei, deze link is verlopen of al gebruikt. Vul je e-mailadres in, dan stuur ik een nieuwe.",
+            "missing": "Er zit geen code in deze link. Open de link uit de mail opnieuw.",
+            "toLogin": "Naar inloggen"
+        },
+        "change": {
+            "title": "Nieuw e-mailadres",
+            "subtitle": "Bevestigen van je nieuwe adres.",
+            "bo": "Gelukt! Vanaf nu gebruik ik {{email}} voor je account.",
+            "boFailed": "Hmm, deze link werkt niet meer. Vraag in de instellingen opnieuw een nieuw e-mailadres aan.",
+            "done": "Je e-mailadres is nu {{email}}. Log voortaan in met dit adres.",
+            "toApp": "Verder naar de app"
+        }
+    },
+    "reset": {
+        "backToLogin": "Terug naar inloggen",
+        "done": "Je nieuwe wachtwoord is opgeslagen. Log in om verder te gaan.",
+        "forgot": {
+            "title": "Wachtwoord vergeten",
+            "subtitle": "Vul je e-mailadres in, dan sturen we je een link om een nieuw wachtwoord te kiezen.",
+            "bo": "Wachtwoord kwijt? Dat overkomt de beste lezers. Ik help je.",
+            "boSent": "Kijk in je mail! De link werkt een uur.",
+            "submit": "Stuur mij een link",
+            "sending": "Versturen...",
+            "sent": "Als er een account is met {{email}}, staat er nu een mail met een link in je inbox. Kijk ook in de map spam."
+        },
+        "new": {
+            "title": "Nieuw wachtwoord",
+            "subtitle": "Kies een wachtwoord van minstens 8 tekens.",
+            "boError": "Die link werkt helaas niet meer. Vraag een nieuwe aan, dat is zo gedaan.",
+            "submit": "Wachtwoord opslaan",
+            "saving": "Opslaan...",
+            "again": "Vraag een nieuwe link aan"
+        }
     }
 }

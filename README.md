@@ -63,13 +63,13 @@ Vite leest deze waarde bij het starten en bouwen. Pas je hem aan, herstart dan `
 
 De tests in `e2e/` sturen een echte browser (Chromium) aan tegen de echte frontend, API en databases. Ze testen wat de gebruiker doet, niet de losse onderdelen.
 
-| Bestand                    | Wat het afdekt                                                                                                                                                                            | Waarom dit                                                              |
-| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| `e2e/reading-flow.spec.ts` | Registreren, profiel invullen en opslaan, advies bekijken, titel bewaren, als gelezen markeren, verwijderen                                                                               | De kernflow: hier bestaat de applicatie voor (ook op mobiel formaat)    |
-| `e2e/onboarding.spec.ts`   | Na registreren de vragen stap voor stap beantwoorden en op het advies uitkomen; overslaan en later invullen                                                                               | De eerste indruk van nieuwe leerlingen: zonder profiel geen goed advies |
-| `e2e/settings.spec.ts`     | Instellingen via je naam, naam in delen en wachtwoord wijzigen en opnieuw inloggen, uitleg over Bo, nieuw e-mailadres alleen met het juiste wachtwoord, account verwijderen na bevestigen | Accountgegevens wijzigen en verwijderen mag nooit zonder controle       |
-| `e2e/auth.spec.ts`         | Beveiligde routes, fout bij verkeerd wachtwoord, rolbewaking via de URL, onbekende pagina                                                                                                 | Zonder inloggen en rollen is niets anders veilig                        |
-| `e2e/teacher.spec.ts`      | Docent zoekt en koppelt een leerling, ziet het profiel, leerling ziet de docent in de instellingen, niet gekoppelde leerling blijft onzichtbaar                                           | Privacy: een docent ziet alleen eigen leerlingen                        |
+| Bestand                    | Wat het afdekt                                                                                                                                                                                                | Waarom dit                                                              |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| `e2e/reading-flow.spec.ts` | Registreren, profiel invullen en opslaan, advies bekijken, titel bewaren, als gelezen markeren, verwijderen                                                                                                   | De kernflow: hier bestaat de applicatie voor (ook op mobiel formaat)    |
+| `e2e/onboarding.spec.ts`   | Na registreren de vragen stap voor stap beantwoorden en op het advies uitkomen; overslaan en later invullen                                                                                                   | De eerste indruk van nieuwe leerlingen: zonder profiel geen goed advies |
+| `e2e/settings.spec.ts`     | Instellingen via je naam, naam en wachtwoord wijzigen en opnieuw inloggen, uitleg over Bo, nieuw e-mailadres alleen met het juiste wachtwoord en pas na de link in de mail, account verwijderen na bevestigen | Accountgegevens wijzigen en verwijderen mag nooit zonder controle       |
+| `e2e/auth.spec.ts`         | Beveiligde routes, fout bij verkeerd wachtwoord, inloggen pas na de bevestigingslink (die maar één keer werkt), wachtwoord vergeten via de mail, rolbewaking via de URL, onbekende pagina                     | Zonder inloggen en rollen is niets anders veilig                        |
+| `e2e/teacher.spec.ts`      | Docent zoekt en koppelt een leerling, ziet het profiel, leerling ziet de docent in de instellingen, niet gekoppelde leerling blijft onzichtbaar                                                               | Privacy: een docent ziet alleen eigen leerlingen                        |
 
 Elke test maakt zijn eigen gebruiker aan met een uniek e-mailadres, dus de tests hangen niet van elkaar af en je kunt ze herhaald draaien zonder de database op te schonen.
 
@@ -80,6 +80,8 @@ Elke test maakt zijn eigen gebruiker aan met een uniek e-mailadres, dus de tests
 3. `npm run test:e2e`. Playwright start de frontend en de API zelf als ze nog niet draaien.
 
 Handig: `npm run test:e2e:ui` voor een interactieve weergave en `npm run test:e2e:report` voor het HTML rapport na een run.
+
+De tests klikken op de links in de mails. Daarvoor draait de API met `DEV_MAIL_OUTBOX=true`: Playwright zet dat zelf als het de API start. Draait de API al, zet het dan in de `.env` van de API. De tests lezen de mails op `E2E_API_URL` (standaard `http://localhost:3000`).
 
 De docentaccount komt uit de seed (`teacher@example.com`). Heeft die een ander wachtwoord, zet dan `E2E_TEACHER_PASSWORD` (en eventueel `E2E_TEACHER_EMAIL` en `E2E_TEACHER_NAME`). Met `E2E_BASE_URL=https://...` test je een gedeployde frontend; dan worden er geen servers gestart.
 

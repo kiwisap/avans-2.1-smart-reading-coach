@@ -3,14 +3,19 @@ import ProtectedRoute from './auth/ProtectedRoute.tsx';
 import Layout from './components/Layout.tsx';
 import AdvicePage from './pages/AdvicePage.tsx';
 import CatalogPage from './pages/CatalogPage.tsx';
+import CheckEmailPage from './pages/CheckEmailPage.tsx';
+import ConfirmEmailPage from './pages/ConfirmEmailPage.tsx';
+import ForgotPasswordPage from './pages/ForgotPasswordPage.tsx';
 import LoginPage from './pages/LoginPage.tsx';
 import NotFoundPage from './pages/NotFoundPage.tsx';
 import OnboardingPage from './pages/OnboardingPage.tsx';
 import ProfilePage from './pages/ProfilePage.tsx';
 import ReadingListPage from './pages/ReadingListPage.tsx';
 import RegisterPage from './pages/RegisterPage.tsx';
+import ResetPasswordPage from './pages/ResetPasswordPage.tsx';
 import StudentDetailPage from './pages/StudentDetailPage.tsx';
 import StudentsPage from './pages/StudentsPage.tsx';
+import VerifyEmailPage from './pages/VerifyEmailPage.tsx';
 
 // The old /catalog address forwards to the home page and keeps the filters in the query.
 function CatalogRedirect() {
@@ -33,6 +38,12 @@ export default function App() {
             <Route element={<Layout />}>
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
+                {/* The links in the mails, and the pages around them: no login needed. */}
+                <Route path="/check-email" element={<CheckEmailPage />} />
+                <Route path="/verify-email" element={<VerifyEmailPage />} />
+                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                <Route path="/reset-password" element={<ResetPasswordPage />} />
+                <Route path="/confirm-email" element={<ConfirmEmailPage />} />
                 <Route
                     path="/"
                     element={

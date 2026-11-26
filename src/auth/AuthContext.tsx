@@ -8,7 +8,7 @@ import {
     type ReactNode,
 } from 'react';
 import { apiFetch } from '../api/client.ts';
-import type { AuthResponse, User } from '../types/api.ts';
+import type { AuthResponse, Registered, User } from '../types/api.ts';
 
 const TOKEN_KEY = 'src_token';
 
@@ -23,7 +23,10 @@ interface AuthContextValue {
     user: User | null;
     loading: boolean;
     login: (email: string, password: string) => Promise<void>;
-    register: (name: NameParts, email: string, password: string) => Promise<void>;
+    // Creates the account and returns the address the confirmation link went to. The user is not
+    // logged in yet: that happens with the link (acceptSession).
+    register: (name: NameParts, email: string, password: string) => Promise<string>;
+    acceptSession: (data: AuthResponse) => void; // after confirming the email address
     logout: (notice?: string) => void;
     updateUser: (user: User) => void; // after the user changed their name or email address
     notice: string | null; // message for the login page after logging out, for example "account removed"
@@ -98,20 +101,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const register = useCallback(
         async ({ firstName, infix, lastName }: NameParts, email: string, password: string) => {
-            startSession(
-                await apiFetch<AuthResponse>('/auth/register', {
-                    method: 'POST',
-                    body: {
-                        firstName: firstName.trim(),
-                        ...(infix.trim() ? { infix: infix.trim() } : {}),
-                        lastName: lastName.trim(),
-                        email,
-                        password,
-                    },
-                }),
-            );
+            const registered = await apiFetch<Registered>('/auth/register', {
+                method: 'POST',
+                body: {
+                    firstName: firstName.trim(),
+                    ...(infix.trim() ? { infix: infix.trim() } : {}),
+                    lastName: lastName.trim(),
+                    email,
+                    password,
+                },
+            });
+            return registered.email;
         },
-        [startSession],
+        [],
     );
 
     // The notice lives here and not in the router state, because the route guard may redirect to
@@ -126,8 +128,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const updateUser = useCallback((updated: User) => setUser(updated), []);
 
     const value = useMemo(
-        () => ({ token, user, loading, login, register, logout, updateUser, notice }),
-        [token, user, loading, login, register, logout, updateUser, notice],
+        () => ({
+            token,
+            user,
+            loading,
+            login,
+            register,
+            acceptSession: startSession,
+            logout,
+            updateUser,
+            notice,
+        }),
+        [token, user, loading, login, register, startSession, logout, updateUser, notice],
     );
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

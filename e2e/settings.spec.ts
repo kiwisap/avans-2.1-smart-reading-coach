@@ -4,6 +4,7 @@ import {
     login,
     loginAndWait,
     logout,
+    mailLink,
     openAccountSettings,
     openSettings,
     register,
@@ -48,7 +49,7 @@ test.describe('settings', () => {
         settings = await openAccountSettings(page);
         await settings.getByText('Wachtwoord', { exact: true }).click();
         await settings.locator('details[open]').getByLabel('Huidig wachtwoord').fill(PASSWORD);
-        await settings.getByLabel('Nieuw wachtwoord', { exact: true }).fill('Nieuw-Wachtwoord1');
+        await settings.getByLabel(/^Nieuw wachtwoord/).fill('Nieuw-Wachtwoord1');
         await settings.getByLabel('Herhaal je nieuwe wachtwoord').fill('Nieuw-Wachtwoord1');
         await settings.getByRole('button', { name: 'Wachtwoord wijzigen' }).click();
         await expect(settings.getByText('Je wachtwoord is gewijzigd.')).toBeVisible();
@@ -70,6 +71,24 @@ test.describe('settings', () => {
             .fill('not-my-password');
         await panel.getByRole('button', { name: 'E-mailadres opslaan' }).click();
         await expect(panel.getByRole('alert')).toContainText('Je huidige wachtwoord klopt niet');
+    });
+
+    test('a new email address counts only after clicking the link sent to it', async ({ page }) => {
+        const email = await register(page, `Change Mail${Date.now()}`);
+        const newEmail = `new.${Date.now()}@e2e.test`;
+        let settings = await openAccountSettings(page);
+        await settings.getByText('E-mailadres', { exact: true }).click();
+        await settings.getByLabel('Nieuw e-mailadres').fill(newEmail);
+        await settings.locator('details[open]').getByLabel('Huidig wachtwoord').fill(PASSWORD);
+        await settings.getByRole('button', { name: 'E-mailadres opslaan' }).click();
+        await expect(settings.getByRole('status')).toContainText(`link gestuurd naar ${newEmail}`);
+        await expect(settings.getByText(email, { exact: false }).first()).toBeVisible();
+        await settings.getByRole('button', { name: 'Instellingen sluiten' }).click();
+
+        await page.goto(await mailLink(page, newEmail, '/confirm-email'));
+        await expect(page.getByText(`Je e-mailadres is nu ${newEmail}`)).toBeVisible();
+        settings = await openAccountSettings(page);
+        await expect(settings.getByText(newEmail).first()).toBeVisible();
     });
 
     test('a student removes the account after typing the confirmation', async ({ page }) => {

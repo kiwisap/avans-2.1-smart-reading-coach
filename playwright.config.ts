@@ -46,6 +46,8 @@ export default defineConfig({
               {
                   command: 'npm run dev',
                   cwd: API_DIR,
+                  // The tests read the confirmation mails from the API (GET /api/dev/mails).
+                  env: { DEV_MAIL_OUTBOX: 'true' },
                   url: 'http://localhost:3000/api/health',
                   reuseExistingServer: true,
                   timeout: 60_000,

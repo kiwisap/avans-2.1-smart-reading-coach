@@ -13,6 +13,7 @@ export type ReadingGoal = Schemas['ReadingGoal'];
 export type ReadingStatus = Schemas['ReadingStatus'];
 export type User = Schemas['User'];
 export type AuthResponse = Schemas['AuthResponse'];
+export type Registered = Schemas['Registered'];
 export type Book = Schemas['Book'];
 export type Suggestion = Schemas['Suggestion'];
 export type AdviceSource = Schemas['AdviceSource'];

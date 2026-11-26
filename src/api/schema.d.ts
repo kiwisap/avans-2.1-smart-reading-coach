@@ -51,7 +51,7 @@ export interface paths {
         put?: never;
         /**
          * Create a student account
-         * @description New accounts are students. The response contains a token, so the user is logged in.
+         * @description New accounts are students. A confirmation link is mailed to the address; logging in works after clicking it.
          */
         post: {
             parameters: {
@@ -76,13 +76,291 @@ export interface paths {
                 };
             };
             responses: {
-                /** @description Account created. */
+                /** @description Account created, waiting for confirmation. */
                 201: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
+                        "application/json": components["schemas"]["Registered"];
+                    };
+                };
+                /** @description Invalid input. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict with the current state. */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/verify-email": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Confirm the email address with the link from the mail
+         * @description Logs the user in: the response contains a token.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        token: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Confirmed and logged in. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
                         "application/json": components["schemas"]["AuthResponse"];
+                    };
+                };
+                /** @description Invalid input. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/verify-email/resend": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Send the confirmation mail again
+         * @description At most once a minute per account.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        /** Format: email */
+                        email: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Accepted. The same answer whether the address has an account or not, so addresses cannot be probed. */
+                202: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Invalid input. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/password/forgot": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Mail a link to choose a new password
+         * @description The link works for one hour, once. At most once a minute per account.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        /** Format: email */
+                        email: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Accepted. The same answer whether the address has an account or not, so addresses cannot be probed. */
+                202: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Invalid input. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/password/reset": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Choose a new password with the link from the mail
+         * @description Also confirms the email address. A notice is mailed afterwards.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        token: string;
+                        newPassword: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Password changed. Log in with the new password. */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Invalid input. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/email/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Confirm a new email address with the link mailed to it
+         * @description Works without being logged in, the link proves who it is.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        token: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description The user with the new email address. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            user: components["schemas"]["User"];
+                        };
                     };
                 };
                 /** @description Invalid input. */
@@ -120,7 +398,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Log in with email and password */
+        /**
+         * Log in with email and password
+         * @description 403 when the email address is not confirmed yet.
+         */
         post: {
             parameters: {
                 query?: never;
@@ -158,6 +439,15 @@ export interface paths {
                 };
                 /** @description Not logged in, or the token is invalid or expired. */
                 401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description The role of this user is not allowed to do this. */
+                403: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -264,7 +554,7 @@ export interface paths {
         head?: never;
         /**
          * Change the name (first name, infix, last name) or email address of the logged in user
-         * @description Send only what changes. A new email address also needs the current password, so nobody can take over an account from an unlocked computer.
+         * @description Send only what changes. A new email address also needs the current password, so nobody can take over an account from an unlocked computer. It is not changed right away: a link is mailed to the new address (pendingEmail until then) and a notice to the old one.
          */
         patch: {
             parameters: {
@@ -356,7 +646,7 @@ export interface paths {
                 };
             };
             responses: {
-                /** @description Password changed. The current token stays valid. */
+                /** @description Password changed, a notice is mailed. The current token stays valid. */
                 204: {
                     headers: {
                         [name: string]: unknown;
@@ -1929,11 +2219,24 @@ export interface components {
             /** @description Achternaam. */
             lastName: string;
             role: components["schemas"]["Role"];
+            /**
+             * Format: email
+             * @description A new email address that waits for its confirmation link to be clicked.
+             */
+            pendingEmail: string | null;
         };
         AuthResponse: {
             /** @description JWT. Send it as Authorization: Bearer <token>. */
             token: string;
             user: components["schemas"]["User"];
+        };
+        /** @description The account exists, but can only be used after confirming the email address. */
+        Registered: {
+            /**
+             * Format: email
+             * @description The address the confirmation link was sent to.
+             */
+            email: string;
         };
         Book: {
             /** @description Catalog id (MongoDB ObjectId as 24 hex characters). */

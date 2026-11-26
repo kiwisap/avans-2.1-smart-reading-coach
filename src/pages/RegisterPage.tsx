@@ -20,23 +20,18 @@ export default function RegisterPage() {
     const [error, setError] = useState<string | null>(null);
     const [submitting, setSubmitting] = useState(false);
     const [focused, setFocused] = useState<'email' | 'password' | null>(null);
-    // Set before registering: the moment the account exists this page renders again with a user,
-    // and must then send the new student to the reading profile game instead of the catalogue.
-    const [justRegistered, setJustRegistered] = useState(false);
-
-    if (user) return <Navigate to={justRegistered ? '/welcome' : '/'} replace />;
+    if (user) return <Navigate to="/" replace />;
 
     async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault();
         setError(null);
         setSubmitting(true);
-        setJustRegistered(true);
         try {
-            await register({ firstName, infix, lastName }, email, password);
-            // New students start with their reading profile (they can skip it there).
-            navigate('/welcome', { replace: true });
+            const sentTo = await register({ firstName, infix, lastName }, email, password);
+            // First the email address: the link in the mail logs the student in and starts the
+            // reading profile game.
+            navigate('/check-email', { replace: true, state: { email: sentTo, name: firstName } });
         } catch (err) {
-            setJustRegistered(false);
             setError(errorMessage(err));
         } finally {
             setSubmitting(false);

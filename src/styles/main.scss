@@ -371,6 +371,14 @@ $navbar-light-active-color: $forest;
     }
 }
 
+.check-steps {
+    padding-left: 1.25rem;
+
+    li + li {
+        margin-top: 0.5rem;
+    }
+}
+
 .auth-perks li {
     display: flex;
     align-items: center;

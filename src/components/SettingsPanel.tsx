@@ -208,7 +208,7 @@ export default function SettingsPanel({ open, onClose }: SettingsPanelProps) {
         void saveAccount(
             'email',
             { email: email.trim(), currentPassword: emailPassword },
-            t('settings.account.emailSaved'),
+            t('settings.account.emailSaved', { email: email.trim().toLowerCase() }),
         );
     }
 
@@ -548,12 +548,26 @@ export default function SettingsPanel({ open, onClose }: SettingsPanelProps) {
 
                                 <SettingSection
                                     title={t('settings.account.email')}
-                                    current={user.email}
+                                    current={
+                                        user.pendingEmail
+                                            ? t('settings.account.emailWithPending', {
+                                                  email: user.email,
+                                              })
+                                            : user.email
+                                    }
                                     icon="bi-envelope"
                                 >
                                     {notices.email && (
                                         <Alert type={notices.email.type}>
                                             {notices.email.text}
+                                        </Alert>
+                                    )}
+                                    {/* A new address waits until the link in the mail to it is clicked. */}
+                                    {!notices.email && user.pendingEmail && (
+                                        <Alert type="info">
+                                            {t('settings.account.emailPending', {
+                                                email: user.pendingEmail,
+                                            })}
                                         </Alert>
                                     )}
                                     <form onSubmit={handleEmail}>

@@ -1,5 +1,13 @@
 import { expect, test } from '@playwright/test';
-import { PASSWORD, login, loginAndWait, logout, register, uniqueEmail } from './helpers.ts';
+import {
+    PASSWORD,
+    login,
+    loginAndWait,
+    logout,
+    mailLink,
+    register,
+    uniqueEmail,
+} from './helpers.ts';
 
 // Risk: if people cannot log in, or can see pages that are not theirs, nothing else matters.
 test.describe('authentication and route guards', () => {
@@ -55,6 +63,52 @@ test.describe('authentication and route guards', () => {
         await page.goto('/this-page-does-not-exist');
         await expect(page.getByRole('heading', { name: 'Pagina niet gevonden' })).toBeVisible();
         await page.getByRole('link', { name: 'Terug naar de catalogus' }).click();
+        await expect(page).toHaveURL('/');
+    });
+
+    test('a new account can only log in after confirming the email address', async ({ page }) => {
+        const email = uniqueEmail();
+        await page.goto('/register');
+        await page.getByLabel('Voornaam').fill('Mail');
+        await page.getByLabel('Achternaam').fill('Tester');
+        await page.getByLabel('E-mail').fill(email);
+        await page.getByLabel('Wachtwoord').fill(PASSWORD);
+        await page.getByRole('button', { name: 'Registreren' }).click();
+        await expect(page).toHaveURL('/check-email');
+        await expect(page.getByText(email).first()).toBeVisible();
+
+        // Logging in before clicking the link does not work, Bo offers to send the mail again.
+        await login(page, email, PASSWORD);
+        await expect(page.getByRole('alert')).toContainText('Bevestig eerst je e-mailadres');
+        await expect(page.getByRole('button', { name: 'Stuur de mail opnieuw' })).toBeVisible();
+
+        // The link logs the student in and starts the reading profile game. It works only once.
+        const link = await mailLink(page, email, '/verify-email');
+        await page.goto(link);
+        await expect(page).toHaveURL('/welcome');
+        await page.getByRole('button', { name: 'Later invullen' }).click();
+        await logout(page);
+        await page.goto(link);
+        await expect(page.getByRole('heading', { name: 'Deze link werkt niet' })).toBeVisible();
+    });
+
+    test('a forgotten password can be replaced with the link from the mail', async ({ page }) => {
+        const email = await register(page, 'Forgetful Student');
+        await logout(page);
+
+        await page.getByRole('link', { name: 'Wachtwoord vergeten?' }).click();
+        await page.getByLabel('E-mail').fill(email);
+        await page.getByRole('button', { name: 'Stuur mij een link' }).click();
+        await expect(page.getByRole('status').filter({ hasText: email })).toBeVisible();
+
+        await page.goto(await mailLink(page, email, '/reset-password'));
+        await page.getByLabel(/^Nieuw wachtwoord/).fill('Vergeten-Wachtwoord2');
+        await page.getByLabel('Herhaal je nieuwe wachtwoord').fill('Vergeten-Wachtwoord2');
+        await page.getByRole('button', { name: 'Wachtwoord opslaan' }).click();
+        await expect(page).toHaveURL(/\/login$/);
+        await expect(page.getByText('Je nieuwe wachtwoord is opgeslagen')).toBeVisible();
+
+        await loginAndWait(page, email, 'Vergeten-Wachtwoord2', { openPage: false });
         await expect(page).toHaveURL('/');
     });
 });

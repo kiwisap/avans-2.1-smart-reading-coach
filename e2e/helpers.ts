@@ -2,6 +2,40 @@ import { expect, type Page } from '@playwright/test';
 
 export const PASSWORD = 'E2e-Password1!';
 
+// The API must run with DEV_MAIL_OUTBOX=true, then the mails it sends can be read here.
+const API_URL = process.env.E2E_API_URL ?? 'http://localhost:3000';
+
+interface OutboxMail {
+    to: string;
+    subject: string;
+    text: string;
+}
+
+// The newest link in a mail to this address, as a path for page.goto (for example
+// /verify-email?token=...). Waits a moment, because the mail is sent during the request.
+export async function mailLink(page: Page, to: string, path: string): Promise<string> {
+    let link = '';
+    await expect
+        .poll(
+            async () => {
+                const response = await page.request.get(
+                    `${API_URL}/api/dev/mails?to=${encodeURIComponent(to)}`,
+                );
+                const { mails } = (await response.json()) as { mails: OutboxMail[] };
+                const pattern = new RegExp(`${path}\\?token=[A-Za-z0-9_-]+`);
+                const match = mails
+                    .map((mail) => mail.text.match(pattern)?.[0])
+                    .filter(Boolean)
+                    .at(-1);
+                link = match ?? '';
+                return link;
+            },
+            { message: `a mail to ${to} with a ${path} link (is DEV_MAIL_OUTBOX=true?)` },
+        )
+        .not.toBe('');
+    return link;
+}
+
 // A new address for every call, so tests never depend on each other or on earlier runs.
 export function uniqueEmail(prefix = 'student'): string {
     const random = Math.random().toString(36).slice(2, 8);
@@ -22,8 +56,11 @@ export async function register(
     await page.getByLabel('E-mail').fill(email);
     await page.getByLabel('Wachtwoord').fill(PASSWORD);
     await page.getByRole('button', { name: 'Registreren' }).click();
-    // After registering the app starts the reading profile game. Most tests skip it and go on
-    // to the catalogue; onboarding.spec.ts plays it.
+    // First the email address: the link in the mail logs the student in.
+    await expect(page).toHaveURL('/check-email');
+    await page.goto(await mailLink(page, email, '/verify-email'));
+    // Then the app starts the reading profile game. Most tests skip it and go on to the
+    // catalogue; onboarding.spec.ts plays it.
     await expect(page).toHaveURL('/welcome');
     if (skipOnboarding) {
         await page.getByRole('button', { name: 'Later invullen' }).click();
