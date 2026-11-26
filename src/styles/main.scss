@@ -588,8 +588,19 @@ $navbar-light-active-color: $forest;
     flex-shrink: 0;
 }
 
+.mascot {
+    display: inline-block;
+    flex-shrink: 0;
+    line-height: 0;
+}
+
 .mascot-body {
-    transform-origin: 60px 110px;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    user-select: none;
+    transform-origin: 50% 100%;
     animation: mascot-bob 3s ease-in-out infinite;
 }
 
@@ -598,9 +609,8 @@ $navbar-light-active-color: $forest;
     animation: mascot-hop 0.6s ease-out 2;
 }
 
-.mascot-wave {
-    transform-origin: 96px 68px;
-    animation: mascot-wave 1.2s ease-in-out infinite;
+.mascot-wave .mascot-body {
+    animation: mascot-sway 2.4s ease-in-out infinite;
 }
 
 .speech-bubble {
@@ -880,13 +890,16 @@ $navbar-light-active-color: $forest;
     }
 }
 
-@keyframes mascot-wave {
+@keyframes mascot-sway {
     0%,
     100% {
         transform: rotate(0deg);
     }
-    50% {
-        transform: rotate(-18deg);
+    25% {
+        transform: rotate(-3deg);
+    }
+    75% {
+        transform: rotate(3deg);
     }
 }
 
@@ -958,7 +971,6 @@ $navbar-light-active-color: $forest;
 // Respect people who get dizzy or distracted from motion.
 @media (prefers-reduced-motion: reduce) {
     .mascot-body,
-    .mascot-wave,
     .xp-pop,
     .quest-card,
     .quest-badge,
