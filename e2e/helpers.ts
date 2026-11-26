@@ -75,6 +75,15 @@ export async function openSettings(page: Page) {
     return panel;
 }
 
+// The settings (name, email, password, removing the account) slide over the profile panel.
+export async function openAccountSettings(page: Page) {
+    const panel = await openSettings(page);
+    await panel.getByRole('button', { name: /^Instellingen Naam/ }).click();
+    const settings = panel.getByRole('region', { name: 'Instellingen' });
+    await expect(settings).toBeVisible();
+    return settings;
+}
+
 export async function logout(page: Page) {
     const panel = await openSettings(page);
     await panel.getByRole('button', { name: 'Uitloggen' }).click();

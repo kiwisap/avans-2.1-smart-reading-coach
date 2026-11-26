@@ -1049,6 +1049,89 @@ $navbar-light-active-color: $forest;
     height: 100%;
 }
 
+// The profile and the settings lie on top of each other; the settings slide in from the right.
+.settings-views {
+    position: relative;
+    flex-grow: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.settings-view {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    background: $paper;
+}
+
+.settings-sub {
+    transform: translateX(100%);
+    visibility: hidden;
+    transition:
+        transform 0.25s ease-out,
+        visibility 0s linear 0.25s;
+    box-shadow: -0.5rem 0 1.5rem rgba($ink, 0.12);
+
+    &.is-open {
+        transform: none;
+        visibility: visible;
+        transition: transform 0.25s ease-out;
+    }
+}
+
+.settings-back {
+    padding: 0.25rem 0.5rem;
+    font-size: 1.25rem;
+    color: $ink;
+    text-decoration: none;
+}
+
+.settings-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    background: $paper-card;
+    color: $ink;
+    text-align: left;
+
+    &:hover {
+        border-color: $forest;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $forest;
+        outline-offset: 2px;
+    }
+
+    > .bi:first-child {
+        font-size: 1.25rem;
+        color: $terracotta;
+    }
+}
+
+// About the app: one small line, always at the bottom of the panel.
+.settings-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 0.5rem 1rem;
+    border-top: 1px solid $border-color;
+    background: $paper-card;
+    font-size: 0.75rem;
+    color: $secondary;
+
+    code {
+        font-size: inherit;
+        color: $ink;
+    }
+}
+
 .settings-header {
     display: flex;
     align-items: center;
@@ -1153,31 +1236,6 @@ $navbar-light-active-color: $forest;
     padding: 0.25rem 1rem 1rem;
 }
 
-.settings-about dl {
-    display: grid;
-    gap: 0.35rem;
-    font-size: 0.9rem;
-
-    div {
-        display: flex;
-        justify-content: space-between;
-        gap: 1rem;
-    }
-
-    dt {
-        font-weight: 600;
-    }
-
-    dd {
-        margin: 0;
-        text-align: right;
-    }
-
-    code {
-        color: $ink;
-    }
-}
-
 @keyframes panel-in {
     from {
         transform: translateX(100%);
@@ -1189,6 +1247,7 @@ $navbar-light-active-color: $forest;
 
 @media (prefers-reduced-motion: reduce) {
     .settings-panel[open],
+    .settings-sub,
     .setting-chevron,
     .settings-fold-arrow {
         animation: none;

@@ -451,8 +451,6 @@
             "passwordCurrent": "Kies een nieuw wachtwoord"
         },
         "about": {
-            "heading": "Over de app",
-            "version": "Versie",
             "built": "Gebouwd op",
             "commit": "Commit"
         },
@@ -494,6 +492,12 @@
             "deleting": "Verwijderen...",
             "cancel": "Toch niet",
             "done": "Je account is verwijderd. Bedankt voor het lezen met Bo!"
+        },
+        "more": "Meer",
+        "page": {
+            "title": "Instellingen",
+            "summary": "Naam, e-mailadres, wachtwoord en je account",
+            "back": "Terug naar je profiel"
         }
     },
     "game": {

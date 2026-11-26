@@ -1,39 +1,58 @@
 import { expect, test } from '@playwright/test';
-import { PASSWORD, login, loginAndWait, logout, openSettings, register } from './helpers.ts';
+import {
+    PASSWORD,
+    login,
+    loginAndWait,
+    logout,
+    openAccountSettings,
+    openSettings,
+    register,
+} from './helpers.ts';
 
 // The settings panel opens from the name in the menu.
 test.describe('settings', () => {
     test('a student changes the name and the password', async ({ page }) => {
         const email = await register(page, `Settings Student${Date.now()}`);
 
-        let panel = await openSettings(page);
+        const panel = await openSettings(page);
         // The profile game was skipped, so Bo invites the student to fill it in.
         await expect(panel.getByRole('button', { name: 'Invullen met Bo' })).toBeVisible();
         // Bo explains that it is an AI, behind a fold.
         await expect(panel.getByText('Bo is een AI')).toBeHidden();
         await panel.getByText('Over Bo', { exact: true }).click();
         await expect(panel.getByText('Bo is een AI')).toBeVisible();
+        // About the app is a small footer that is always there.
+        await expect(panel.locator('footer')).toContainText('Smart Reading Coach');
 
-        await panel.getByText('Naam', { exact: true }).click();
+        // The settings slide over the profile, and back.
+        await panel.getByRole('button', { name: /^Instellingen Naam/ }).click();
+        let settings = panel.getByRole('region', { name: 'Instellingen' });
+        await expect(settings).toBeVisible();
+        await settings.getByRole('button', { name: 'Terug naar je profiel' }).click();
+        await expect(settings).toBeHidden();
+        await expect(panel.getByRole('button', { name: /^Instellingen Naam/ })).toBeFocused();
+        await panel.getByRole('button', { name: /^Instellingen Naam/ }).click();
+
+        await settings.getByText('Naam', { exact: true }).click();
         const lastName = `Berg${Date.now()}`;
-        await panel.getByLabel('Voornaam').fill('Sanne');
-        await panel.getByLabel('Tussenvoegsel').fill('van der');
-        await panel.getByLabel('Achternaam').fill(lastName);
-        await panel.getByRole('button', { name: 'Naam opslaan' }).click();
-        await expect(panel.getByText('Je naam is aangepast.')).toBeVisible();
-        await panel.getByRole('button', { name: 'Instellingen sluiten' }).click();
+        await settings.getByLabel('Voornaam').fill('Sanne');
+        await settings.getByLabel('Tussenvoegsel').fill('van der');
+        await settings.getByLabel('Achternaam').fill(lastName);
+        await settings.getByRole('button', { name: 'Naam opslaan' }).click();
+        await expect(settings.getByText('Je naam is aangepast.')).toBeVisible();
+        await settings.getByRole('button', { name: 'Instellingen sluiten' }).click();
         await expect(
             page.getByRole('button', { name: `Instellingen van Sanne van der ${lastName} openen` }),
         ).toBeVisible();
 
-        panel = await openSettings(page);
-        await panel.getByText('Wachtwoord', { exact: true }).click();
-        await panel.locator('details[open]').getByLabel('Huidig wachtwoord').fill(PASSWORD);
-        await panel.getByLabel('Nieuw wachtwoord', { exact: true }).fill('Nieuw-Wachtwoord1');
-        await panel.getByLabel('Herhaal je nieuwe wachtwoord').fill('Nieuw-Wachtwoord1');
-        await panel.getByRole('button', { name: 'Wachtwoord wijzigen' }).click();
-        await expect(panel.getByText('Je wachtwoord is gewijzigd.')).toBeVisible();
-        await panel.getByRole('button', { name: 'Instellingen sluiten' }).click();
+        settings = await openAccountSettings(page);
+        await settings.getByText('Wachtwoord', { exact: true }).click();
+        await settings.locator('details[open]').getByLabel('Huidig wachtwoord').fill(PASSWORD);
+        await settings.getByLabel('Nieuw wachtwoord', { exact: true }).fill('Nieuw-Wachtwoord1');
+        await settings.getByLabel('Herhaal je nieuwe wachtwoord').fill('Nieuw-Wachtwoord1');
+        await settings.getByRole('button', { name: 'Wachtwoord wijzigen' }).click();
+        await expect(settings.getByText('Je wachtwoord is gewijzigd.')).toBeVisible();
+        await settings.getByRole('button', { name: 'Instellingen sluiten' }).click();
 
         await logout(page);
         await loginAndWait(page, email, 'Nieuw-Wachtwoord1');
@@ -42,7 +61,7 @@ test.describe('settings', () => {
 
     test('a new email address needs the current password', async ({ page }) => {
         await register(page, `Email Student${Date.now()}`);
-        const panel = await openSettings(page);
+        const panel = await openAccountSettings(page);
         await panel.getByText('E-mailadres', { exact: true }).click();
         await panel.getByLabel('Nieuw e-mailadres').fill(`changed.${Date.now()}@e2e.test`);
         await panel
@@ -55,7 +74,7 @@ test.describe('settings', () => {
 
     test('a student removes the account after typing the confirmation', async ({ page }) => {
         const email = await register(page, `Delete Student${Date.now()}`);
-        const panel = await openSettings(page);
+        const panel = await openAccountSettings(page);
         await panel.getByRole('button', { name: 'Account verwijderen' }).click();
 
         const confirm = page.getByRole('dialog', { name: 'Weet je het zeker?' });
