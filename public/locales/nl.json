@@ -156,7 +156,8 @@
         "addLabel": "Voeg {{title}} toe aan je leeslijst",
         "onList": "Op je leeslijst",
         "added": "\"{{title}}\" is toegevoegd aan je leeslijst.",
-        "removed": "\"{{title}}\" is van je leeslijst verwijderd."
+        "removed": "\"{{title}}\" is van je leeslijst verwijderd.",
+        "xpTip": "Tip: een titel uitlezen levert {{read}} XP op, en als je Bo vertelt wat je ervan vond krijg je er {{rated}} XP bij."
     },
     "advice": {
         "title": "Bo’s leesadvies",
@@ -170,7 +171,8 @@
         "boNoProfile": "Ik ken je nog niet zo goed. Vertel me wat je leuk vindt, dan zoek ik titels voor je uit.",
         "boError": "Oeps, er ging iets mis. Probeer het nog een keer.",
         "startProfile": "Leesprofiel invullen met Bo",
-        "disclaimer": "Bo is een AI en kan het mis hebben. Jij kiest zelf wat je leest."
+        "disclaimer": "Bo is een AI en kan het mis hebben. Jij kiest zelf wat je leest.",
+        "changes": "Bo laat geen titels zien die al op je leeslijst staan. Lees je iets uit of voeg je iets toe, dan zoekt hij nieuwe tips."
     },
     "profile": {
         "title": "Mijn leesprofiel",
@@ -269,7 +271,8 @@
         "noAdvice": "Er is nog geen leesadvies, omdat de leerling nog geen leesprofiel heeft ingevuld.",
         "addToList": "Op leeslijst zetten",
         "addToListLabel": "Zet {{title}} op de leeslijst van {{name}}",
-        "onList": "Op de leeslijst"
+        "onList": "Op de leeslijst",
+        "gameHeading": "XP en badges"
     },
     "teacherAdd": {
         "heading": "Voeg een titel toe aan de leeslijst van {{name}}",
@@ -492,5 +495,126 @@
             "cancel": "Toch niet",
             "done": "Je account is verwijderd. Bedankt voor het lezen met Bo!"
         }
+    },
+    "game": {
+        "xp": "{{xp}} XP",
+        "chipLabel": "Je hebt {{xp}} XP. Bekijk je badges",
+        "gained": "+{{xp}} XP",
+        "newBadge": "Nieuwe badge: {{name}}!",
+        "close": "Melding sluiten",
+        "heading": "Jouw XP en badges",
+        "toNext": "Nog {{xp}} XP tot de badge {{name}}.",
+        "toNextOther": "{{student}} heeft nog {{xp}} XP nodig voor de badge {{name}}.",
+        "allEarned": "Je hebt alle badges verdiend. Echte leeslegende!",
+        "allEarnedOther": "{{student}} heeft alle badges verdiend.",
+        "progressLabel": "Voortgang naar de volgende badge",
+        "badgesLabel": "Badges",
+        "earnedOn": "Verdiend op {{date}}",
+        "locked": "Vanaf {{xp}} XP",
+        "howTo": "Zo verdien je XP",
+        "rewards": {
+            "profile": "Je leesprofiel invullen",
+            "addedFromAdvice": "Een tip van Bo op je leeslijst zetten",
+            "added": "Een titel uit de catalogus op je leeslijst zetten",
+            "read": "Een titel uitlezen",
+            "rated": "Bo vertellen wat je ervan vond"
+        },
+        "badges": {
+            "firstPage": {
+                "name": "Eerste bladzijde"
+            },
+            "bookworm": {
+                "name": "Boekenwurm"
+            },
+            "readingKnight": {
+                "name": "Leesridder"
+            },
+            "storyHunter": {
+                "name": "Verhalenjager"
+            },
+            "pageBoss": {
+                "name": "Bladzijdenbaas"
+            },
+            "legend": {
+                "name": "Leeslegende"
+            }
+        }
+    },
+    "rating": {
+        "title": "Wat vond je van {{title}}?",
+        "boAsk": "Je hebt \"{{title}}\" uit, goed bezig! Wat vond je ervan? Daar leer ik van, en zo kan ik ook andere leerlingen beter helpen.",
+        "boAgain": "Wil je aanpassen wat je van \"{{title}}\" vond?",
+        "starsLegend": "Hoeveel sterren geef je?",
+        "stars_one": "{{count}} van de {{max}} sterren",
+        "stars_other": "{{count}} van de {{max}} sterren",
+        "word": {
+            "1": "Niks aan",
+            "2": "Viel tegen",
+            "3": "Best oké",
+            "4": "Goed!",
+            "5": "Echt een aanrader!"
+        },
+        "commentLabel": "Wil je er iets over zeggen? (mag je overslaan)",
+        "commentPlaceholder": "Bijvoorbeeld: spannend einde, maar het begin was traag",
+        "commentHint": "Nog {{left}} tekens. Je docent kan dit lezen.",
+        "skip": "Overslaan",
+        "save": "Opslaan",
+        "saving": "Opslaan...",
+        "saved": "Bedankt! Bo onthoudt wat je van \"{{title}}\" vond.",
+        "rate": "Beoordelen",
+        "rateLabel": "Beoordeel {{title}}",
+        "change": "Aanpassen",
+        "changeLabel": "Pas je beoordeling van {{title}} aan"
+    },
+    "source": {
+        "student": {
+            "advice": "Tip van Bo",
+            "catalog": "Uit de catalogus",
+            "teacher": "Van je docent"
+        },
+        "teacher": {
+            "advice": "Via advies van Bo",
+            "catalog": "Uit de catalogus",
+            "teacher": "Door docent toegevoegd"
+        }
+    },
+    "stats": {
+        "title": "Helpt het advies van Bo?",
+        "intro": "Over al je gekoppelde leerlingen: wat Bo liet zien, wat er op de leeslijsten kwam en waarvandaan, wat er gelezen is en hoe het beoordeeld werd.",
+        "loading": "Cijfers laden",
+        "empty": "Nog geen cijfers: Bo heeft je leerlingen nog geen tips laten zien.",
+        "none": "geen",
+        "stars": "{{value}} ★",
+        "shown": "Tips van Bo",
+        "taken": "Op de leeslijst gezet",
+        "ofShown": "{{percent}} van de tips",
+        "readFromAdvice": "Tips uitgelezen",
+        "ofAdded": "{{percent}} van wat erop kwam",
+        "ratingAdvice": "Waardering tips",
+        "vsCatalog": "catalogus: {{stars}}",
+        "sourcesCaption": "Waar komen de titels op de leeslijsten vandaan?",
+        "modelsCaption": "AI model tegenover vaste regels",
+        "col": {
+            "source": "Bron",
+            "onList": "Op leeslijst",
+            "read": "Gelezen",
+            "rated": "Beoordeeld",
+            "average": "Gemiddeld",
+            "model": "Advies door",
+            "shown": "Getoond",
+            "added": "Toegevoegd"
+        },
+        "source": {
+            "advice": "Advies van Bo",
+            "catalog": "Catalogus",
+            "teacher": "Docent",
+            "unknown": "Onbekend (van voor de meting)"
+        },
+        "model": {
+            "ai": "AI model",
+            "rules": "Vaste regels"
+        },
+        "alsoSuggested_one": "{{count}} titel kwam via de catalogus op een leeslijst, terwijl Bo hem ook had getipt.",
+        "alsoSuggested_other": "{{count}} titels kwamen via de catalogus op een leeslijst, terwijl Bo ze ook had getipt."
     }
 }

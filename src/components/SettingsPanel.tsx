@@ -3,7 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { apiFetch, errorMessage } from '../api/client.ts';
 import { useAuth } from '../auth/AuthContext.tsx';
 import type { ReadingProfile, User } from '../types/api.ts';
+import { useProgress } from '../game/ProgressContext.tsx';
 import Alert from './Alert.tsx';
+import BadgeShelf from './BadgeShelf.tsx';
 import BoSays from './BoSays.tsx';
 import Button from './Button.tsx';
 import DeleteAccountDialog from './DeleteAccountDialog.tsx';
@@ -25,6 +27,7 @@ type Form = 'name' | 'email' | 'password';
 type AiStatus = 'ok' | 'unavailable' | 'disabled' | 'unknown';
 
 const BO_POINTS = ['learned', 'private', 'wrong', 'teacher', 'fallback'] as const;
+const REWARDS = ['profile', 'addedFromAdvice', 'added', 'read', 'rated'] as const;
 
 // A small form inside a collapsible section.
 function SettingSection({
@@ -70,8 +73,9 @@ function FoldHeading({ id, title, children }: { id: string; title: string; child
     );
 }
 
-// Settings of the logged in user as a panel on the right: reading profile (with Bo), linked
-// teachers, name, email, password, logging out, what Bo is, information about the app and removing the account.
+// Settings of the logged in user as a panel on the right: reading profile (with Bo), XP and
+// badges, linked teachers, name, email, password, logging out, what Bo is, information about
+// the app and removing the account.
 // A native <dialog>, so it traps the focus, closes on Escape and gives the focus back.
 // Layout mounts it again on every opening, so the forms always start fresh.
 export default function SettingsPanel({ open, onClose }: SettingsPanelProps) {
@@ -96,6 +100,7 @@ export default function SettingsPanel({ open, onClose }: SettingsPanelProps) {
     const [notices, setNotices] = useState<Partial<Record<Form, Notice>>>({});
     const [deleteOpen, setDeleteOpen] = useState(false);
     const [teachersOpen, setTeachersOpen] = useState(false);
+    const { progress } = useProgress();
 
     const isStudent = user?.role === 'student';
 
@@ -324,6 +329,31 @@ export default function SettingsPanel({ open, onClose }: SettingsPanelProps) {
                                     </Link>
                                 </div>
                             )}
+                        </section>
+                    )}
+
+                    {isStudent && progress && (
+                        <section aria-labelledby={`${titleId}-game`} className="settings-block">
+                            <h3 id={`${titleId}-game`} className="settings-heading">
+                                {t('game.heading')}
+                            </h3>
+                            <BadgeShelf progress={progress} />
+                            <div className="mt-3">
+                                <FoldHeading id={`${titleId}-howto`} title={t('game.howTo')}>
+                                    <ul className="xp-rewards list-unstyled mb-0">
+                                        {REWARDS.map((reward) => (
+                                            <li key={reward}>
+                                                <span>{t(`game.rewards.${reward}`)}</span>
+                                                <span className="xp-hint">
+                                                    {t('game.gained', {
+                                                        xp: progress.rewards[reward],
+                                                    })}
+                                                </span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </FoldHeading>
+                            </div>
                         </section>
                     )}
 

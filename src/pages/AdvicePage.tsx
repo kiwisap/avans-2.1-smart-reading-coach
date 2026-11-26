@@ -88,6 +88,10 @@ export default function AdvicePage() {
                             components={{ profile: <Link to="/welcome" /> }}
                         />
                     </p>
+                    <p className="small text-body-secondary mb-1">
+                        <i className="bi bi-arrow-repeat me-1" aria-hidden="true" />
+                        {t('advice.changes')}
+                    </p>
                     {/* Transparency (AI Act): the student knows an AI chose these titles. */}
                     <p className="advice-source small text-body-secondary mb-3">
                         <i className="bi bi-cpu me-1" aria-hidden="true" />
@@ -104,7 +108,8 @@ export default function AdvicePage() {
                                 <AddToListButton
                                     book={book}
                                     onList={readingList.bookIds.has(book.id)}
-                                    onAdd={readingList.add}
+                                    onAdd={(added) => readingList.add(added, 'advice')}
+                                    source="advice"
                                 />
                             </BookCard>
                         ))}

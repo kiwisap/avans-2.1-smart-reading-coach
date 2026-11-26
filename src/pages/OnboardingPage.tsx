@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState, type ChangeEvent, type SubmitEven
 import { useNavigate } from 'react-router-dom';
 import { apiFetch, errorMessage } from '../api/client.ts';
 import { useAuth } from '../auth/AuthContext.tsx';
+import { useProgress } from '../game/ProgressContext.tsx';
 import Alert from '../components/Alert.tsx';
 import BrandMark from '../components/BrandMark.tsx';
 import Button from '../components/Button.tsx';
@@ -75,6 +76,7 @@ const CHEERS = [
 export default function OnboardingPage() {
     const { t } = useTranslation();
     const { token, user } = useAuth();
+    const { refresh: refreshProgress } = useProgress();
     const navigate = useNavigate();
     const userId = user?.id ?? '';
     const firstName = (user?.name ?? '').trim().split(/\s+/)[0] ?? '';
@@ -188,6 +190,7 @@ export default function OnboardingPage() {
                 body: toProfileInput(values),
             });
             clearDraft(userId);
+            void refreshProgress(); // the first save earns XP
             setGained((count) => count + 1);
             goTo(DONE);
         } catch (err) {

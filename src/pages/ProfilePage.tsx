@@ -2,6 +2,7 @@ import { useEffect, useState, type SubmitEvent, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { apiFetch, errorMessage } from '../api/client.ts';
 import { useAuth } from '../auth/AuthContext.tsx';
+import { useProgress } from '../game/ProgressContext.tsx';
 import Alert from '../components/Alert.tsx';
 import Button from '../components/Button.tsx';
 import ConfirmDialog from '../components/ConfirmDialog.tsx';
@@ -31,6 +32,7 @@ interface Message {
 export default function ProfilePage() {
     const { t } = useTranslation();
     const { token, user } = useAuth();
+    const { refresh: refreshProgress } = useProgress();
     const userId = user?.id ?? '';
     const [options, setOptions] = useState<ProfileOptions | null>(null);
     const [saved, setSaved] = useState<ReadingProfile | null | undefined>(undefined); // undefined: loading, null: no profile yet
@@ -122,6 +124,7 @@ export default function ProfilePage() {
                 body: toProfileInput(values),
             });
             clearDraft(userId);
+            void refreshProgress(); // the first save earns XP
             setSaved(profile);
             setEditing(false);
             setMessage({

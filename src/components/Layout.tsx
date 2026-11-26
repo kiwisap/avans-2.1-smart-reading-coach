@@ -4,6 +4,7 @@ import { useAuth } from '../auth/AuthContext.tsx';
 import BrandMark from './BrandMark.tsx';
 import ErrorBoundary from './ErrorBoundary.tsx';
 import SettingsPanel from './SettingsPanel.tsx';
+import XpChip from './XpChip.tsx';
 import { useTranslation } from 'react-i18next';
 
 interface NavItem {
@@ -90,6 +91,7 @@ export default function Layout() {
                             </ul>
 
                             <div className="d-flex align-items-lg-center flex-column flex-lg-row gap-2 mt-3 mt-lg-0">
+                                {user?.role === 'student' && <XpChip onOpen={openSettings} />}
                                 {user ? (
                                     <button
                                         type="button"

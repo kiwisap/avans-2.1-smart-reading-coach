@@ -1314,3 +1314,323 @@ html.scroll-locked {
         }
     }
 }
+
+// Game: XP, badges and ratings -------------------------------------------------------------
+
+.xp-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid rgba($ochre, 0.5);
+    border-radius: 999px;
+    background: rgba($ochre, 0.14);
+    color: $ink;
+    font-weight: 700;
+    font-size: 0.9rem;
+
+    &:hover {
+        background: rgba($ochre, 0.24);
+    }
+
+    &:focus-visible {
+        outline: 2px solid $forest;
+        outline-offset: 2px;
+    }
+
+    .bi {
+        color: $terracotta;
+    }
+}
+
+.xp-chip-value {
+    display: inline-block;
+    animation: xp-bump 0.5s ease-out;
+}
+
+@keyframes xp-bump {
+    0% {
+        transform: scale(1.35);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.xp-hint {
+    display: inline-block;
+    padding: 0.05rem 0.5rem;
+    border-radius: 999px;
+    background: rgba($ochre, 0.18);
+    color: $ink;
+    font-size: 0.8rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.xp-toasts {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 1090;
+    display: grid;
+    gap: 0.5rem;
+    width: min(20rem, calc(100% - 2rem));
+}
+
+.xp-toast {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: $border-radius-lg;
+    background: $forest;
+    color: #fff;
+    box-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.25);
+    animation: xp-in 0.35s ease-out;
+
+    &.has-badge {
+        background: $ink;
+        border: 2px solid $ochre;
+    }
+
+    .btn-close {
+        filter: invert(1) grayscale(1) brightness(2);
+    }
+}
+
+.xp-toast-gain {
+    font-weight: 800;
+    font-size: 1.1rem;
+}
+
+.xp-toast-badge {
+    margin-top: 0.25rem;
+    font-weight: 600;
+}
+
+@keyframes xp-in {
+    from {
+        opacity: 0;
+        transform: translateY(1rem);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.xp-confetti {
+    position: fixed;
+    inset: 0;
+    z-index: 1080;
+    pointer-events: none;
+}
+
+.xp-total {
+    font-family: $headings-font-family;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: $forest;
+
+    .bi {
+        color: $terracotta;
+    }
+}
+
+.xp-progress {
+    height: 0.6rem;
+
+    .progress-bar {
+        background: $ochre;
+    }
+}
+
+.badge-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
+    gap: 0.5rem;
+}
+
+.game-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+    padding: 0.6rem 0.4rem;
+    border: 1px dashed $border-color;
+    border-radius: $border-radius;
+    text-align: center;
+    color: $secondary;
+
+    &.is-earned {
+        border-style: solid;
+        border-color: rgba($ochre, 0.6);
+        background: rgba($ochre, 0.08);
+        color: $ink;
+
+        .game-badge-icon {
+            background: $forest;
+            color: #fff;
+        }
+    }
+}
+
+.game-badge-icon {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: $light;
+    font-size: 1.15rem;
+}
+
+.game-badge-name {
+    font-weight: 700;
+    font-size: 0.85rem;
+    line-height: 1.2;
+}
+
+.game-badge-meta {
+    font-size: 0.75rem;
+}
+
+.xp-rewards li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+
+    & + li {
+        margin-top: 0.35rem;
+    }
+}
+
+.stars {
+    display: inline-flex;
+    gap: 0.1rem;
+    color: $ochre;
+}
+
+.star-input {
+    display: inline-flex;
+    gap: 0.25rem;
+
+    label {
+        cursor: pointer;
+        font-size: 2rem;
+        line-height: 1;
+        color: $secondary;
+        transition: transform 0.1s;
+
+        &.is-on {
+            color: $ochre;
+        }
+
+        &:hover {
+            transform: scale(1.12);
+        }
+    }
+
+    // The radio buttons are hidden, so the focus ring goes on the star.
+    label:has(input:focus-visible) {
+        outline: 2px solid $forest;
+        outline-offset: 2px;
+        border-radius: 0.25rem;
+    }
+}
+
+.rate-dialog {
+    width: min(32rem, calc(100% - 2rem));
+}
+
+.item-comment {
+    padding: 0.4rem 0.6rem;
+    border-left: 3px solid $ochre;
+    background: $light;
+    font-style: italic;
+}
+
+.source-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.1rem 0.55rem;
+    border: 1px solid $border-color;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: $ink;
+
+    &.is-advice {
+        border-color: rgba($forest, 0.4);
+        background: rgba($forest, 0.08);
+    }
+
+    &.is-teacher {
+        border-color: rgba($ocean, 0.4);
+        background: rgba($ocean, 0.08);
+    }
+}
+
+.stat-tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+
+    > div {
+        padding: 0.75rem 1rem;
+        border: 1px solid $border-color;
+        border-radius: $border-radius;
+        background: $paper;
+    }
+
+    dt {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: $secondary;
+    }
+
+    dd {
+        margin: 0;
+        font-family: $headings-font-family;
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: $ink;
+    }
+}
+
+.stat-sub {
+    display: block;
+    font-family: $font-family-sans-serif;
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: $secondary;
+}
+
+.stats-table {
+    caption {
+        caption-side: top;
+        font-weight: 600;
+        color: $ink;
+    }
+
+    td,
+    th {
+        white-space: nowrap;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .xp-chip-value,
+    .xp-toast {
+        animation: none;
+    }
+
+    .star-input label {
+        transition: none;
+    }
+}

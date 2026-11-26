@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { apiFetch, errorMessage } from '../api/client.ts';
 import { useAuth } from '../auth/AuthContext.tsx';
+import AdviceStatsCard from '../components/AdviceStatsCard.tsx';
 import Alert from '../components/Alert.tsx';
 import Button from '../components/Button.tsx';
 import LinkStudentsDialog from '../components/LinkStudentsDialog.tsx';
@@ -53,6 +54,7 @@ export default function StudentsPage() {
                     {t('students.linkButton')}
                 </Button>
             </header>
+            <AdviceStatsCard reloadKey={reloadKey} />
             {error && <Alert onRetry={retry}>{error}</Alert>}
             {!students && !error && <Skeleton lines={4} label={t('students.loading')} />}
             {students?.length === 0 && (

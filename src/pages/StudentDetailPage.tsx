@@ -3,11 +3,14 @@ import { Link, useParams } from 'react-router-dom';
 import { apiFetch, errorMessage } from '../api/client.ts';
 import { useAuth } from '../auth/AuthContext.tsx';
 import Alert from '../components/Alert.tsx';
+import BadgeShelf from '../components/BadgeShelf.tsx';
 import BookCard from '../components/BookCard.tsx';
 import BookGrid from '../components/BookGrid.tsx';
 import MissingBookCard from '../components/MissingBookCard.tsx';
 import ProfileSummary from '../components/ProfileSummary.tsx';
 import Skeleton from '../components/Skeleton.tsx';
+import SourceChip from '../components/SourceChip.tsx';
+import Stars from '../components/Stars.tsx';
 import StatusBadge from '../components/StatusBadge.tsx';
 import StudentAdvice from '../components/StudentAdvice.tsx';
 import TeacherAddBook from '../components/TeacherAddBook.tsx';
@@ -88,7 +91,7 @@ function StudentDetail({ studentId }: { studentId: string | undefined }) {
         );
     }
 
-    const { student, profile, readingList } = overview;
+    const { student, profile, readingList, progress } = overview;
 
     return (
         <section>
@@ -108,6 +111,13 @@ function StudentDetail({ studentId }: { studentId: string | undefined }) {
 
             {error && <Alert>{error}</Alert>}
             {notice && <Alert type="success">{notice}</Alert>}
+
+            <h2 className="h4 mb-3">{t('studentDetail.gameHeading')}</h2>
+            <div className="card shadow-sm mb-4">
+                <div className="card-body">
+                    <BadgeShelf progress={progress} studentName={student.name} />
+                </div>
+            </div>
 
             <h2 className="h4 mb-3">{t('studentDetail.profileHeading')}</h2>
             {profile ? (
@@ -133,7 +143,16 @@ function StudentDetail({ studentId }: { studentId: string | undefined }) {
                 {readingList.map((item) =>
                     item.book ? (
                         <BookCard key={item.id} book={item.book}>
-                            <StatusBadge status={item.status} />
+                            <div className="w-100">
+                                <div className="d-flex flex-wrap align-items-center gap-2">
+                                    <StatusBadge status={item.status} />
+                                    <SourceChip source={item.source} audience="teacher" />
+                                    {item.rating && <Stars rating={item.rating} />}
+                                </div>
+                                {item.comment && (
+                                    <p className="item-comment small mb-0 mt-2">{item.comment}</p>
+                                )}
+                            </div>
                         </BookCard>
                     ) : (
                         <MissingBookCard key={item.id}>
