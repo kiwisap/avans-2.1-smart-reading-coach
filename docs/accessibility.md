@@ -20,8 +20,8 @@ Gescand met de tags `wcag2a`, `wcag2aa`, `wcag21a` en `wcag21aa`. Een schending 
 | Catalogus                                   | leerling | 0       | 0                |
 | Profielformulier, leeg en met foutmelding   | leerling | 0       | 0                |
 | Profieloverzicht en weggooi dialoog         | leerling | 0       | 0                |
-| Advies, leeslijst, mijn docenten            | leerling | 0       | 0                |
-| Leerlingenlijst en leerlingdetail           | docent   | 0       | 0                |
+| Advies, leeslijst, mijn docenten (modal)    | leerling | 0       | 0                |
+| Leerlingen, leerling koppelen, detail       | docent   | 0       | 0                |
 
 Aantal schendingen per pagina, op beide schermformaten gecontroleerd.
 

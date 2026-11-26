@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 interface NavItem {
     to: string;
-    labelKey: 'catalog' | 'advice' | 'readingList' | 'teachers' | 'students'; // key under "nav" in nl.json
+    labelKey: 'catalog' | 'advice' | 'readingList' | 'students'; // key under "nav" in nl.json
     icon: string;
     end?: boolean;
 }
@@ -18,7 +18,6 @@ const COMMON: NavItem[] = [{ to: '/', labelKey: 'catalog', icon: 'bi-collection'
 const STUDENT: NavItem[] = [
     { to: '/advice', labelKey: 'advice', icon: 'bi-stars' },
     { to: '/reading-list', labelKey: 'readingList', icon: 'bi-bookmarks' },
-    { to: '/teachers', labelKey: 'teachers', icon: 'bi-mortarboard' },
 ];
 
 const TEACHER: NavItem[] = [{ to: '/students', labelKey: 'students', icon: 'bi-people' }];

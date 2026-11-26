@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { apiFetch, errorMessage } from '../api/client.ts';
 import { useAuth } from '../auth/AuthContext.tsx';
 import Alert from '../components/Alert.tsx';
+import Button from '../components/Button.tsx';
+import LinkStudentsDialog from '../components/LinkStudentsDialog.tsx';
 import Skeleton from '../components/Skeleton.tsx';
 import type { StudentSummary } from '../types/api.ts';
 import { useTranslation } from 'react-i18next';
@@ -13,7 +15,8 @@ export default function StudentsPage() {
     const [students, setStudents] = useState<StudentSummary[] | null>(null);
     const [error, setError] = useState<string | null>(null);
 
-    const [reloadKey, setReloadKey] = useState(0); // raised by the retry button
+    const [reloadKey, setReloadKey] = useState(0); // raised by the retry button and after linking
+    const [linkOpen, setLinkOpen] = useState(false);
 
     useEffect(() => {
         let cancelled = false;
@@ -34,13 +37,21 @@ export default function StudentsPage() {
         setReloadKey((key) => key + 1);
     }
 
+    function closeLink(changed: boolean) {
+        setLinkOpen(false);
+        if (changed) retry();
+    }
+
     return (
         <section>
-            <header className="mb-4">
-                <h1 className="page-title">
+            <header className="mb-4 d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <h1 className="page-title mb-0">
                     <i className="bi bi-people me-2" aria-hidden="true" />
                     {t('students.title')}
                 </h1>
+                <Button icon="bi-person-plus" onClick={() => setLinkOpen(true)}>
+                    {t('students.linkButton')}
+                </Button>
             </header>
             {error && <Alert onRetry={retry}>{error}</Alert>}
             {!students && !error && <Skeleton lines={4} label={t('students.loading')} />}
@@ -95,6 +106,7 @@ export default function StudentsPage() {
                     ))}
                 </ul>
             )}
+            <LinkStudentsDialog open={linkOpen} onClose={closeLink} />
         </section>
     );
 }

@@ -397,7 +397,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** List the students that linked this teacher */
+        /** List the students this teacher follows */
         get: {
             parameters: {
                 query?: never;
@@ -446,6 +446,215 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/students/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Search students to link to the logged in teacher
+         * @description Searches name and email address. At most 20 results.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Part of the name or email address. */
+                    search: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Matching students. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            students: components["schemas"]["StudentLink"][];
+                        };
+                    };
+                };
+                /** @description Invalid input. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not logged in, or the token is invalid or expired. */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description The role of this user is not allowed to do this. */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/students/{studentId}/link": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Follow a student as the logged in teacher */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description Student id. */
+                    studentId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Linked. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            student: components["schemas"]["StudentLink"];
+                        };
+                    };
+                };
+                /** @description Invalid input. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not logged in, or the token is invalid or expired. */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description The role of this user is not allowed to do this. */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not found. */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        /** Stop following a student */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description Student id. */
+                    studentId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Unlinked. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            student: components["schemas"]["StudentLink"];
+                        };
+                    };
+                };
+                /** @description Invalid input. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not logged in, or the token is invalid or expired. */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description The role of this user is not allowed to do this. */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not found. */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/students/{studentId}": {
         parameters: {
             query?: never;
@@ -455,7 +664,7 @@ export interface paths {
         };
         /**
          * See the profile and reading list of one student
-         * @description Only for students who linked this teacher.
+         * @description Only for students this teacher follows.
          */
         get: {
             parameters: {
@@ -533,7 +742,7 @@ export interface paths {
         };
         /**
          * See the reading advice of one student
-         * @description The same advice the student sees on the advice page. Only for students who linked this teacher.
+         * @description The same advice the student sees on the advice page. Only for students this teacher follows.
          */
         get: {
             parameters: {
@@ -1386,7 +1595,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** List all teachers and whether they are linked to the student */
+        /**
+         * List the teachers who follow the logged in student
+         * @description Teachers link themselves to a student, a student cannot change this list.
+         */
         get: {
             parameters: {
                 query?: never;
@@ -1396,14 +1608,14 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description All teachers. */
+                /** @description Linked teachers. */
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
                         "application/json": {
-                            teachers: components["schemas"]["TeacherLink"][];
+                            teachers: components["schemas"]["LinkedTeacher"][];
                         };
                     };
                 };
@@ -1430,144 +1642,6 @@ export interface paths {
         put?: never;
         post?: never;
         delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/teachers/{teacherId}/link": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /** Let a teacher follow the logged in student */
-        put: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    /** @description Teacher id. */
-                    teacherId: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Linked. */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            teacher: components["schemas"]["TeacherLink"];
-                        };
-                    };
-                };
-                /** @description Invalid input. */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/problem+json": components["schemas"]["ProblemDetails"];
-                    };
-                };
-                /** @description Not logged in, or the token is invalid or expired. */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/problem+json": components["schemas"]["ProblemDetails"];
-                    };
-                };
-                /** @description The role of this user is not allowed to do this. */
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/problem+json": components["schemas"]["ProblemDetails"];
-                    };
-                };
-                /** @description Not found. */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/problem+json": components["schemas"]["ProblemDetails"];
-                    };
-                };
-            };
-        };
-        post?: never;
-        /** Stop a teacher from following the logged in student */
-        delete: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    /** @description Teacher id. */
-                    teacherId: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Unlinked. */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            teacher: components["schemas"]["TeacherLink"];
-                        };
-                    };
-                };
-                /** @description Invalid input. */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/problem+json": components["schemas"]["ProblemDetails"];
-                    };
-                };
-                /** @description Not logged in, or the token is invalid or expired. */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/problem+json": components["schemas"]["ProblemDetails"];
-                    };
-                };
-                /** @description The role of this user is not allowed to do this. */
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/problem+json": components["schemas"]["ProblemDetails"];
-                    };
-                };
-                /** @description Not found. */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/problem+json": components["schemas"]["ProblemDetails"];
-                    };
-                };
-            };
-        };
         options?: never;
         head?: never;
         patch?: never;
@@ -1766,7 +1840,7 @@ export interface components {
             /** @description The book, or null when it was removed from the catalog. */
             book: components["schemas"]["Book"] | (never | null);
         };
-        TeacherLink: {
+        LinkedTeacher: {
             /**
              * Format: uuid
              * @description Teacher id.
@@ -1774,7 +1848,26 @@ export interface components {
             id: string;
             /** @description Teacher name. */
             name: string;
-            /** @description Whether this teacher can see the student. */
+            /**
+             * Format: email
+             * @description Teacher email address.
+             */
+            email: string;
+        };
+        StudentLink: {
+            /**
+             * Format: uuid
+             * @description Student id.
+             */
+            id: string;
+            /** @description Student name. */
+            name: string;
+            /**
+             * Format: email
+             * @description Student email address.
+             */
+            email: string;
+            /** @description Whether this teacher follows the student. */
             linked: boolean;
         };
         StudentSummary: {

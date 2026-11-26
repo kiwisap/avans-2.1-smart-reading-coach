@@ -1,6 +1,13 @@
 import { AxeBuilder } from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
-import { fillAndSaveProfile, loginAndWait, logout, register } from './helpers.ts';
+import {
+    fillAndSaveProfile,
+    linkStudentAsTeacher,
+    loginAndWait,
+    logout,
+    openSettings,
+    register,
+} from './helpers.ts';
 
 // Automated WCAG check with axe-core on every page of the app. Axe finds about a third of all
 // accessibility problems (contrast, names, roles, landmarks, labels). The rest, such as a
@@ -9,7 +16,6 @@ const WCAG_TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'];
 
 const TEACHER_EMAIL = process.env.E2E_TEACHER_EMAIL ?? 'teacher@example.com';
 const TEACHER_PASSWORD = process.env.E2E_TEACHER_PASSWORD ?? 'Password123!';
-const TEACHER_NAME = process.env.E2E_TEACHER_NAME ?? 'Demo Teacher';
 
 // Fails with a readable list: rule, impact, how to fix and the elements concerned.
 async function expectNoViolations(page: Page, label: string) {
@@ -78,12 +84,11 @@ test.describe('accessibility (WCAG 2.1 A and AA)', () => {
         await expect(page.getByRole('article').first()).toBeVisible();
         await expectNoViolations(page, 'reading list');
 
-        await page.goto('/teachers');
-        await expect(page.getByRole('heading', { name: 'Mijn docenten' })).toBeVisible();
-        await expect(
-            page.getByRole('button', { name: `Koppel aan ${TEACHER_NAME}` }),
-        ).toBeVisible();
-        await expectNoViolations(page, 'teachers');
+        const panel = await openSettings(page);
+        await panel.getByRole('button', { name: 'Bekijk mijn docenten' }).click();
+        await expect(page.getByRole('dialog', { name: 'Mijn docenten' })).toBeVisible();
+        await expect(page.getByText('nog geen docent aan je gekoppeld')).toBeVisible();
+        await expectNoViolations(page, 'my teachers');
     });
 
     test('teacher pages', async ({ page, browser }) => {
@@ -91,17 +96,24 @@ test.describe('accessibility (WCAG 2.1 A and AA)', () => {
         const studentName = `Axe Linked ${Date.now()}`;
         await register(page, studentName);
         await fillAndSaveProfile(page);
-        await page.goto('/teachers');
-        await page.getByRole('button', { name: `Koppel aan ${TEACHER_NAME}` }).click();
-        await expect(page.getByText(`Je bent nu gekoppeld aan ${TEACHER_NAME}`)).toBeVisible();
         await logout(page);
 
         const context = await browser.newContext();
         const teacherPage = await context.newPage();
         await loginAndWait(teacherPage, TEACHER_EMAIL, TEACHER_PASSWORD);
 
+        // The search dialog with a result.
         await teacherPage.goto('/students');
-        await expect(teacherPage.getByRole('link', { name: studentName })).toBeVisible();
+        await teacherPage.getByRole('button', { name: 'Leerling koppelen' }).click();
+        const dialog = teacherPage.getByRole('dialog', { name: 'Leerling koppelen' });
+        await dialog.getByLabel('Zoek op naam of e-mailadres').fill(studentName);
+        await expect(
+            dialog.getByRole('button', { name: `Koppel jezelf aan ${studentName}` }),
+        ).toBeVisible();
+        await expectNoViolations(teacherPage, 'link students');
+        await dialog.getByRole('button', { name: 'Klaar' }).click();
+
+        await linkStudentAsTeacher(teacherPage, studentName);
         await expectNoViolations(teacherPage, 'students');
 
         await teacherPage.getByRole('link', { name: studentName }).click();

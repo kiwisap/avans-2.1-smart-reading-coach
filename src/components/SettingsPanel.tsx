@@ -7,6 +7,7 @@ import Alert from './Alert.tsx';
 import BoSays from './BoSays.tsx';
 import Button from './Button.tsx';
 import DeleteAccountDialog from './DeleteAccountDialog.tsx';
+import MyTeachersDialog from './MyTeachersDialog.tsx';
 import TextField from './TextField.tsx';
 import { useTranslation } from 'react-i18next';
 
@@ -54,8 +55,23 @@ function SettingSection({
     );
 }
 
-// Settings of the logged in user as a panel on the right: reading profile (with Bo), name, email,
-// password, logging out, what Bo is, information about the app and removing the account.
+// A plain fold: the section heading with a small arrow, closed by default.
+function FoldHeading({ id, title, children }: { id: string; title: string; children: ReactNode }) {
+    return (
+        <details className="settings-fold">
+            <summary>
+                <h3 id={id} className="settings-heading mb-0">
+                    {title}
+                </h3>
+                <i className="bi bi-chevron-right settings-fold-arrow" aria-hidden="true" />
+            </summary>
+            <div className="settings-fold-body">{children}</div>
+        </details>
+    );
+}
+
+// Settings of the logged in user as a panel on the right: reading profile (with Bo), linked
+// teachers, name, email, password, logging out, what Bo is, information about the app and removing the account.
 // A native <dialog>, so it traps the focus, closes on Escape and gives the focus back.
 // Layout mounts it again on every opening, so the forms always start fresh.
 export default function SettingsPanel({ open, onClose }: SettingsPanelProps) {
@@ -79,6 +95,7 @@ export default function SettingsPanel({ open, onClose }: SettingsPanelProps) {
     const [busy, setBusy] = useState<Form | null>(null);
     const [notices, setNotices] = useState<Partial<Record<Form, Notice>>>({});
     const [deleteOpen, setDeleteOpen] = useState(false);
+    const [teachersOpen, setTeachersOpen] = useState(false);
 
     const isStudent = user?.role === 'student';
 
@@ -310,6 +327,25 @@ export default function SettingsPanel({ open, onClose }: SettingsPanelProps) {
                         </section>
                     )}
 
+                    {isStudent && (
+                        <section aria-labelledby={`${titleId}-teachers`} className="settings-block">
+                            <h3 id={`${titleId}-teachers`} className="settings-heading">
+                                {t('settings.teachers.heading')}
+                            </h3>
+                            <p className="small text-body-secondary mb-2">
+                                {t('settings.teachers.text')}
+                            </p>
+                            <Button
+                                variant="secondary"
+                                icon="bi-mortarboard"
+                                className="w-100"
+                                onClick={() => setTeachersOpen(true)}
+                            >
+                                {t('settings.teachers.button')}
+                            </Button>
+                        </section>
+                    )}
+
                     <section aria-labelledby={`${titleId}-account`} className="settings-block">
                         <h3 id={`${titleId}-account`} className="settings-heading">
                             {t('settings.account.heading')}
@@ -448,53 +484,51 @@ export default function SettingsPanel({ open, onClose }: SettingsPanelProps) {
 
                     {/* Transparency (AI Act): what Bo is, what Bo uses and what Bo cannot do. */}
                     <section aria-labelledby={`${titleId}-bo`} className="settings-block">
-                        <h3 id={`${titleId}-bo`} className="settings-heading">
-                            {t('settings.bo.heading')}
-                        </h3>
-                        <div className="bo-disclaimer">
-                            <p className="fw-semibold mb-2">
-                                <i className="bi bi-cpu me-2" aria-hidden="true" />
-                                {t('settings.bo.intro')}
-                            </p>
-                            <ul className="mb-3">
-                                {BO_POINTS.map((point) => (
-                                    <li key={point}>{t(`settings.bo.points.${point}`)}</li>
-                                ))}
-                            </ul>
-                            <p className="small mb-0">
-                                <span className="fw-semibold">{t('settings.bo.status')}: </span>
-                                <i
-                                    className={`bi ${aiStatus === 'ok' ? 'bi-circle-fill text-success' : 'bi-circle text-secondary'} mx-1 small`}
-                                    aria-hidden="true"
-                                />
-                                {boStatus}
-                            </p>
-                        </div>
+                        <FoldHeading id={`${titleId}-bo`} title={t('settings.bo.heading')}>
+                            <div className="bo-disclaimer">
+                                <p className="fw-semibold mb-2">
+                                    <i className="bi bi-cpu me-2" aria-hidden="true" />
+                                    {t('settings.bo.intro')}
+                                </p>
+                                <ul className="mb-3">
+                                    {BO_POINTS.map((point) => (
+                                        <li key={point}>{t(`settings.bo.points.${point}`)}</li>
+                                    ))}
+                                </ul>
+                                <p className="small mb-0">
+                                    <span className="fw-semibold">{t('settings.bo.status')}: </span>
+                                    <i
+                                        className={`bi ${aiStatus === 'ok' ? 'bi-circle-fill text-success' : 'bi-circle text-secondary'} mx-1 small`}
+                                        aria-hidden="true"
+                                    />
+                                    {boStatus}
+                                </p>
+                            </div>
+                        </FoldHeading>
                     </section>
 
                     <section
                         aria-labelledby={`${titleId}-about`}
                         className="settings-block settings-about"
                     >
-                        <h3 id={`${titleId}-about`} className="settings-heading">
-                            {t('settings.about.heading')}
-                        </h3>
-                        <dl className="mb-0">
-                            <div>
-                                <dt>{t('settings.about.version')}</dt>
-                                <dd>{__APP_VERSION__}</dd>
-                            </div>
-                            <div>
-                                <dt>{t('settings.about.built')}</dt>
-                                <dd>{built}</dd>
-                            </div>
-                            <div>
-                                <dt>{t('settings.about.commit')}</dt>
-                                <dd>
-                                    <code>{__GIT_COMMIT__}</code>
-                                </dd>
-                            </div>
-                        </dl>
+                        <FoldHeading id={`${titleId}-about`} title={t('settings.about.heading')}>
+                            <dl className="mb-0">
+                                <div>
+                                    <dt>{t('settings.about.version')}</dt>
+                                    <dd>{__APP_VERSION__}</dd>
+                                </div>
+                                <div>
+                                    <dt>{t('settings.about.built')}</dt>
+                                    <dd>{built}</dd>
+                                </div>
+                                <div>
+                                    <dt>{t('settings.about.commit')}</dt>
+                                    <dd>
+                                        <code>{__GIT_COMMIT__}</code>
+                                    </dd>
+                                </div>
+                            </dl>
+                        </FoldHeading>
                     </section>
 
                     <section aria-labelledby={`${titleId}-delete`} className="settings-block">
@@ -513,6 +547,9 @@ export default function SettingsPanel({ open, onClose }: SettingsPanelProps) {
                 </div>
             </div>
 
+            {isStudent && (
+                <MyTeachersDialog open={teachersOpen} onClose={() => setTeachersOpen(false)} />
+            )}
             <DeleteAccountDialog open={deleteOpen} onClose={() => setDeleteOpen(false)} />
         </dialog>
     );

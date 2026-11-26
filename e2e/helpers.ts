@@ -109,3 +109,15 @@ export async function fillAndSaveProfile(page: Page) {
         page.getByRole('status').filter({ hasText: 'Je leesprofiel is opgeslagen' }),
     ).toBeVisible();
 }
+
+// A teacher searches a student by name and links themselves to them from the students page.
+export async function linkStudentAsTeacher(page: Page, studentName: string) {
+    await page.goto('/students');
+    await page.getByRole('button', { name: 'Leerling koppelen' }).click();
+    const dialog = page.getByRole('dialog', { name: 'Leerling koppelen' });
+    await dialog.getByLabel('Zoek op naam of e-mailadres').fill(studentName);
+    await dialog.getByRole('button', { name: `Koppel jezelf aan ${studentName}` }).click();
+    await expect(dialog.getByText(`Je bent nu gekoppeld aan ${studentName}.`)).toBeVisible();
+    await dialog.getByRole('button', { name: 'Klaar' }).click();
+    await expect(page.getByRole('link', { name: studentName })).toBeVisible();
+}

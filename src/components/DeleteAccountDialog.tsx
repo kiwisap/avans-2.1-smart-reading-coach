@@ -76,7 +76,10 @@ export default function DeleteAccountDialog({ open, onClose }: DeleteAccountDial
             aria-labelledby={titleId}
             className="dialog delete-dialog"
             onCancel={(event) => {
+                // React passes the event on to the settings panel around this dialog, which
+                // would close as well. Escape only closes this dialog.
                 event.preventDefault();
+                event.stopPropagation();
                 close();
             }}
         >

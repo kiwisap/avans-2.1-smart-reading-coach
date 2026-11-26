@@ -11,7 +11,6 @@ import ReadingListPage from './pages/ReadingListPage.tsx';
 import RegisterPage from './pages/RegisterPage.tsx';
 import StudentDetailPage from './pages/StudentDetailPage.tsx';
 import StudentsPage from './pages/StudentsPage.tsx';
-import TeachersPage from './pages/TeachersPage.tsx';
 
 // The old /catalog address forwards to the home page and keeps the filters in the query.
 function CatalogRedirect() {
@@ -80,14 +79,6 @@ export default function App() {
                     element={
                         <ProtectedRoute roles={['teacher']}>
                             <StudentDetailPage />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/teachers"
-                    element={
-                        <ProtectedRoute roles={['student']}>
-                            <TeachersPage />
                         </ProtectedRoute>
                     }
                 />

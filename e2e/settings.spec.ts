@@ -9,7 +9,9 @@ test.describe('settings', () => {
         let panel = await openSettings(page);
         // The profile game was skipped, so Bo invites the student to fill it in.
         await expect(panel.getByRole('button', { name: 'Invullen met Bo' })).toBeVisible();
-        // Bo explains that it is an AI.
+        // Bo explains that it is an AI, behind a fold.
+        await expect(panel.getByText('Bo is een AI')).toBeHidden();
+        await panel.getByText('Over Bo', { exact: true }).click();
         await expect(panel.getByText('Bo is een AI')).toBeVisible();
 
         await panel.getByText('Naam', { exact: true }).click();

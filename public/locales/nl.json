@@ -32,7 +32,6 @@
         "advice": "Advies van Bo",
         "readingList": "Leeslijst",
         "profile": "Mijn profiel",
-        "teachers": "Mijn docenten",
         "students": "Leerlingen",
         "login": "Inloggen",
         "register": "Registreren",
@@ -221,24 +220,39 @@
     },
     "teachers": {
         "title": "Mijn docenten",
-        "intro": "Een docent aan wie je gekoppeld bent, kan je leesprofiel en je leeslijst zien en titels aan je lijst toevoegen. Je kunt de koppeling altijd weer verwijderen.",
+        "intro": "Deze docenten zijn aan je gekoppeld. Ze kunnen je leesprofiel, je leeslijst en het advies van Bo zien, en titels aan je leeslijst toevoegen.",
         "loading": "Docenten laden",
-        "none": "Er zijn nog geen docenten.",
-        "linked": "Gekoppeld",
-        "link": "Koppel aan deze docent",
-        "unlink": "Ontkoppelen",
-        "linkLabel": "Koppel aan {{name}}",
-        "unlinkLabel": "Ontkoppel van {{name}}",
-        "nowLinked": "Je bent nu gekoppeld aan {{name}}.",
-        "nowUnlinked": "Je bent niet meer gekoppeld aan {{name}}."
+        "none": "Er is nog geen docent aan je gekoppeld. Je docent koppelt zichzelf aan jou.",
+        "contact": "Mail {{name}}",
+        "question": "Staat hier een docent die je niet kent? Vraag het na bij je mentor.",
+        "close": "Sluiten"
     },
     "students": {
         "title": "Jouw leerlingen",
         "loading": "Leerlingen laden",
         "emptyTitle": "Nog geen leerlingen",
-        "emptyHint": "Leerlingen koppelen zichzelf aan jou op hun pagina \"Mijn docenten\".",
+        "emptyHint": "Zoek je leerlingen op en koppel jezelf aan ze met de knop \"Leerling koppelen\".",
         "hasProfile": "Profiel ingevuld",
-        "noProfile": "Nog geen profiel"
+        "noProfile": "Nog geen profiel",
+        "linkButton": "Leerling koppelen",
+        "link": {
+            "title": "Leerling koppelen",
+            "intro": "Zoek een leerling op naam of e-mailadres. Als je gekoppeld bent, zie je het leesprofiel, de leeslijst en het advies van Bo van die leerling. De leerling ziet in de instellingen dat je gekoppeld bent.",
+            "search": "Zoek op naam of e-mailadres",
+            "searchHint": "Typ minstens {{min}} tekens.",
+            "searching": "Zoeken...",
+            "none": "Geen leerlingen gevonden voor \"{{query}}\".",
+            "limit": "Je ziet de eerste {{max}} resultaten. Zoek specifieker als je leerling er niet tussen staat.",
+            "results": "Zoekresultaten",
+            "linked": "Gekoppeld",
+            "link": "Koppelen",
+            "unlink": "Ontkoppelen",
+            "linkLabel": "Koppel jezelf aan {{name}}",
+            "unlinkLabel": "Ontkoppel jezelf van {{name}}",
+            "nowLinked": "Je bent nu gekoppeld aan {{name}}.",
+            "nowUnlinked": "Je bent niet meer gekoppeld aan {{name}}.",
+            "done": "Klaar"
+        }
     },
     "studentDetail": {
         "back": "Terug naar je leerlingen",
@@ -403,6 +417,11 @@
             "start": "Invullen met Bo",
             "edit": "Wijzigen met Bo",
             "form": "Liever alles op één pagina"
+        },
+        "teachers": {
+            "heading": "Mijn docenten",
+            "text": "Bekijk welke docenten je leesprofiel en je leeslijst kunnen zien.",
+            "button": "Bekijk mijn docenten"
         },
         "account": {
             "heading": "Account",
