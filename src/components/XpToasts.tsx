@@ -14,7 +14,7 @@ interface XpToastsProps {
     onDismiss: (id: number) => void;
 }
 
-// "+15 XP" in the corner of the screen after an action, with confetti for a new badge.
+// "+15 veren" in the corner of the screen after an action, with confetti for a new badge.
 // The region is always there, so screen readers announce every new message.
 export default function XpToasts({ toasts, onDismiss }: XpToastsProps) {
     const { t } = useTranslation();
@@ -34,10 +34,7 @@ export default function XpToasts({ toasts, onDismiss }: XpToastsProps) {
                     >
                         <div className="flex-grow-1">
                             <p className="xp-toast-gain mb-0">
-                                <i
-                                    className="bi bi-lightning-charge-fill me-1"
-                                    aria-hidden="true"
-                                />
+                                <i className="bi bi-feather me-1" aria-hidden="true" />
                                 {t('game.gained', { xp: toast.xp })}
                             </p>
                             {toast.badges.map((badge) => (

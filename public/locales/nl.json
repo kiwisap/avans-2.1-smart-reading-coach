@@ -157,7 +157,7 @@
         "onList": "Op je leeslijst",
         "added": "\"{{title}}\" is toegevoegd aan je leeslijst.",
         "removed": "\"{{title}}\" is van je leeslijst verwijderd.",
-        "xpTip": "Tip: een titel uitlezen levert {{read}} XP op, en als je Bo vertelt wat je ervan vond krijg je er {{rated}} XP bij."
+        "xpTip": "Tip: een titel uitlezen levert {{read}} veren van Bo op, en als je Bo vertelt wat je ervan vond krijg je er {{rated}} bij."
     },
     "advice": {
         "title": "Bo’s leesadvies",
@@ -272,7 +272,7 @@
         "addToList": "Op leeslijst zetten",
         "addToListLabel": "Zet {{title}} op de leeslijst van {{name}}",
         "onList": "Op de leeslijst",
-        "gameHeading": "XP en badges"
+        "gameHeading": "Veren en badges"
     },
     "teacherAdd": {
         "heading": "Voeg een titel toe aan de leeslijst van {{name}}",
@@ -294,8 +294,8 @@
         "progress": "Vraag {{current}} van {{total}}",
         "progressStart": "Start",
         "progressLabel": "Voortgang van je leesprofiel",
-        "xp": "{{xp}} XP",
-        "xpOf": "{{xp}} van {{max}} XP",
+        "xp": "{{xp}} veren",
+        "xpOf": "{{xp}} van {{max}} veren",
         "back": "Terug",
         "next": "Volgende",
         "finish": "Klaar!",
@@ -311,7 +311,7 @@
             "title": "Hoi {{name}}!",
             "bubble": "Ik ben Bo, jouw leesmaatje. Beantwoord vijf snelle vragen en ik zoek boeken en artikelen die echt bij jou passen.",
             "time": "Duurt ongeveer een minuut",
-            "rewards": "Elke vraag levert XP op. Haal ze allemaal en ontgrendel je leesadvies.",
+            "rewards": "Elke vraag levert veren van Bo op. Haal ze allemaal en ontgrendel je leesadvies.",
             "change": "Je kunt je antwoorden later altijd nog aanpassen",
             "start": "Ik doe mee",
             "editTitle": "Welkom terug, {{name}}!",
@@ -400,8 +400,8 @@
         "done": {
             "title": "Leesprofiel ontgrendeld!",
             "bubble": "Yes! Je hebt alle vragen gehaald. Ik heb al titels voor je klaarstaan.",
-            "badge": "Je hebt de badge Leesstarter verdiend.",
-            "xpTotal": "{{xp}} XP binnengehaald",
+            "badge": "Je hebt je eerste badge verdiend: Eerste bladzijde!",
+            "xpTotal": "{{xp}} veren van Bo binnengehaald",
             "advice": "Bekijk mijn leesadvies",
             "catalog": "Eerst zelf rondkijken"
         },
@@ -501,21 +501,21 @@
         }
     },
     "game": {
-        "xp": "{{xp}} XP",
-        "chipLabel": "Je hebt {{xp}} XP. Bekijk je badges",
-        "gained": "+{{xp}} XP",
+        "xp": "{{xp}} veren",
+        "chipLabel": "Je hebt {{xp}} veren. Bekijk je badges",
+        "gained": "+{{xp}} veren",
         "newBadge": "Nieuwe badge: {{name}}!",
         "close": "Melding sluiten",
-        "heading": "Jouw XP en badges",
-        "toNext": "Nog {{xp}} XP tot de badge {{name}}.",
-        "toNextOther": "{{student}} heeft nog {{xp}} XP nodig voor de badge {{name}}.",
+        "heading": "Jouw veren en badges",
+        "toNext": "Nog {{xp}} veren tot de badge {{name}}.",
+        "toNextOther": "{{student}} heeft nog {{xp}} veren nodig voor de badge {{name}}.",
         "allEarned": "Je hebt alle badges verdiend. Echte leeslegende!",
         "allEarnedOther": "{{student}} heeft alle badges verdiend.",
         "progressLabel": "Voortgang naar de volgende badge",
         "badgesLabel": "Badges",
         "earnedOn": "Verdiend op {{date}}",
-        "locked": "Vanaf {{xp}} XP",
-        "howTo": "Zo verdien je XP",
+        "locked": "Vanaf {{xp}} veren",
+        "howTo": "Zo verdien je veren",
         "rewards": {
             "profile": "Je leesprofiel invullen",
             "addedFromAdvice": "Een tip van Bo op je leeslijst zetten",
@@ -542,7 +542,8 @@
             "legend": {
                 "name": "Leeslegende"
             }
-        }
+        },
+        "intro": "Bo is een uil. Voor alles wat je leest en doet krijg je een paar van zijn veren, en met genoeg veren verdien je een badge."
     },
     "rating": {
         "title": "Wat vond je van {{title}}?",

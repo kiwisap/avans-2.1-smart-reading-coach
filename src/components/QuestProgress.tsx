@@ -21,7 +21,7 @@ export default function QuestProgress({ current, total, xp, maxXp }: QuestProgre
                         : t('onboarding.progressStart')}
                 </span>
                 <span className="quest-xp">
-                    <i className="bi bi-lightning-charge-fill me-1" aria-hidden="true" />
+                    <i className="bi bi-feather me-1" aria-hidden="true" />
                     {t('onboarding.xp', { xp })}
                 </span>
             </div>

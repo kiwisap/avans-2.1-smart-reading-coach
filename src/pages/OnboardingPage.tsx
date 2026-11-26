@@ -43,7 +43,8 @@ const QUESTIONS = [
 ] as const;
 type Question = (typeof QUESTIONS)[number];
 
-const XP_PER_QUESTION = 20;
+// Five questions of 10 feathers: the same 50 the server gives for a saved reading profile.
+const XP_PER_QUESTION = 10;
 const MAX_XP = QUESTIONS.length * XP_PER_QUESTION;
 const INTRO = 0;
 const DONE = QUESTIONS.length + 1;
@@ -444,7 +445,7 @@ export default function OnboardingPage() {
                             <Mascot mood={mood} size={112} />
                             {gained > 0 && step !== INTRO && (
                                 <span key={gained} className="xp-pop" aria-hidden="true">
-                                    +{XP_PER_QUESTION} XP
+                                    {t('game.gained', { xp: XP_PER_QUESTION })}
                                 </span>
                             )}
                         </div>
@@ -480,10 +481,7 @@ export default function OnboardingPage() {
                                             {t('onboarding.intro.time')}
                                         </li>
                                         <li>
-                                            <i
-                                                className="bi bi-lightning-charge-fill"
-                                                aria-hidden="true"
-                                            />
+                                            <i className="bi bi-feather" aria-hidden="true" />
                                             {t('onboarding.intro.rewards')}
                                         </li>
                                         <li>
@@ -566,10 +564,15 @@ export default function OnboardingPage() {
                                 <h1 ref={headingRef} tabIndex={-1} className="quest-title">
                                     {title}
                                 </h1>
-                                <p className="fs-5 mb-1">{t('onboarding.done.badge')}</p>
-                                <p className="text-body-secondary">
-                                    {t('onboarding.done.xpTotal', { xp: MAX_XP })}
-                                </p>
+                                {/* Feathers and the first badge only come with the first save. */}
+                                {!editing && (
+                                    <>
+                                        <p className="fs-5 mb-1">{t('onboarding.done.badge')}</p>
+                                        <p className="text-body-secondary">
+                                            {t('onboarding.done.xpTotal', { xp: MAX_XP })}
+                                        </p>
+                                    </>
+                                )}
                                 <div className="d-flex flex-column flex-sm-row justify-content-center gap-2 mt-4">
                                     <Button
                                         size="lg"

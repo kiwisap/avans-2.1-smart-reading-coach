@@ -27,9 +27,9 @@ test.describe('profile, advice and reading list', () => {
             cards.first().getByRole('heading', { name: 'Waarom dit bij je past' }),
         ).toBeVisible();
 
-        // Keep the first suggestion. A tip of Bo earns XP, shown in the menu.
+        // Keep the first suggestion. A tip of Bo earns feathers, shown in the menu.
         const title = (await cards.first().getByRole('heading', { level: 2 }).innerText()).trim();
-        const xpBefore = await page.getByRole('button', { name: /^Je hebt \d+ XP/ }).innerText();
+        const xpBefore = await page.getByRole('button', { name: /^Je hebt \d+ veren/ }).innerText();
         const addButton = page
             .getByRole('button', { name: /Voeg .* toe aan je leeslijst/ })
             .first();
@@ -38,8 +38,8 @@ test.describe('profile, advice and reading list', () => {
             page.getByRole('status').filter({ hasText: 'toegevoegd aan je leeslijst' }),
         ).toBeVisible();
         await expect(page.getByText('Op je leeslijst')).toHaveCount(1);
-        await expect(page.getByText('+15 XP').first()).toBeVisible();
-        await expect(page.getByRole('button', { name: /^Je hebt \d+ XP/ })).not.toHaveText(
+        await expect(page.getByText('+15 veren').first()).toBeVisible();
+        await expect(page.getByRole('button', { name: /^Je hebt \d+ veren/ })).not.toHaveText(
             xpBefore,
         );
 

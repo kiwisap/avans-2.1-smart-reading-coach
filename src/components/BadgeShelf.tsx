@@ -18,8 +18,9 @@ export default function BadgeShelf({ progress, studentName }: BadgeShelfProps) {
 
     return (
         <div className="badge-shelf">
+            {!studentName && <p className="small mb-2">{t('game.intro')}</p>}
             <p className="xp-total mb-1">
-                <i className="bi bi-lightning-charge-fill me-1" aria-hidden="true" />
+                <i className="bi bi-feather me-1" aria-hidden="true" />
                 {t('game.xp', { xp: progress.xp })}
             </p>
             <p className="small text-body-secondary mb-2">
