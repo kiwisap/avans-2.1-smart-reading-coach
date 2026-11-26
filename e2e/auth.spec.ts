@@ -34,7 +34,8 @@ test.describe('authentication and route guards', () => {
 
     test('a registration with a too short password is blocked by the form', async ({ page }) => {
         await page.goto('/register');
-        await page.getByLabel('Naam').fill('Short Password');
+        await page.getByLabel('Voornaam').fill('Short');
+        await page.getByLabel('Achternaam').fill('Password');
         await page.getByLabel('E-mail').fill(uniqueEmail());
         await page.getByLabel('Wachtwoord').fill('short');
         await page.getByRole('button', { name: 'Registreren' }).click();

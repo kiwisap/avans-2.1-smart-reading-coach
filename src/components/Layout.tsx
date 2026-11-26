@@ -1,13 +1,15 @@
 import { useState } from 'react';
-import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext.tsx';
 import BrandMark from './BrandMark.tsx';
 import ErrorBoundary from './ErrorBoundary.tsx';
+import SettingsPanel from './SettingsPanel.tsx';
+import XpChip from './XpChip.tsx';
 import { useTranslation } from 'react-i18next';
 
 interface NavItem {
     to: string;
-    labelKey: 'catalog' | 'advice' | 'readingList' | 'profile' | 'teachers' | 'students'; // key under "nav" in nl.json
+    labelKey: 'catalog' | 'advice' | 'readingList' | 'students'; // key under "nav" in nl.json
     icon: string;
     end?: boolean;
 }
@@ -17,26 +19,25 @@ const COMMON: NavItem[] = [{ to: '/', labelKey: 'catalog', icon: 'bi-collection'
 const STUDENT: NavItem[] = [
     { to: '/advice', labelKey: 'advice', icon: 'bi-stars' },
     { to: '/reading-list', labelKey: 'readingList', icon: 'bi-bookmarks' },
-    { to: '/profile', labelKey: 'profile', icon: 'bi-person-lines-fill' },
-    { to: '/teachers', labelKey: 'teachers', icon: 'bi-mortarboard' },
 ];
 
 const TEACHER: NavItem[] = [{ to: '/students', labelKey: 'students', icon: 'bi-people' }];
 
 export default function Layout() {
     const { t } = useTranslation();
-    const { user, logout } = useAuth();
-    const navigate = useNavigate();
+    const { user } = useAuth();
     const { pathname } = useLocation();
     const [open, setOpen] = useState(false);
+    const [settingsOpen, setSettingsOpen] = useState(false);
+    const [settingsKey, setSettingsKey] = useState(0); // a new key gives the panel fresh, empty forms
 
     const items = user ? [...COMMON, ...(user.role === 'student' ? STUDENT : TEACHER)] : [];
     const close = () => setOpen(false);
 
-    function handleLogout() {
+    function openSettings() {
         close();
-        logout();
-        navigate('/login');
+        setSettingsKey((key) => key + 1);
+        setSettingsOpen(true);
     }
 
     return (
@@ -90,31 +91,27 @@ export default function Layout() {
                             </ul>
 
                             <div className="d-flex align-items-lg-center flex-column flex-lg-row gap-2 mt-3 mt-lg-0">
+                                {user?.role === 'student' && <XpChip onOpen={openSettings} />}
                                 {user ? (
-                                    <>
-                                        <span className="d-flex align-items-center gap-2">
-                                            <span className="avatar" aria-hidden="true">
-                                                {user.name.charAt(0).toUpperCase()}
-                                            </span>
-                                            <span className="lh-sm">
-                                                {user.name}
-                                                <span className="d-block small text-body-secondary text-capitalize">
-                                                    {t(`roles.${user.role}`)}
-                                                </span>
+                                    <button
+                                        type="button"
+                                        className="user-button"
+                                        aria-haspopup="dialog"
+                                        aria-expanded={settingsOpen}
+                                        aria-label={t('settings.open', { name: user.name })}
+                                        onClick={openSettings}
+                                    >
+                                        <span className="avatar" aria-hidden="true">
+                                            {(user.firstName || user.name).charAt(0).toUpperCase()}
+                                        </span>
+                                        <span className="lh-sm text-start" aria-hidden="true">
+                                            {user.name}
+                                            <span className="d-block small text-body-secondary text-capitalize">
+                                                {t(`roles.${user.role}`)}
                                             </span>
                                         </span>
-                                        <button
-                                            type="button"
-                                            className="btn btn-outline-primary btn-sm"
-                                            onClick={handleLogout}
-                                        >
-                                            <i
-                                                className="bi bi-box-arrow-right me-1"
-                                                aria-hidden="true"
-                                            />
-                                            {t('nav.logout')}
-                                        </button>
-                                    </>
+                                        <i className="bi bi-gear ms-1" aria-hidden="true" />
+                                    </button>
                                 ) : (
                                     <>
                                         <NavLink
@@ -145,6 +142,14 @@ export default function Layout() {
                     <Outlet />
                 </ErrorBoundary>
             </main>
+
+            {user && (
+                <SettingsPanel
+                    key={settingsKey}
+                    open={settingsOpen}
+                    onClose={() => setSettingsOpen(false)}
+                />
+            )}
 
             <footer className="site-footer py-3 text-center small">
                 {t('app.name')} · {t('app.subtitle')}

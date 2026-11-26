@@ -16,7 +16,7 @@ interface StudentAdviceProps {
     onAdd: (book: Book) => void;
 }
 
-// The reading advice of a student as the teacher sees it: the same titles and reasons as the
+// The reading advice of a student as the teacher sees it: the same titles and explanation as the
 // student gets, so the teacher can talk about them and put a title on the reading list.
 export default function StudentAdvice({
     studentId,
@@ -69,12 +69,7 @@ export default function StudentAdvice({
                     </p>
                     <BookGrid>
                         {advice.suggestions.map((book) => (
-                            <BookCard
-                                key={book.id}
-                                book={book}
-                                motivation={book.motivation}
-                                reasons={book.reasons}
-                            >
+                            <BookCard key={book.id} book={book} motivation={book.motivation}>
                                 {existingBookIds.has(book.id) ? (
                                     <span className="status-chip is-success">
                                         <i

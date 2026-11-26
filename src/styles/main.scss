@@ -319,10 +319,6 @@ $navbar-light-active-color: $forest;
     border-radius: 0.25rem 0.75rem 0.75rem 0.25rem;
 }
 
-.motivation .reasons li + li {
-    margin-top: 0.25rem;
-}
-
 // Auth pages -------------------------------------------------------------------------------
 
 .auth-shell {
@@ -339,6 +335,57 @@ $navbar-light-active-color: $forest;
         font-size: 1.7rem;
         line-height: 1.2;
         color: #fff;
+    }
+}
+
+// Bo on the login and register pages: big, with the bubble below him.
+.auth-bo {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+    // A light circle behind Bo, so the green owl stands out on the green panel.
+    .mascot {
+        box-sizing: content-box;
+        padding: 0.75rem;
+        border-radius: 50%;
+        background: $paper;
+        box-shadow: 0 0 0 0.5rem rgba(255, 255, 255, 0.1);
+    }
+
+    .speech-bubble {
+        width: 100%;
+        min-height: 5.5rem;
+        color: $ink;
+        font-size: 1rem;
+
+        &::before {
+            left: 50%;
+            top: -0.7rem;
+            transform: translateX(-50%) rotate(135deg);
+        }
+    }
+}
+
+.auth-perks li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.95rem;
+
+    & + li {
+        margin-top: 0.5rem;
+    }
+
+    .bi {
+        display: grid;
+        place-items: center;
+        width: 2rem;
+        height: 2rem;
+        flex-shrink: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.14);
+        color: $ochre;
     }
 }
 
@@ -501,5 +548,1195 @@ $navbar-light-active-color: $forest;
     &.selected {
         font-weight: 600;
         color: $forest;
+    }
+}
+
+// Onboarding: the reading profile as a game -----------------------------------------------
+
+.onboarding {
+    background:
+        radial-gradient(circle at 10% 10%, rgba($ochre, 0.14), transparent 40%),
+        radial-gradient(circle at 90% 30%, rgba($ocean, 0.1), transparent 45%),
+        radial-gradient(circle at 50% 100%, rgba($terracotta, 0.1), transparent 50%), $paper;
+}
+
+.onboarding-skip {
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.onboarding-stage {
+    max-width: 48rem;
+}
+
+.quest-progress {
+    margin-bottom: 1.5rem;
+}
+
+.quest-xp {
+    color: #9c6d00; // ochre, a bit darker for contrast
+}
+
+.quest-bar {
+    position: relative;
+    height: 1rem;
+    background: var(--paper-deep);
+    border-radius: 999px;
+}
+
+.quest-bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, $ochre, $terracotta);
+    transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.quest-stars {
+    position: absolute;
+    inset: -0.45rem 0 auto;
+    display: flex;
+    justify-content: space-around;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+        display: grid;
+        place-items: center;
+        width: 1.9rem;
+        height: 1.9rem;
+        border-radius: 50%;
+        background: $paper-card;
+        border: 2px solid var(--paper-deep);
+        color: #cfc5ae;
+        font-size: 0.85rem;
+        transition:
+            transform 0.3s,
+            color 0.3s,
+            border-color 0.3s;
+
+        &.is-earned {
+            color: $ochre;
+            border-color: $ochre;
+            transform: scale(1.15);
+        }
+    }
+}
+
+.mascot-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 2rem 0 1.25rem;
+}
+
+.mascot-wrap {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.mascot {
+    display: inline-block;
+    flex-shrink: 0;
+    line-height: 0;
+}
+
+.mascot-body {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    user-select: none;
+    transform-origin: 50% 100%;
+    animation: mascot-bob 3s ease-in-out infinite;
+}
+
+.mascot-happy .mascot-body,
+.mascot-party .mascot-body {
+    animation: mascot-hop 0.6s ease-out 2;
+}
+
+.mascot-wave .mascot-body {
+    animation: mascot-sway 2.4s ease-in-out infinite;
+}
+
+.speech-bubble {
+    position: relative;
+    flex-grow: 1;
+    padding: 1rem 1.25rem;
+    background: $paper-card;
+    border: 2px solid $forest;
+    border-radius: 1.25rem;
+    font-size: 1.05rem;
+    font-weight: 500;
+    box-shadow: 0 0.5rem 1.5rem rgba($ink, 0.08);
+
+    &::before {
+        content: '';
+        position: absolute;
+        left: -0.7rem;
+        top: 50%;
+        width: 1.2rem;
+        height: 1.2rem;
+        background: $paper-card;
+        border-left: 2px solid $forest;
+        border-bottom: 2px solid $forest;
+        transform: translateY(-50%) rotate(45deg);
+    }
+}
+
+.xp-pop {
+    position: absolute;
+    top: -0.25rem;
+    right: -0.75rem;
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    background: $ochre;
+    color: $ink; // dark text on ochre for enough contrast
+    font-size: 0.8rem;
+    font-weight: 700;
+    pointer-events: none;
+    animation: xp-pop 1.4s ease-out forwards;
+}
+
+.quest-card {
+    position: relative;
+    overflow: hidden;
+    border: 0;
+    border-radius: 1.25rem;
+    animation: quest-in 0.35s ease-out;
+}
+
+.quest-title {
+    font-size: calc(1.35rem + 0.8vw);
+    margin-bottom: 1.25rem;
+}
+
+.quest-intro li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0;
+    font-size: 1.05rem;
+
+    .bi {
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+        width: 2.25rem;
+        height: 2.25rem;
+        border-radius: 50%;
+        background: rgba($terracotta, 0.12);
+        color: $terracotta;
+    }
+}
+
+.quest-error {
+    color: $terracotta;
+    font-weight: 600;
+}
+
+// Big tappable answers, with a real radio button or checkbox underneath.
+.choice-grid {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+
+    &.is-stacked {
+        grid-template-columns: 1fr;
+    }
+}
+
+.choice-card {
+    display: block;
+    cursor: pointer;
+    user-select: none;
+}
+
+.choice-body {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    height: 100%;
+    padding: 1rem;
+    background: $paper-card;
+    border: 2px solid $border-color;
+    border-radius: 1rem;
+    transition:
+        transform 0.15s,
+        border-color 0.15s,
+        background-color 0.15s,
+        box-shadow 0.15s;
+}
+
+.choice-card:hover .choice-body {
+    border-color: $forest;
+    transform: translateY(-2px);
+    box-shadow: 0 0.4rem 1rem rgba($ink, 0.08);
+}
+
+.choice-card input:focus-visible + .choice-body {
+    outline: 3px solid $ochre;
+    outline-offset: 2px;
+}
+
+.choice-card.is-checked .choice-body {
+    border-color: $forest;
+    background: rgba($forest, 0.07);
+    animation: choice-pick 0.25s ease-out;
+}
+
+.choice-card.is-disabled {
+    cursor: not-allowed;
+
+    .choice-body {
+        opacity: 0.45;
+        transform: none;
+        box-shadow: none;
+    }
+}
+
+.choice-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 0.85rem;
+    background: rgba($terracotta, 0.12);
+    color: $terracotta;
+    font-size: 1.35rem;
+}
+
+.choice-text {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.choice-title {
+    font-weight: 700;
+}
+
+.choice-description {
+    font-size: 0.9rem;
+    color: $secondary;
+}
+
+.choice-check {
+    flex-shrink: 0;
+    font-size: 1.25rem;
+    color: #cfc5ae;
+}
+
+.choice-card.is-checked .choice-check {
+    color: $forest;
+}
+
+// Topics: small chips in a cloud
+.topic-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    max-height: 18rem;
+    overflow-y: auto;
+    padding: 0.25rem;
+}
+
+.choice-card.is-compact .choice-body {
+    gap: 0.4rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.95rem;
+
+    .choice-title {
+        font-weight: 600;
+    }
+
+    .choice-check {
+        font-size: 1rem;
+    }
+}
+
+.topic-slots {
+    display: flex;
+    gap: 0.2rem;
+    font-size: 1.3rem;
+    color: #cfc5ae;
+
+    .is-filled {
+        color: $ochre;
+    }
+}
+
+.quest-badge {
+    display: grid;
+    place-items: center;
+    width: 6rem;
+    height: 6rem;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #ffbc12, $ochre);
+    color: #fff;
+    font-size: 3rem;
+    box-shadow: 0 0 0 0.5rem rgba($ochre, 0.2);
+    animation: badge-in 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.confetti {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+
+    span {
+        position: absolute;
+        top: -1rem;
+        width: 0.55rem;
+        height: 0.9rem;
+        border-radius: 2px;
+        animation-name: confetti-fall;
+        animation-timing-function: linear;
+        animation-fill-mode: forwards;
+    }
+
+    .is-round {
+        width: 0.6rem;
+        height: 0.6rem;
+        border-radius: 50%;
+    }
+}
+
+.profile-quest-link {
+    padding: 0.75rem 1rem;
+    border-radius: $border-radius;
+    background: rgba($ochre, 0.12);
+
+    .bi {
+        color: $terracotta;
+    }
+}
+
+@keyframes mascot-bob {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-3px);
+    }
+}
+
+@keyframes mascot-hop {
+    0%,
+    100% {
+        transform: translateY(0) scale(1);
+    }
+    40% {
+        transform: translateY(-10px) scale(1.04, 0.97);
+    }
+}
+
+@keyframes mascot-sway {
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(-3deg);
+    }
+    75% {
+        transform: rotate(3deg);
+    }
+}
+
+@keyframes xp-pop {
+    0% {
+        opacity: 0;
+        transform: translateY(8px) scale(0.8);
+    }
+    20% {
+        opacity: 1;
+        transform: translateY(0) scale(1.1);
+    }
+    80% {
+        opacity: 1;
+        transform: translateY(-14px);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+@keyframes quest-in {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes choice-pick {
+    50% {
+        transform: scale(1.03);
+    }
+}
+
+@keyframes badge-in {
+    from {
+        transform: scale(0) rotate(-30deg);
+    }
+    to {
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+@keyframes confetti-fall {
+    to {
+        top: 110%;
+        transform: rotate(720deg);
+    }
+}
+
+@media (max-width: 575.98px) {
+    .mascot-row {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .mascot-row .speech-bubble::before {
+        left: 50%;
+        top: -0.7rem;
+        transform: translateX(-50%) rotate(135deg);
+    }
+}
+
+// Respect people who get dizzy or distracted from motion.
+@media (prefers-reduced-motion: reduce) {
+    .mascot-body,
+    .xp-pop,
+    .quest-card,
+    .quest-badge,
+    .choice-card.is-checked .choice-body {
+        animation: none !important;
+    }
+
+    .confetti {
+        display: none;
+    }
+
+    .quest-bar-fill,
+    .choice-body {
+        transition: none;
+    }
+}
+
+// Settings panel (opens from the name in the navbar) ---------------------------------------
+
+.user-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0.6rem 0.3rem 0.3rem;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    background: transparent;
+    color: inherit;
+    transition:
+        background-color 0.15s,
+        border-color 0.15s;
+
+    &:hover,
+    &[aria-expanded='true'] {
+        background: $paper-card;
+        border-color: $border-color;
+    }
+
+    .bi-gear {
+        color: $secondary;
+    }
+}
+
+.avatar-lg {
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+
+.settings-panel {
+    position: fixed;
+    inset: 0 0 0 auto;
+    width: min(26rem, 100%);
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+    margin: 0 0 0 auto;
+    padding: 0;
+    border: 0;
+    background: $paper;
+    box-shadow: -1rem 0 3rem rgba($ink, 0.2);
+
+    &[open] {
+        animation: panel-in 0.25s ease-out;
+    }
+
+    &::backdrop {
+        background: rgba($ink, 0.45);
+    }
+}
+
+.settings-inner {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+// The profile and the settings lie on top of each other; the settings slide in from the right.
+.settings-views {
+    position: relative;
+    flex-grow: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.settings-view {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    background: $paper;
+}
+
+.settings-sub {
+    transform: translateX(100%);
+    visibility: hidden;
+    transition:
+        transform 0.25s ease-out,
+        visibility 0s linear 0.25s;
+    box-shadow: -0.5rem 0 1.5rem rgba($ink, 0.12);
+
+    &.is-open {
+        transform: none;
+        visibility: visible;
+        transition: transform 0.25s ease-out;
+    }
+}
+
+.settings-back {
+    padding: 0.25rem 0.5rem;
+    font-size: 1.25rem;
+    color: $ink;
+    text-decoration: none;
+}
+
+.settings-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    background: $paper-card;
+    color: $ink;
+    text-align: left;
+
+    &:hover {
+        border-color: $forest;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $forest;
+        outline-offset: 2px;
+    }
+
+    > .bi:first-child {
+        font-size: 1.25rem;
+        color: $terracotta;
+    }
+}
+
+// About the app: one small line, always at the bottom of the panel.
+.settings-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 0.5rem 1rem;
+    border-top: 1px solid $border-color;
+    background: $paper-card;
+    font-size: 0.75rem;
+    color: $secondary;
+
+    code {
+        font-size: inherit;
+        color: $ink;
+    }
+}
+
+.settings-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.25rem 1.25rem 1rem;
+    background: $paper-card;
+    border-bottom: 1px solid $border-color;
+}
+
+.settings-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 1.25rem;
+}
+
+.settings-block + .settings-block {
+    margin-top: 1.75rem;
+}
+
+.settings-heading {
+    margin-bottom: 0.75rem;
+    font-family: $font-family-sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: $secondary;
+}
+
+// A plain fold for the information sections: just the heading with a small arrow.
+.settings-fold {
+    summary {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        cursor: pointer;
+        list-style: none;
+
+        &::-webkit-details-marker {
+            display: none;
+        }
+
+        &:focus-visible {
+            outline: 2px solid $ocean;
+            outline-offset: 2px;
+            border-radius: 0.25rem;
+        }
+    }
+
+    &[open] .settings-fold-arrow {
+        transform: rotate(90deg);
+    }
+}
+
+.settings-fold-arrow {
+    font-size: 0.7rem;
+    color: $secondary;
+    transition: transform 0.2s;
+}
+
+.settings-fold-body {
+    margin-top: 0.75rem;
+}
+
+.setting-section {
+    background: $paper-card;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+
+    & + & {
+        margin-top: 0.5rem;
+    }
+
+    summary {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        cursor: pointer;
+        list-style: none;
+
+        &::-webkit-details-marker {
+            display: none;
+        }
+
+        > .bi:first-child {
+            color: $terracotta;
+            font-size: 1.15rem;
+        }
+    }
+
+    &[open] .setting-chevron {
+        transform: rotate(180deg);
+    }
+}
+
+.setting-chevron {
+    transition: transform 0.2s;
+}
+
+.setting-body {
+    padding: 0.25rem 1rem 1rem;
+}
+
+@keyframes panel-in {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .settings-panel[open],
+    .settings-sub,
+    .setting-chevron,
+    .settings-fold-arrow {
+        animation: none;
+        transition: none;
+    }
+}
+
+// The page behind the settings panel does not scroll while it is open.
+html.scroll-locked {
+    overflow: hidden;
+    scrollbar-gutter: stable;
+}
+
+// Bo, the AI, with a speech bubble ------------------------------------------------------------
+
+.bo-says {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .mascot {
+        flex-shrink: 0;
+    }
+
+    .speech-bubble {
+        flex-grow: 1;
+        min-width: 0;
+    }
+}
+
+.bo-says-sm {
+    gap: 0.75rem;
+
+    .speech-bubble {
+        padding: 0.65rem 0.85rem;
+        font-size: 0.9rem;
+        border-radius: 1rem;
+
+        &::before {
+            width: 0.9rem;
+            height: 0.9rem;
+            left: -0.55rem;
+        }
+    }
+}
+
+.hero-bo {
+    position: relative;
+
+    .bo-says {
+        position: relative;
+        z-index: 1;
+    }
+}
+
+.hero-bo-shelf {
+    margin-top: -1.5rem;
+    opacity: 0.55;
+}
+
+.bo-disclaimer {
+    padding: 1rem;
+    background: rgba($ocean, 0.08);
+    border-left: 4px solid $ocean;
+    border-radius: 0.25rem $border-radius $border-radius 0.25rem;
+    font-size: 0.9rem;
+
+    ul {
+        padding-left: 1.1rem;
+    }
+
+    li + li {
+        margin-top: 0.3rem;
+    }
+}
+
+.delete-dialog,
+.teachers-dialog,
+.link-dialog {
+    width: min(32rem, calc(100% - 2rem));
+}
+
+.teachers-empty {
+    padding: 0.75rem 1rem;
+    background: $paper;
+    border-radius: $border-radius;
+}
+
+// Room for a few results, then the list scrolls inside the dialog.
+.link-results {
+    max-height: min(22rem, 50vh);
+    overflow-y: auto;
+}
+
+.delete-icon {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: rgba($terracotta, 0.12);
+    color: $terracotta;
+    font-size: 1.4rem;
+}
+
+.delete-consequences {
+    padding-left: 1.1rem;
+
+    li + li {
+        margin-top: 0.25rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .bo-says:not(.bo-says-sm) {
+        flex-direction: column;
+        text-align: center;
+
+        .speech-bubble::before {
+            left: 50%;
+            top: -0.7rem;
+            transform: translateX(-50%) rotate(135deg);
+        }
+    }
+}
+
+// Game: XP, badges and ratings -------------------------------------------------------------
+
+.xp-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid rgba($ochre, 0.5);
+    border-radius: 999px;
+    background: rgba($ochre, 0.14);
+    color: $ink;
+    font-weight: 700;
+    font-size: 0.9rem;
+
+    &:hover {
+        background: rgba($ochre, 0.24);
+    }
+
+    &:focus-visible {
+        outline: 2px solid $forest;
+        outline-offset: 2px;
+    }
+
+    .bi {
+        color: $terracotta;
+    }
+}
+
+.xp-chip-value {
+    display: inline-block;
+    animation: xp-bump 0.5s ease-out;
+}
+
+@keyframes xp-bump {
+    0% {
+        transform: scale(1.35);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.xp-hint {
+    display: inline-block;
+    padding: 0.05rem 0.5rem;
+    border-radius: 999px;
+    background: rgba($ochre, 0.18);
+    color: $ink;
+    font-size: 0.8rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.xp-toasts {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 1090;
+    display: grid;
+    gap: 0.5rem;
+    width: min(20rem, calc(100% - 2rem));
+}
+
+.xp-toast {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: $border-radius-lg;
+    background: $forest;
+    color: #fff;
+    box-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.25);
+    animation: xp-in 0.35s ease-out;
+
+    &.has-badge {
+        background: $ink;
+        border: 2px solid $ochre;
+    }
+
+    .btn-close {
+        filter: invert(1) grayscale(1) brightness(2);
+    }
+}
+
+.xp-toast-gain {
+    font-weight: 800;
+    font-size: 1.1rem;
+}
+
+.xp-toast-badge {
+    margin-top: 0.25rem;
+    font-weight: 600;
+}
+
+@keyframes xp-in {
+    from {
+        opacity: 0;
+        transform: translateY(1rem);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.xp-confetti {
+    position: fixed;
+    inset: 0;
+    z-index: 1080;
+    pointer-events: none;
+}
+
+.xp-total {
+    font-family: $headings-font-family;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: $forest;
+
+    .bi {
+        color: $terracotta;
+    }
+}
+
+.xp-progress {
+    height: 0.6rem;
+
+    .progress-bar {
+        background: $ochre;
+    }
+}
+
+.badge-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
+    gap: 0.5rem;
+}
+
+.game-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+    padding: 0.6rem 0.4rem;
+    border: 1px dashed $border-color;
+    border-radius: $border-radius;
+    text-align: center;
+    color: $secondary;
+
+    &.is-earned {
+        border-style: solid;
+        border-color: rgba($ochre, 0.6);
+        background: rgba($ochre, 0.08);
+        color: $ink;
+
+        .game-badge-icon {
+            background: $forest;
+            color: #fff;
+        }
+    }
+}
+
+.game-badge-icon {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: $light;
+    font-size: 1.15rem;
+}
+
+.game-badge-name {
+    font-weight: 700;
+    font-size: 0.85rem;
+    line-height: 1.2;
+}
+
+.game-badge-meta {
+    font-size: 0.75rem;
+}
+
+.xp-rewards li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+
+    & + li {
+        margin-top: 0.35rem;
+    }
+}
+
+.stars {
+    display: inline-flex;
+    gap: 0.1rem;
+    color: $ochre;
+}
+
+.star-input {
+    display: inline-flex;
+    gap: 0.25rem;
+
+    label {
+        cursor: pointer;
+        font-size: 2rem;
+        line-height: 1;
+        color: $secondary;
+        transition: transform 0.1s;
+
+        &.is-on {
+            color: $ochre;
+        }
+
+        &:hover {
+            transform: scale(1.12);
+        }
+    }
+
+    // The radio buttons are hidden, so the focus ring goes on the star.
+    label:has(input:focus-visible) {
+        outline: 2px solid $forest;
+        outline-offset: 2px;
+        border-radius: 0.25rem;
+    }
+}
+
+.rate-dialog {
+    width: min(32rem, calc(100% - 2rem));
+}
+
+.item-comment {
+    padding: 0.4rem 0.6rem;
+    border-left: 3px solid $ochre;
+    background: $light;
+    font-style: italic;
+}
+
+.source-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.1rem 0.55rem;
+    border: 1px solid $border-color;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: $ink;
+
+    &.is-advice {
+        border-color: rgba($forest, 0.4);
+        background: rgba($forest, 0.08);
+    }
+
+    &.is-teacher {
+        border-color: rgba($ocean, 0.4);
+        background: rgba($ocean, 0.08);
+    }
+}
+
+.stat-tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+
+    > div {
+        padding: 0.75rem 1rem;
+        border: 1px solid $border-color;
+        border-radius: $border-radius;
+        background: $paper;
+    }
+
+    dt {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: $secondary;
+    }
+
+    dd {
+        margin: 0;
+        font-family: $headings-font-family;
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: $ink;
+    }
+}
+
+.stat-sub {
+    display: block;
+    font-family: $font-family-sans-serif;
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: $secondary;
+}
+
+.stats-table {
+    caption {
+        caption-side: top;
+        font-weight: 600;
+        color: $ink;
+    }
+
+    td,
+    th {
+        white-space: nowrap;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .xp-chip-value,
+    .xp-toast {
+        animation: none;
+    }
+
+    .star-input label {
+        transition: none;
     }
 }

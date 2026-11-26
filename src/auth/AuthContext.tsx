@@ -12,13 +12,21 @@ import type { AuthResponse, User } from '../types/api.ts';
 
 const TOKEN_KEY = 'src_token';
 
+export interface NameParts {
+    firstName: string;
+    infix: string; // tussenvoegsel, may be empty
+    lastName: string;
+}
+
 interface AuthContextValue {
     token: string | null;
     user: User | null;
     loading: boolean;
     login: (email: string, password: string) => Promise<void>;
-    register: (name: string, email: string, password: string) => Promise<void>;
-    logout: () => void;
+    register: (name: NameParts, email: string, password: string) => Promise<void>;
+    logout: (notice?: string) => void;
+    updateUser: (user: User) => void; // after the user changed their name or email address
+    notice: string | null; // message for the login page after logging out, for example "account removed"
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -44,6 +52,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [token, setToken] = useState<string | null>(readStoredToken);
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(Boolean(readStoredToken()));
+    const [notice, setNotice] = useState<string | null>(null);
 
     // Restore the session from a stored token.
     useEffect(() => {
@@ -69,6 +78,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, [token]);
 
     const startSession = useCallback((data: AuthResponse) => {
+        setNotice(null);
         storeToken(data.token);
         setUser(data.user);
         setToken(data.token);
@@ -87,26 +97,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     );
 
     const register = useCallback(
-        async (name: string, email: string, password: string) => {
+        async ({ firstName, infix, lastName }: NameParts, email: string, password: string) => {
             startSession(
                 await apiFetch<AuthResponse>('/auth/register', {
                     method: 'POST',
-                    body: { name, email, password },
+                    body: {
+                        firstName: firstName.trim(),
+                        ...(infix.trim() ? { infix: infix.trim() } : {}),
+                        lastName: lastName.trim(),
+                        email,
+                        password,
+                    },
                 }),
             );
         },
         [startSession],
     );
 
-    const logout = useCallback(() => {
+    // The notice lives here and not in the router state, because the route guard may redirect to
+    // the login page before our own navigation does.
+    const logout = useCallback((message?: string) => {
         storeToken(null);
         setToken(null);
         setUser(null);
+        setNotice(message ?? null);
     }, []);
 
+    const updateUser = useCallback((updated: User) => setUser(updated), []);
+
     const value = useMemo(
-        () => ({ token, user, loading, login, register, logout }),
-        [token, user, loading, login, register, logout],
+        () => ({ token, user, loading, login, register, logout, updateUser, notice }),
+        [token, user, loading, login, register, logout, updateUser, notice],
     );
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

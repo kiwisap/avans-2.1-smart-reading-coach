@@ -8,14 +8,27 @@ export function uniqueEmail(prefix = 'student'): string {
     return `${prefix}.${Date.now()}.${random}@e2e.test`;
 }
 
-export async function register(page: Page, name: string, email = uniqueEmail()) {
+export async function register(
+    page: Page,
+    name: string,
+    email = uniqueEmail(),
+    { skipOnboarding = true } = {},
+) {
     await page.goto('/register');
-    await page.getByLabel('Naam').fill(name);
+    // The name in parts: the first word is the first name, the rest the last name.
+    const [firstName = name, ...rest] = name.split(' ');
+    await page.getByLabel('Voornaam').fill(firstName);
+    await page.getByLabel('Achternaam').fill(rest.join(' ') || 'Student');
     await page.getByLabel('E-mail').fill(email);
     await page.getByLabel('Wachtwoord').fill(PASSWORD);
     await page.getByRole('button', { name: 'Registreren' }).click();
-    // After registering the app opens the catalogue and shows the user in the menu.
-    await expect(page).toHaveURL('/');
+    // After registering the app starts the reading profile game. Most tests skip it and go on
+    // to the catalogue; onboarding.spec.ts plays it.
+    await expect(page).toHaveURL('/welcome');
+    if (skipOnboarding) {
+        await page.getByRole('button', { name: 'Later invullen' }).click();
+        await expect(page).toHaveURL('/');
+    }
     return email;
 }
 
@@ -52,10 +65,28 @@ export async function openFromMenu(page: Page, linkName: string) {
         .click();
 }
 
-export async function logout(page: Page) {
+// Opens the settings panel through the name in the menu.
+export async function openSettings(page: Page) {
     const toggle = page.getByRole('button', { name: 'Menu in- of uitklappen' });
     if (await toggle.isVisible()) await toggle.click();
-    await page.getByRole('button', { name: 'Uitloggen' }).click();
+    await page.getByRole('button', { name: /^Instellingen van .+ openen$/ }).click();
+    const panel = page.getByRole('dialog');
+    await expect(panel).toBeVisible();
+    return panel;
+}
+
+// The settings (name, email, password, removing the account) slide over the profile panel.
+export async function openAccountSettings(page: Page) {
+    const panel = await openSettings(page);
+    await panel.getByRole('button', { name: /^Instellingen Naam/ }).click();
+    const settings = panel.getByRole('region', { name: 'Instellingen' });
+    await expect(settings).toBeVisible();
+    return settings;
+}
+
+export async function logout(page: Page) {
+    const panel = await openSettings(page);
+    await panel.getByRole('button', { name: 'Uitloggen' }).click();
     await expect(page).toHaveURL(/\/login$/);
 }
 
@@ -86,4 +117,16 @@ export async function fillAndSaveProfile(page: Page) {
     await expect(
         page.getByRole('status').filter({ hasText: 'Je leesprofiel is opgeslagen' }),
     ).toBeVisible();
+}
+
+// A teacher searches a student by name and links themselves to them from the students page.
+export async function linkStudentAsTeacher(page: Page, studentName: string) {
+    await page.goto('/students');
+    await page.getByRole('button', { name: 'Leerling koppelen' }).click();
+    const dialog = page.getByRole('dialog', { name: 'Leerling koppelen' });
+    await dialog.getByLabel('Zoek op naam of e-mailadres').fill(studentName);
+    await dialog.getByRole('button', { name: `Koppel jezelf aan ${studentName}` }).click();
+    await expect(dialog.getByText(`Je bent nu gekoppeld aan ${studentName}.`)).toBeVisible();
+    await dialog.getByRole('button', { name: 'Klaar' }).click();
+    await expect(page.getByRole('link', { name: studentName })).toBeVisible();
 }

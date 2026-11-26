@@ -29,10 +29,9 @@
         "mainMenu": "Hoofdmenu",
         "toggleMenu": "Menu in- of uitklappen",
         "catalog": "Catalogus",
-        "advice": "Advies",
+        "advice": "Advies van Bo",
         "readingList": "Leeslijst",
         "profile": "Mijn profiel",
-        "teachers": "Mijn docenten",
         "students": "Leerlingen",
         "login": "Inloggen",
         "register": "Registreren",
@@ -57,17 +56,39 @@
         "register": {
             "title": "Account aanmaken",
             "subtitle": "Het duurt maar een minuutje. Daarna kunnen we adviseren.",
-            "name": "Naam",
+            "firstName": "Voornaam",
+            "infix": "Tussenvoegsel",
+            "infixHint": "Bijvoorbeeld \"van\" of \"de\". Mag leeg blijven.",
+            "lastName": "Achternaam",
             "passwordHint": "Minimaal 8 tekens",
             "submit": "Registreren",
             "submitting": "Account aanmaken...",
             "haveAccount": "Heb je al een account? <login>Inloggen</login>"
+        },
+        "perks": {
+            "advice": "Tips van Bo die passen bij jouw niveau",
+            "feathers": "Verdien veren en badges met lezen",
+            "list": "Houd bij wat je wilt lezen en wat je uit hebt"
+        },
+        "bo": {
+            "loginHello": "Hoi! Fijn dat je er weer bent. Ik heb je boeken goed bewaard.",
+            "loginEmail": "Even kijken of ik je herken...",
+            "loginNotice": "Tot de volgende keer! Of log meteen weer in, dat mag ook.",
+            "loginError": "Hmm, dat klopt niet helemaal. Kijk je e-mailadres en wachtwoord nog even na?",
+            "loginGo": "Yes, daar ben je! Ik pak je leeslijst erbij.",
+            "noPeeking": "Ik kijk niet mee hoor, ik lees even in mijn boek.",
+            "passwordLong": "Lang genoeg, top! En ik heb echt niet gekeken.",
+            "registerHello": "Hoi! Ik ben Bo, de leesuil. Maak een account, dan zoek ik boeken die bij jou passen.",
+            "registerHi": "Hoi {{name}}! Leuk je te ontmoeten. Nog even je e-mailadres en een wachtwoord.",
+            "registerEmail": "Hiermee log je straks in. Ik deel het met niemand, beloofd.",
+            "registerError": "Oeps, er ging iets mis. Kijk even wat er boven het formulier staat.",
+            "registerGo": "Daar gaan we, {{name}}! Zo meteen stel ik je een paar vragen."
         }
     },
     "catalog": {
         "eyebrow": "Vrij lezen op maat",
         "heading": "Vind je volgende leestip",
-        "heroStudent": "Hoi {{name}}! Zoek in de catalogus, of <advice>laat ons iets voor je uitkiezen</advice>.",
+        "heroStudent": "Hoi {{name}}! Zoek zelf in de catalogus, of <advice>laat Bo iets voor je uitkiezen</advice>.",
         "heroTeacher": "Zoek in de catalogus met boeken, artikelen en meer.",
         "searchLabel": "Zoek op titel, auteur of thema",
         "searchPlaceholder": "Titel, auteur of thema",
@@ -84,7 +105,9 @@
         "results_other": "{{count}} resultaten",
         "loadingCatalog": "Catalogus laden",
         "emptyTitle": "Niets gevonden",
-        "emptyHint": "Probeer andere woorden of haal een filter weg."
+        "emptyHint": "Probeer andere woorden of haal een filter weg.",
+        "boBubble": "Geen idee wat je wilt lezen? Ik zoek iets uit dat bij jou past!",
+        "boLink": "Vraag Bo om advies"
     },
     "combobox": {
         "all": "Alle",
@@ -142,7 +165,7 @@
         "title": "Mijn leeslijst",
         "loading": "Leeslijst laden",
         "emptyTitle": "Je leeslijst is leeg",
-        "emptyHint": "Voeg titels toe vanuit de <catalog>catalogus</catalog> of vanuit je <advice>leesadvies</advice>.",
+        "emptyHint": "Voeg titels toe vanuit de <catalog>catalogus</catalog> of laat <advice>Bo iets voor je uitkiezen</advice>.",
         "progress": "{{read}} van de {{total}} titels gelezen",
         "progressLabel": "Leesvoortgang",
         "markRead": "Gelezen",
@@ -152,17 +175,23 @@
         "addLabel": "Voeg {{title}} toe aan je leeslijst",
         "onList": "Op je leeslijst",
         "added": "\"{{title}}\" is toegevoegd aan je leeslijst.",
-        "removed": "\"{{title}}\" is van je leeslijst verwijderd."
+        "removed": "\"{{title}}\" is van je leeslijst verwijderd.",
+        "xpTip": "Tip: een titel uitlezen levert {{read}} veren van Bo op, en als je Bo vertelt wat je ervan vond krijg je er {{rated}} bij."
     },
     "advice": {
-        "title": "Jouw leesadvies",
-        "intro": "Titels die passen bij je leesprofiel, met een korte reden erbij.",
-        "goToProfile": "{{message}}. <profile>Ga naar je leesprofiel</profile>",
-        "loading": "Suggesties voor je zoeken",
+        "title": "Bo’s leesadvies",
+        "intro": "Bo zoekt titels die passen bij jouw leesprofiel en wat je al gelezen hebt.",
+        "loading": "Bo zoekt titels voor je uit",
         "count_one": "{{count}} suggestie op basis van je leesprofiel. <profile>Pas je profiel aan</profile> voor ander advies.",
         "count_other": "{{count}} suggesties op basis van je leesprofiel. <profile>Pas je profiel aan</profile> voor ander advies.",
-        "sourceAi": "Dit advies is gemaakt door een AI model, op basis van je leesprofiel en je leeslijst. Het is een suggestie: jij kiest zelf wat je leest.",
-        "sourceRules": "Dit advies is gemaakt met vaste regels op basis van je leesprofiel."
+        "boLoading": "Even zoeken in de boekenkast...",
+        "boAi": "Deze titels heb ik voor je uitgezocht! Bij elke titel zie je waarom ik denk dat hij bij je past.",
+        "boRules": "Ik ben even offline, dus deze tips komen van vaste regels. Straks kijk ik weer zelf mee!",
+        "boNoProfile": "Ik ken je nog niet zo goed. Vertel me wat je leuk vindt, dan zoek ik titels voor je uit.",
+        "boError": "Oeps, er ging iets mis. Probeer het nog een keer.",
+        "startProfile": "Leesprofiel invullen met Bo",
+        "disclaimer": "Bo is een AI en kan het mis hebben. Jij kiest zelf wat je leest.",
+        "changes": "Bo laat geen titels zien die al op je leeslijst staan. Lees je iets uit of voeg je iets toe, dan zoekt hij nieuwe tips."
     },
     "profile": {
         "title": "Mijn leesprofiel",
@@ -207,28 +236,44 @@
             "confirm": "Wijzigingen weggooien",
             "keepEditing": "Verder bewerken",
             "text": "Je hebt je profiel aangepast maar niet opgeslagen. Als je doorgaat, gaan de wijzigingen verloren."
-        }
+        },
+        "quest": "Liever stap voor stap? <quest>Vul je profiel in met Bo</quest>, onze boekenuil."
     },
     "teachers": {
         "title": "Mijn docenten",
-        "intro": "Een docent aan wie je gekoppeld bent, kan je leesprofiel en je leeslijst zien en titels aan je lijst toevoegen. Je kunt de koppeling altijd weer verwijderen.",
+        "intro": "Deze docenten zijn aan je gekoppeld. Ze kunnen je leesprofiel, je leeslijst en het advies van Bo zien, en titels aan je leeslijst toevoegen.",
         "loading": "Docenten laden",
-        "none": "Er zijn nog geen docenten.",
-        "linked": "Gekoppeld",
-        "link": "Koppel aan deze docent",
-        "unlink": "Ontkoppelen",
-        "linkLabel": "Koppel aan {{name}}",
-        "unlinkLabel": "Ontkoppel van {{name}}",
-        "nowLinked": "Je bent nu gekoppeld aan {{name}}.",
-        "nowUnlinked": "Je bent niet meer gekoppeld aan {{name}}."
+        "none": "Er is nog geen docent aan je gekoppeld. Je docent koppelt zichzelf aan jou.",
+        "contact": "Mail {{name}}",
+        "question": "Staat hier een docent die je niet kent? Vraag het na bij je mentor.",
+        "close": "Sluiten"
     },
     "students": {
         "title": "Jouw leerlingen",
         "loading": "Leerlingen laden",
         "emptyTitle": "Nog geen leerlingen",
-        "emptyHint": "Leerlingen koppelen zichzelf aan jou op hun pagina \"Mijn docenten\".",
+        "emptyHint": "Zoek je leerlingen op en koppel jezelf aan ze met de knop \"Leerling koppelen\".",
         "hasProfile": "Profiel ingevuld",
-        "noProfile": "Nog geen profiel"
+        "noProfile": "Nog geen profiel",
+        "linkButton": "Leerling koppelen",
+        "link": {
+            "title": "Leerling koppelen",
+            "intro": "Zoek een leerling op naam of e-mailadres. Als je gekoppeld bent, zie je het leesprofiel, de leeslijst en het advies van Bo van die leerling. De leerling ziet in de instellingen dat je gekoppeld bent.",
+            "search": "Zoek op naam of e-mailadres",
+            "searchHint": "Typ minstens {{min}} tekens.",
+            "searching": "Zoeken...",
+            "none": "Geen leerlingen gevonden voor \"{{query}}\".",
+            "limit": "Je ziet de eerste {{max}} resultaten. Zoek specifieker als je leerling er niet tussen staat.",
+            "results": "Zoekresultaten",
+            "linked": "Gekoppeld",
+            "link": "Koppelen",
+            "unlink": "Ontkoppelen",
+            "linkLabel": "Koppel jezelf aan {{name}}",
+            "unlinkLabel": "Ontkoppel jezelf van {{name}}",
+            "nowLinked": "Je bent nu gekoppeld aan {{name}}.",
+            "nowUnlinked": "Je bent niet meer gekoppeld aan {{name}}.",
+            "done": "Klaar"
+        }
     },
     "studentDetail": {
         "back": "Terug naar je leerlingen",
@@ -238,14 +283,15 @@
         "listHeading": "Leeslijst",
         "emptyList": "Er staat nog niets op de leeslijst.",
         "added": "\"{{title}}\" is toegevoegd aan de leeslijst van {{name}}.",
-        "adviceHeading": "Leesadvies",
+        "adviceHeading": "Leesadvies van Bo",
         "adviceLoading": "Leesadvies laden",
-        "adviceSourceAi": "Gemaakt door het AI model. De leerling ziet hetzelfde advies.",
-        "adviceSourceRules": "Gemaakt met vaste regels, omdat het AI model niet beschikbaar was. De leerling ziet hetzelfde advies.",
+        "adviceSourceAi": "Bo (de AI) heeft deze titels gekozen. De leerling ziet hetzelfde advies.",
+        "adviceSourceRules": "Bo was even niet bereikbaar, deze tips komen van vaste regels. De leerling ziet hetzelfde advies.",
         "noAdvice": "Er is nog geen leesadvies, omdat de leerling nog geen leesprofiel heeft ingevuld.",
         "addToList": "Op leeslijst zetten",
         "addToListLabel": "Zet {{title}} op de leeslijst van {{name}}",
-        "onList": "Op de leeslijst"
+        "onList": "Op de leeslijst",
+        "gameHeading": "Veren en badges"
     },
     "teacherAdd": {
         "heading": "Voeg een titel toe aan de leeslijst van {{name}}",
@@ -260,5 +306,339 @@
         "onList": "Staat op de lijst",
         "add": "Toevoegen",
         "addLabel": "Voeg {{title}} toe aan de leeslijst van {{name}}"
+    },
+    "onboarding": {
+        "skip": "Later invullen",
+        "mascotName": "Bo",
+        "progress": "Vraag {{current}} van {{total}}",
+        "progressStart": "Start",
+        "progressLabel": "Voortgang van je leesprofiel",
+        "xp": "{{xp}} veren",
+        "xpOf": "{{xp}} van {{max}} veren",
+        "back": "Terug",
+        "next": "Volgende",
+        "finish": "Klaar!",
+        "saving": "Opslaan...",
+        "needAnswer": "Bijna! Kies eerst een antwoord, dan gaan we verder.",
+        "cheers": {
+            "a": "Goeie keuze!",
+            "b": "Nice, die onthoud ik.",
+            "c": "Top, we gaan lekker.",
+            "d": "Ooh, interessant!"
+        },
+        "intro": {
+            "title": "Hoi {{name}}!",
+            "bubble": "Ik ben Bo, jouw leesmaatje. Beantwoord vijf snelle vragen en ik zoek boeken en artikelen die echt bij jou passen.",
+            "time": "Duurt ongeveer een minuut",
+            "rewards": "Elke vraag levert veren van Bo op. Haal ze allemaal en ontgrendel je leesadvies.",
+            "change": "Je kunt je antwoorden later altijd nog aanpassen",
+            "start": "Ik doe mee",
+            "editTitle": "Welkom terug, {{name}}!",
+            "editBubble": "Wil je je antwoorden aanpassen? Loop de vragen nog eens met me door. Je vorige antwoorden staan al klaar."
+        },
+        "level": {
+            "question": "Hoe makkelijk gaat lezen voor jou?",
+            "bubble": "Geen stress, dit is geen toets. Kies wat het best bij je past.",
+            "hint": "Twijfel je? Vraag je docent welk niveau je hebt.",
+            "options": {
+                "2F": {
+                    "title": "Rustig aan",
+                    "text": "Ik lees het liefst korte zinnen en makkelijke woorden (2F)"
+                },
+                "3F": {
+                    "title": "Gaat prima",
+                    "text": "Ik lees vlot, ook langere teksten (3F)"
+                },
+                "3F+": {
+                    "title": "Lezen is mijn ding",
+                    "text": "Moeilijke woorden en lange verhalen? Geen probleem (3F+)"
+                }
+            }
+        },
+        "types": {
+            "question": "Wat lees je graag?",
+            "bubble": "Kies er zoveel als je wilt. Hoe meer je kiest, hoe meer ik voor je kan vinden.",
+            "options": {
+                "boek": "Een spannend verhaal of een boek vol weetjes",
+                "online-artikel": "Kort en actueel, gewoon op je telefoon",
+                "blogpost": "Persoonlijke verhalen en meningen",
+                "dichtbundel": "Korte gedichten, soms grappig, soms diep",
+                "tijdschrift": "Bladeren door van alles wat",
+                "krant": "Weten wat er in de wereld gebeurt"
+            }
+        },
+        "topics": {
+            "question": "Waar word jij blij van?",
+            "bubble": "Kies maximaal {{max}} onderwerpen. Dan weet ik precies waar ik moet zoeken.",
+            "search": "Zoek een onderwerp",
+            "searchPlaceholder": "Bijvoorbeeld vriendschap of sport",
+            "chosen": "{{count}} van {{max}} onderwerpen gekozen",
+            "full": "Vol! Je hebt er {{max}}. Haal er eentje weg als je wilt wisselen.",
+            "none": "Geen onderwerp gevonden. Probeer een ander woord."
+        },
+        "length": {
+            "question": "Hoeveel tijd heb jij?",
+            "bubble": "Een snelle hap of een lekker lang verhaal?",
+            "options": {
+                "short": {
+                    "title": "Snelle hap",
+                    "text": "Een gedicht, artikel of een paar bladzijden"
+                },
+                "medium": {
+                    "title": "Lekker tussendoor",
+                    "text": "Een kort verhaal of een dun boek"
+                },
+                "long": {
+                    "title": "Ik ga ervoor",
+                    "text": "Een heel boek"
+                }
+            }
+        },
+        "goal": {
+            "question": "Waarom wil je lezen?",
+            "bubble": "Laatste vraag! Wat is jouw reden?",
+            "options": {
+                "enjoyment": {
+                    "title": "Voor de fun",
+                    "text": "Gewoon omdat het leuk is"
+                },
+                "learn": {
+                    "title": "Nieuwe dingen leren",
+                    "text": "Weten hoe de wereld in elkaar zit"
+                },
+                "language": {
+                    "title": "Beter worden in taal",
+                    "text": "Oefenen met lezen en nieuwe woorden"
+                },
+                "work": {
+                    "title": "Voor school of werk",
+                    "text": "Handig voor je opleiding of stage"
+                }
+            }
+        },
+        "done": {
+            "title": "Leesprofiel ontgrendeld!",
+            "bubble": "Yes! Je hebt alle vragen gehaald. Ik heb al titels voor je klaarstaan.",
+            "badge": "Je hebt je eerste badge verdiend: Eerste bladzijde!",
+            "xpTotal": "{{xp}} veren van Bo binnengehaald",
+            "advice": "Bekijk mijn leesadvies",
+            "catalog": "Eerst zelf rondkijken"
+        },
+        "stop": "Stoppen"
+    },
+    "settings": {
+        "open": "Instellingen van {{name}} openen",
+        "close": "Instellingen sluiten",
+        "profile": {
+            "heading": "Mijn leesprofiel",
+            "loading": "Even kijken wat je al hebt ingevuld...",
+            "emptyBubble": "Je hebt nog geen leesprofiel. Vul het samen met mij in, dan krijg je advies dat echt bij je past!",
+            "filledBubble": "Zin in iets anders? Pas je antwoorden aan, dan zoek ik nieuwe titels voor je.",
+            "summary": "Je leesprofiel in het kort",
+            "level": "Niveau {{level}}",
+            "start": "Invullen met Bo",
+            "edit": "Wijzigen met Bo",
+            "form": "Liever alles op één pagina"
+        },
+        "teachers": {
+            "heading": "Mijn docenten",
+            "text": "Bekijk welke docenten je leesprofiel en je leeslijst kunnen zien.",
+            "button": "Bekijk mijn docenten"
+        },
+        "account": {
+            "heading": "Account",
+            "name": "Naam",
+            "email": "E-mailadres",
+            "password": "Wachtwoord",
+            "newEmail": "Nieuw e-mailadres",
+            "currentPassword": "Huidig wachtwoord",
+            "currentPasswordHint": "Nodig om je e-mailadres te wijzigen, zodat niemand anders dat kan.",
+            "newPassword": "Nieuw wachtwoord",
+            "repeatPassword": "Herhaal je nieuwe wachtwoord",
+            "passwordsDiffer": "De twee nieuwe wachtwoorden zijn niet hetzelfde.",
+            "saveName": "Naam opslaan",
+            "saveEmail": "E-mailadres opslaan",
+            "savePassword": "Wachtwoord wijzigen",
+            "saving": "Opslaan...",
+            "nameSaved": "Je naam is aangepast.",
+            "emailSaved": "Je e-mailadres is aangepast. Log voortaan in met je nieuwe adres.",
+            "passwordSaved": "Je wachtwoord is gewijzigd.",
+            "firstName": "Voornaam",
+            "infix": "Tussenvoegsel",
+            "infixHint": "Bijvoorbeeld \"van\" of \"de\". Mag leeg blijven.",
+            "lastName": "Achternaam",
+            "passwordCurrent": "Kies een nieuw wachtwoord"
+        },
+        "about": {
+            "built": "Gebouwd op",
+            "commit": "Commit"
+        },
+        "bo": {
+            "heading": "Over Bo",
+            "intro": "Bo is een AI: een computerprogramma, geen mens. Goed om te weten:",
+            "points": {
+                "learned": "Bo heeft geleerd van de leeskeuzes van andere studenten en kiest titels op basis van jouw leesprofiel en leeslijst.",
+                "private": "Bo krijgt je naam en e-mailadres niet te zien.",
+                "wrong": "Bo kan het mis hebben. Het advies is een suggestie: jij beslist wat je leest.",
+                "teacher": "Je docent kan zien welke titels Bo je aanraadt.",
+                "fallback": "Is Bo even niet bereikbaar? Dan komen de tips van vaste regels."
+            },
+            "status": "Status",
+            "online": "Bo is online",
+            "offline": "Bo is offline, de tips komen van vaste regels",
+            "disabled": "Bo staat uit, de tips komen van vaste regels",
+            "unknown": "Onbekend"
+        },
+        "delete": {
+            "heading": "Account verwijderen",
+            "button": "Account verwijderen",
+            "title": "Weet je het zeker?",
+            "intro": "Als je je account verwijdert, gebeurt dit:",
+            "student": {
+                "a": "Je leesprofiel en je leeslijst worden verwijderd.",
+                "b": "Bo vergeet alles wat hij over jou weet, je krijgt geen leesadvies meer.",
+                "c": "Je docenten zijn niet meer aan je gekoppeld en kunnen je niet meer zien."
+            },
+            "teacher": {
+                "a": "Je leerlingen zijn niet meer aan je gekoppeld.",
+                "b": "Je kunt hun leesprofiel, leeslijst en advies niet meer zien."
+            },
+            "final": "Dit kun je niet ongedaan maken. Je kunt later wel een nieuw account maken.",
+            "typeLabel": "Typ {{word}} om te bevestigen",
+            "word": "VERWIJDEREN",
+            "password": "Je wachtwoord",
+            "confirm": "Account definitief verwijderen",
+            "deleting": "Verwijderen...",
+            "cancel": "Toch niet",
+            "done": "Je account is verwijderd. Bedankt voor het lezen met Bo!"
+        },
+        "more": "Meer",
+        "page": {
+            "title": "Instellingen",
+            "summary": "Naam, e-mailadres, wachtwoord en je account",
+            "back": "Terug naar je profiel"
+        }
+    },
+    "game": {
+        "xp": "{{xp}} veren",
+        "chipLabel": "Je hebt {{xp}} veren. Bekijk je badges",
+        "gained": "+{{xp}} veren",
+        "newBadge": "Nieuwe badge: {{name}}!",
+        "close": "Melding sluiten",
+        "heading": "Jouw veren en badges",
+        "toNext": "Nog {{xp}} veren tot de badge {{name}}.",
+        "toNextOther": "{{student}} heeft nog {{xp}} veren nodig voor de badge {{name}}.",
+        "allEarned": "Je hebt alle badges verdiend. Echte leeslegende!",
+        "allEarnedOther": "{{student}} heeft alle badges verdiend.",
+        "progressLabel": "Voortgang naar de volgende badge",
+        "badgesLabel": "Badges",
+        "earnedOn": "Verdiend op {{date}}",
+        "locked": "Vanaf {{xp}} veren",
+        "howTo": "Zo verdien je veren",
+        "rewards": {
+            "profile": "Je leesprofiel invullen",
+            "addedFromAdvice": "Een tip van Bo op je leeslijst zetten",
+            "added": "Een titel uit de catalogus op je leeslijst zetten",
+            "read": "Een titel uitlezen",
+            "rated": "Bo vertellen wat je ervan vond"
+        },
+        "badges": {
+            "firstPage": {
+                "name": "Eerste bladzijde"
+            },
+            "bookworm": {
+                "name": "Boekenwurm"
+            },
+            "readingKnight": {
+                "name": "Leesridder"
+            },
+            "storyHunter": {
+                "name": "Verhalenjager"
+            },
+            "pageBoss": {
+                "name": "Bladzijdenbaas"
+            },
+            "legend": {
+                "name": "Leeslegende"
+            }
+        },
+        "intro": "Bo is een uil. Voor alles wat je leest en doet krijg je een paar van zijn veren, en met genoeg veren verdien je een badge."
+    },
+    "rating": {
+        "title": "Wat vond je van {{title}}?",
+        "boAsk": "Je hebt \"{{title}}\" uit, goed bezig! Wat vond je ervan? Daar leer ik van, en zo kan ik ook andere leerlingen beter helpen.",
+        "boAgain": "Wil je aanpassen wat je van \"{{title}}\" vond?",
+        "starsLegend": "Hoeveel sterren geef je?",
+        "stars_one": "{{count}} van de {{max}} sterren",
+        "stars_other": "{{count}} van de {{max}} sterren",
+        "word": {
+            "1": "Niks aan",
+            "2": "Viel tegen",
+            "3": "Best oké",
+            "4": "Goed!",
+            "5": "Echt een aanrader!"
+        },
+        "commentLabel": "Wil je er iets over zeggen? (mag je overslaan)",
+        "commentPlaceholder": "Bijvoorbeeld: spannend einde, maar het begin was traag",
+        "commentHint": "Nog {{left}} tekens. Je docent kan dit lezen.",
+        "skip": "Overslaan",
+        "save": "Opslaan",
+        "saving": "Opslaan...",
+        "saved": "Bedankt! Bo onthoudt wat je van \"{{title}}\" vond.",
+        "rate": "Beoordelen",
+        "rateLabel": "Beoordeel {{title}}",
+        "change": "Aanpassen",
+        "changeLabel": "Pas je beoordeling van {{title}} aan"
+    },
+    "source": {
+        "student": {
+            "advice": "Tip van Bo",
+            "catalog": "Uit de catalogus",
+            "teacher": "Van je docent"
+        },
+        "teacher": {
+            "advice": "Via advies van Bo",
+            "catalog": "Uit de catalogus",
+            "teacher": "Door docent toegevoegd"
+        }
+    },
+    "stats": {
+        "title": "Helpt het advies van Bo?",
+        "intro": "Over al je gekoppelde leerlingen: wat Bo liet zien, wat er op de leeslijsten kwam en waarvandaan, wat er gelezen is en hoe het beoordeeld werd.",
+        "loading": "Cijfers laden",
+        "empty": "Nog geen cijfers: Bo heeft je leerlingen nog geen tips laten zien.",
+        "none": "geen",
+        "stars": "{{value}} ★",
+        "shown": "Tips van Bo",
+        "taken": "Op de leeslijst gezet",
+        "ofShown": "{{percent}} van de tips",
+        "readFromAdvice": "Tips uitgelezen",
+        "ofAdded": "{{percent}} van wat erop kwam",
+        "ratingAdvice": "Waardering tips",
+        "vsCatalog": "catalogus: {{stars}}",
+        "sourcesCaption": "Waar komen de titels op de leeslijsten vandaan?",
+        "modelsCaption": "AI model tegenover vaste regels",
+        "col": {
+            "source": "Bron",
+            "onList": "Op leeslijst",
+            "read": "Gelezen",
+            "rated": "Beoordeeld",
+            "average": "Gemiddeld",
+            "model": "Advies door",
+            "shown": "Getoond",
+            "added": "Toegevoegd"
+        },
+        "source": {
+            "advice": "Advies van Bo",
+            "catalog": "Catalogus",
+            "teacher": "Docent",
+            "unknown": "Onbekend (van voor de meting)"
+        },
+        "model": {
+            "ai": "AI model",
+            "rules": "Vaste regels"
+        },
+        "alsoSuggested_one": "{{count}} titel kwam via de catalogus op een leeslijst, terwijl Bo hem ook had getipt.",
+        "alsoSuggested_other": "{{count}} titels kwamen via de catalogus op een leeslijst, terwijl Bo ze ook had getipt."
     }
 }

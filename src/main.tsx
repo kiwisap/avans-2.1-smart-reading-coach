@@ -8,6 +8,7 @@ import './styles/main.scss';
 import { i18nReady } from './i18n/index.ts';
 import App from './App.tsx';
 import { AuthProvider } from './auth/AuthContext.tsx';
+import { ProgressProvider } from './game/ProgressContext.tsx';
 
 const container = document.getElementById('root');
 if (!container) throw new Error('Root element not found');
@@ -22,7 +23,9 @@ createRoot(container).render(
     <StrictMode>
         <BrowserRouter>
             <AuthProvider>
-                <App />
+                <ProgressProvider>
+                    <App />
+                </ProgressProvider>
             </AuthProvider>
         </BrowserRouter>
     </StrictMode>,

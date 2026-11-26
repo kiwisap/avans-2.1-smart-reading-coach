@@ -4,6 +4,7 @@ import { apiFetch, errorMessage } from '../api/client.ts';
 import { useAuth } from '../auth/AuthContext.tsx';
 import AddToListButton from '../components/AddToListButton.tsx';
 import Alert from '../components/Alert.tsx';
+import BoSays from '../components/BoSays.tsx';
 import BookCard from '../components/BookCard.tsx';
 import BookGrid from '../components/BookGrid.tsx';
 import Button from '../components/Button.tsx';
@@ -89,7 +90,7 @@ export default function CatalogPage() {
                             {user?.role === 'student' ? (
                                 <Trans
                                     i18nKey="catalog.heroStudent"
-                                    values={{ name: user.name }}
+                                    values={{ name: user.firstName }}
                                     components={{ advice: <Link to="/advice" /> }}
                                 />
                             ) : (
@@ -105,7 +106,20 @@ export default function CatalogPage() {
                         />
                     </div>
                     <div className="col-lg-5 d-none d-lg-block">
-                        <ShelfIllustration className="shelf" />
+                        {user?.role === 'student' ? (
+                            <div className="hero-bo">
+                                <BoSays mood="wave" size={120}>
+                                    <p className="mb-2">{t('catalog.boBubble')}</p>
+                                    <Link to="/advice" className="btn btn-accent btn-sm">
+                                        <i className="bi bi-stars me-2" aria-hidden="true" />
+                                        {t('catalog.boLink')}
+                                    </Link>
+                                </BoSays>
+                                <ShelfIllustration className="shelf hero-bo-shelf" />
+                            </div>
+                        ) : (
+                            <ShelfIllustration className="shelf" />
+                        )}
                     </div>
                 </div>
             </div>

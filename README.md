@@ -1,6 +1,6 @@
 # Smart Reading Coach
 
-De frontend van **Smart Reading Coach** (project "Vrij lezen op maat", Avans ICT SE2.1). Leerlingen bladeren door de catalogus, vullen hun leesprofiel in, krijgen leesadvies en houden een leeslijst bij. Docenten volgen de leerlingen die aan hen gekoppeld zijn. De app praat met de API in de map `smart-reading-coach-api`.
+De frontend van **Smart Reading Coach** (project "Vrij lezen op maat", Avans ICT SE2.1). Leerlingen bladeren door de catalogus, vullen hun leesprofiel in, krijgen leesadvies en houden een leeslijst bij. Docenten koppelen zichzelf aan hun leerlingen en volgen ze. Een leerling ziet in de instellingen welke docenten gekoppeld zijn. De app praat met de API in de map `smart-reading-coach-api`.
 
 Inhoud: [Techniek](#techniek) · [Lokaal draaien](#lokaal-draaien) · [Scripts](#scripts) · [Pagina's](#paginas-en-toegang) · [Mappenstructuur](#mappenstructuur) · [Architectuur](#architectuur) · [Vormgeving](#vormgeving) · [Teksten en talen](#teksten-en-talen) · [Toegankelijkheid](#toegankelijkheid-en-responsive) · [Coding style](#coding-style) · [Een wijziging doen](#een-kleine-wijziging-doen) · [Requirements](#requirements)
 
@@ -63,11 +63,13 @@ Vite leest deze waarde bij het starten en bouwen. Pas je hem aan, herstart dan `
 
 De tests in `e2e/` sturen een echte browser (Chromium) aan tegen de echte frontend, API en databases. Ze testen wat de gebruiker doet, niet de losse onderdelen.
 
-| Bestand                    | Wat het afdekt                                                                                              | Waarom dit                                                           |
-| -------------------------- | ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| `e2e/reading-flow.spec.ts` | Registreren, profiel invullen en opslaan, advies bekijken, titel bewaren, als gelezen markeren, verwijderen | De kernflow: hier bestaat de applicatie voor (ook op mobiel formaat) |
-| `e2e/auth.spec.ts`         | Beveiligde routes, fout bij verkeerd wachtwoord, rolbewaking via de URL, onbekende pagina                   | Zonder inloggen en rollen is niets anders veilig                     |
-| `e2e/teacher.spec.ts`      | Leerling koppelt aan docent, docent ziet profiel, niet gekoppelde leerling blijft onzichtbaar               | Privacy: een docent ziet alleen eigen leerlingen                     |
+| Bestand                    | Wat het afdekt                                                                                                                                                                            | Waarom dit                                                              |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| `e2e/reading-flow.spec.ts` | Registreren, profiel invullen en opslaan, advies bekijken, titel bewaren, als gelezen markeren, verwijderen                                                                               | De kernflow: hier bestaat de applicatie voor (ook op mobiel formaat)    |
+| `e2e/onboarding.spec.ts`   | Na registreren de vragen stap voor stap beantwoorden en op het advies uitkomen; overslaan en later invullen                                                                               | De eerste indruk van nieuwe leerlingen: zonder profiel geen goed advies |
+| `e2e/settings.spec.ts`     | Instellingen via je naam, naam in delen en wachtwoord wijzigen en opnieuw inloggen, uitleg over Bo, nieuw e-mailadres alleen met het juiste wachtwoord, account verwijderen na bevestigen | Accountgegevens wijzigen en verwijderen mag nooit zonder controle       |
+| `e2e/auth.spec.ts`         | Beveiligde routes, fout bij verkeerd wachtwoord, rolbewaking via de URL, onbekende pagina                                                                                                 | Zonder inloggen en rollen is niets anders veilig                        |
+| `e2e/teacher.spec.ts`      | Docent zoekt en koppelt een leerling, ziet het profiel, leerling ziet de docent in de instellingen, niet gekoppelde leerling blijft onzichtbaar                                           | Privacy: een docent ziet alleen eigen leerlingen                        |
 
 Elke test maakt zijn eigen gebruiker aan met een uniek e-mailadres, dus de tests hangen niet van elkaar af en je kunt ze herhaald draaien zonder de database op te schonen.
 
@@ -87,16 +89,16 @@ Wat wel getest wordt: de flows waar uitval het meest schaadt (profiel, advies, l
 
 ## Pagina's en toegang
 
-| Pad                    | Pagina                                                                                           | Wie      |
-| ---------------------- | ------------------------------------------------------------------------------------------------ | -------- |
-| `/login`, `/register`  | Inloggen en registreren                                                                          | iedereen |
-| `/`                    | Catalogus (startpagina)                                                                          | ingelogd |
-| `/advice`              | Leesadvies van het AI model met redenen, en of het advies van het AI model of van de regels komt | leerling |
-| `/reading-list`        | Leeslijst                                                                                        | leerling |
-| `/profile`             | Leesprofiel                                                                                      | leerling |
-| `/teachers`            | Mijn docenten (koppelen)                                                                         | leerling |
-| `/students`            | Leerlingen van de docent                                                                         | docent   |
-| `/students/:studentId` | Leesprofiel, leesadvies en leeslijst van één leerling                                            | docent   |
+| Pad                    | Pagina                                                                                              | Wie      |
+| ---------------------- | --------------------------------------------------------------------------------------------------- | -------- |
+| `/login`, `/register`  | Inloggen en registreren                                                                             | iedereen |
+| `/welcome`             | Leesprofiel als spel met mascotte Bo, direct na het registreren (zonder menu, met "Later invullen") | leerling |
+| `/`                    | Catalogus (startpagina)                                                                             | ingelogd |
+| `/advice`              | Leesadvies van het AI model met redenen, en of het advies van het AI model of van de regels komt    | leerling |
+| `/reading-list`        | Leeslijst                                                                                           | leerling |
+| `/profile`             | Leesprofiel als formulier (bereikbaar via de instellingen)                                          | leerling |
+| `/students`            | Leerlingen van de docent, met zoeken en koppelen in een modal                                       | docent   |
+| `/students/:studentId` | Leesprofiel, leesadvies en leeslijst van één leerling                                               | docent   |
 
 `ProtectedRoute` bewaakt de paden. Wie niet is ingelogd gaat naar `/login` en komt na het inloggen terug op de pagina waar hij heen wilde, inclusief filters. Wie de verkeerde rol heeft, gaat naar de startpagina met een duidelijke melding. De echte afscherming zit in de backend, dit is de gebruikersvriendelijke laag erbovenop.
 
@@ -148,6 +150,10 @@ De volledige architectuur en de ERD staan in de README van de backend.
 **Sessie.** `AuthContext` bewaart de gebruiker en het JWT. Het token staat in `localStorage` onder de naam `src_token` zodat je ingelogd blijft na een herlaad. Bij het opstarten wordt het token gecontroleerd via `/auth/me`.
 
 **De URL als bron van waarheid.** De filters en het paginanummer van de catalogus staan in de URL (`useCatalogQuery`), bijvoorbeeld `/?search=liefde&level=3F&page=2`. Daardoor werken de terugknop en het delen van een link. Tijdens het typen in de zoekbalk worden de filters 500 milliseconden na de laatste toetsaanslag automatisch toegepast, en alleen als de tekst echt is veranderd.
+
+**Bo, de AI.** Bo (`Mascot`, `BoSays`) is het gezicht van het AI model: Bo begeleidt het invullen van het leesprofiel, geeft het advies (`AdvicePage`, ook voor de docent in `StudentAdvice`) en nodigt in de catalogus uit om advies te vragen. In de instellingen legt Bo uit dat hij een AI is, wat hij gebruikt en dat hij het mis kan hebben (transparantie volgens de AI Act).
+
+**Instellingen.** Een klik op je naam in het menu opent `SettingsPanel` aan de rechterkant (een native `<dialog>`: focus blijft erin, Escape sluit, de pagina erachter scrollt niet). Daar staan je leesprofiel met Bo (invullen of wijzigen via `/welcome`), je naam in delen (voornaam, tussenvoegsel, achternaam), e-mailadres en wachtwoord (`PATCH /auth/me` en `PUT /auth/me/password`), uitloggen, uitleg over Bo, informatie over de app en account verwijderen. Verwijderen vraagt in `DeleteAccountDialog` om het woord VERWIJDEREN en je wachtwoord (`DELETE /auth/me`). Versie, bouwmoment en commit zet `vite.config.ts` tijdens het bouwen in de code (`__APP_VERSION__`, `__BUILD_TIME__`, `__GIT_COMMIT__`); op Render komt de commit uit `RENDER_GIT_COMMIT`.
 
 **Leeslijst.** De hook `useReadingList` bewaart de leeslijst en biedt toevoegen, status wijzigen en verwijderen. De catalogus, het advies en de leeslijst gebruiken dezelfde hook, dus alles blijft in sync.
 

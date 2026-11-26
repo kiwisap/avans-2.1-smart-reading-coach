@@ -66,7 +66,12 @@ export interface paths {
                         /** Format: email */
                         email: string;
                         password: string;
-                        name: string;
+                        /** @description Voornaam. */
+                        firstName: string;
+                        /** @description Tussenvoegsel, for example "van der". */
+                        infix?: string;
+                        /** @description Achternaam. */
+                        lastName: string;
                     };
                 };
             };
@@ -209,6 +214,176 @@ export interface paths {
         };
         put?: never;
         post?: never;
+        /**
+         * Delete the account of the logged in user
+         * @description Removes the account with its reading profile, reading list and teacher links. Cannot be undone. Needs the current password.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        currentPassword: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Account removed. The token no longer works. */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Invalid input. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not logged in, or the token is invalid or expired. */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        /**
+         * Change the name (first name, infix, last name) or email address of the logged in user
+         * @description Send only what changes. A new email address also needs the current password, so nobody can take over an account from an unlocked computer.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        /** @description Voornaam. */
+                        firstName?: string;
+                        /** @description Tussenvoegsel, for example "van der". */
+                        infix?: string;
+                        /** @description Achternaam. */
+                        lastName?: string;
+                        /** Format: email */
+                        email?: string;
+                        currentPassword?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description The updated user. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            user: components["schemas"]["User"];
+                        };
+                    };
+                };
+                /** @description Invalid input. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not logged in, or the token is invalid or expired. */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict with the current state. */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/api/auth/me/password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Change the password of the logged in user */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        currentPassword: string;
+                        newPassword: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Password changed. The current token stays valid. */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Invalid input. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not logged in, or the token is invalid or expired. */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -222,7 +397,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** List the students that linked this teacher */
+        /** List the students this teacher follows */
         get: {
             parameters: {
                 query?: never;
@@ -271,6 +446,272 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/students/advice-stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Whether the advice of Bo helps, over the students this teacher follows
+         * @description How many titles Bo showed, how many ended up on reading lists (from the advice, the catalog or a teacher) and how many were read, split by AI model and rules.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Numbers about the advice. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdviceStats"];
+                    };
+                };
+                /** @description Not logged in, or the token is invalid or expired. */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description The role of this user is not allowed to do this. */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/students/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Search students to link to the logged in teacher
+         * @description Searches name and email address. At most 20 results.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Part of the name or email address. */
+                    search: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Matching students. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            students: components["schemas"]["StudentLink"][];
+                        };
+                    };
+                };
+                /** @description Invalid input. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not logged in, or the token is invalid or expired. */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description The role of this user is not allowed to do this. */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/students/{studentId}/link": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Follow a student as the logged in teacher */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description Student id. */
+                    studentId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Linked. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            student: components["schemas"]["StudentLink"];
+                        };
+                    };
+                };
+                /** @description Invalid input. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not logged in, or the token is invalid or expired. */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description The role of this user is not allowed to do this. */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not found. */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        /** Stop following a student */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description Student id. */
+                    studentId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Unlinked. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            student: components["schemas"]["StudentLink"];
+                        };
+                    };
+                };
+                /** @description Invalid input. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not logged in, or the token is invalid or expired. */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description The role of this user is not allowed to do this. */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not found. */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/students/{studentId}": {
         parameters: {
             query?: never;
@@ -280,7 +721,7 @@ export interface paths {
         };
         /**
          * See the profile and reading list of one student
-         * @description Only for students who linked this teacher.
+         * @description Only for students this teacher follows.
          */
         get: {
             parameters: {
@@ -358,7 +799,7 @@ export interface paths {
         };
         /**
          * See the reading advice of one student
-         * @description The same advice the student sees on the advice page. Only for students who linked this teacher.
+         * @description The same advice the student sees on the advice page. Only for students this teacher follows.
          */
         get: {
             parameters: {
@@ -869,6 +1310,63 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/progress/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * XP and badges of the logged in student
+         * @description Students earn XP for filling in the reading profile, adding titles to the reading list (more from the advice) and reading them. Every title counts once. Badges come at fixed amounts of XP.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description XP, badges and the XP per action. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Progress"];
+                    };
+                };
+                /** @description Not logged in, or the token is invalid or expired. */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description The role of this user is not allowed to do this. */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/advice": {
         parameters: {
             query?: never;
@@ -878,7 +1376,7 @@ export interface paths {
         };
         /**
          * Get book recommendations for the logged in student
-         * @description Based on the saved reading profile and the reading list. The AI model gives the advice when the AI service is available, otherwise the rule based scoring does. Each suggestion explains why it was recommended.
+         * @description Based on the saved reading profile and the reading list. The AI model gives the advice when the AI service is available, otherwise the rule based scoring does. Each suggestion explains why it was recommended. Titles on the reading list are never suggested, so the advice changes when the student adds or reads titles.
          */
         get: {
             parameters: {
@@ -996,6 +1494,12 @@ export interface paths {
                 content: {
                     "application/json": {
                         bookId: string;
+                        /**
+                         * @description Where the student added the title: the advice page or the catalog.
+                         * @default catalog
+                         * @enum {string}
+                         */
+                        source?: "advice" | "catalog";
                     };
                 };
             };
@@ -1204,6 +1708,102 @@ export interface paths {
         };
         trace?: never;
     };
+    "/api/reading-list/{id}/rating": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Say what you thought of a title you read
+         * @description One to five stars and an optional short comment. Can be changed later. The ratings of students with a similar profile help the advice for others.
+         */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description Reading list entry id. */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        rating: number;
+                        comment?: string | null;
+                    };
+                };
+            };
+            responses: {
+                /** @description Rated. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            item: components["schemas"]["ReadingListItem"];
+                        };
+                    };
+                };
+                /** @description Invalid input. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not logged in, or the token is invalid or expired. */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description The role of this user is not allowed to do this. */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not found. */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict with the current state. */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/teachers": {
         parameters: {
             query?: never;
@@ -1211,7 +1811,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** List all teachers and whether they are linked to the student */
+        /**
+         * List the teachers who follow the logged in student
+         * @description Teachers link themselves to a student, a student cannot change this list.
+         */
         get: {
             parameters: {
                 query?: never;
@@ -1221,14 +1824,14 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description All teachers. */
+                /** @description Linked teachers. */
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
                         "application/json": {
-                            teachers: components["schemas"]["TeacherLink"][];
+                            teachers: components["schemas"]["LinkedTeacher"][];
                         };
                     };
                 };
@@ -1255,144 +1858,6 @@ export interface paths {
         put?: never;
         post?: never;
         delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/teachers/{teacherId}/link": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /** Let a teacher follow the logged in student */
-        put: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    /** @description Teacher id. */
-                    teacherId: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Linked. */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            teacher: components["schemas"]["TeacherLink"];
-                        };
-                    };
-                };
-                /** @description Invalid input. */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/problem+json": components["schemas"]["ProblemDetails"];
-                    };
-                };
-                /** @description Not logged in, or the token is invalid or expired. */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/problem+json": components["schemas"]["ProblemDetails"];
-                    };
-                };
-                /** @description The role of this user is not allowed to do this. */
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/problem+json": components["schemas"]["ProblemDetails"];
-                    };
-                };
-                /** @description Not found. */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/problem+json": components["schemas"]["ProblemDetails"];
-                    };
-                };
-            };
-        };
-        post?: never;
-        /** Stop a teacher from following the logged in student */
-        delete: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    /** @description Teacher id. */
-                    teacherId: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Unlinked. */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            teacher: components["schemas"]["TeacherLink"];
-                        };
-                    };
-                };
-                /** @description Invalid input. */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/problem+json": components["schemas"]["ProblemDetails"];
-                    };
-                };
-                /** @description Not logged in, or the token is invalid or expired. */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/problem+json": components["schemas"]["ProblemDetails"];
-                    };
-                };
-                /** @description The role of this user is not allowed to do this. */
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/problem+json": components["schemas"]["ProblemDetails"];
-                    };
-                };
-                /** @description Not found. */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/problem+json": components["schemas"]["ProblemDetails"];
-                    };
-                };
-            };
-        };
         options?: never;
         head?: never;
         patch?: never;
@@ -1426,6 +1891,11 @@ export interface components {
          * @enum {string}
          */
         ReadingStatus: "unread" | "read";
+        /**
+         * @description Where a title on the reading list came from: the advice page, the catalog or a teacher.
+         * @enum {string}
+         */
+        ReadingListSource: "advice" | "catalog" | "teacher";
         /** @description Error response according to RFC 9457 (application/problem+json). */
         ProblemDetails: {
             /** @description URI that identifies the kind of problem. */
@@ -1450,8 +1920,14 @@ export interface components {
              * @description Email address.
              */
             email: string;
-            /** @description Display name. */
+            /** @description Display name: first name, infix and last name together. */
             name: string;
+            /** @description Voornaam. */
+            firstName: string;
+            /** @description Tussenvoegsel, for example "van der". Null when there is none. */
+            infix: string | null;
+            /** @description Achternaam. */
+            lastName: string;
             role: components["schemas"]["Role"];
         };
         AuthResponse: {
@@ -1582,10 +2058,16 @@ export interface components {
             addedAt: string;
             /** Format: date-time */
             readAt: string | null;
+            /** @description Null for titles added before this was tracked. */
+            source: components["schemas"]["ReadingListSource"] | (never | null);
+            /** @description Stars the student gave after reading, null when not rated. */
+            rating: number | null;
+            /** @description What the student thought of it, in their own words. */
+            comment: string | null;
             /** @description The book, or null when it was removed from the catalog. */
             book: components["schemas"]["Book"] | (never | null);
         };
-        TeacherLink: {
+        LinkedTeacher: {
             /**
              * Format: uuid
              * @description Teacher id.
@@ -1593,7 +2075,26 @@ export interface components {
             id: string;
             /** @description Teacher name. */
             name: string;
-            /** @description Whether this teacher can see the student. */
+            /**
+             * Format: email
+             * @description Teacher email address.
+             */
+            email: string;
+        };
+        StudentLink: {
+            /**
+             * Format: uuid
+             * @description Student id.
+             */
+            id: string;
+            /** @description Student name. */
+            name: string;
+            /**
+             * Format: email
+             * @description Student email address.
+             */
+            email: string;
+            /** @description Whether this teacher follows the student. */
             linked: boolean;
         };
         StudentSummary: {
@@ -1629,6 +2130,82 @@ export interface components {
             };
             profile: components["schemas"]["ReadingProfile"] | (never | null);
             readingList: components["schemas"]["ReadingListItem"][];
+            progress: components["schemas"]["Progress"];
+        };
+        Badge: {
+            /**
+             * @description Badge id.
+             * @enum {string}
+             */
+            id: "firstPage" | "bookworm" | "readingKnight" | "storyHunter" | "pageBoss" | "legend";
+            /** @description XP needed for the badge. */
+            xp: number;
+            /**
+             * Format: date-time
+             * @description When the badge was earned, null while it is not earned yet.
+             */
+            earnedAt: string | null;
+        };
+        /** @description XP and badges of a student. */
+        Progress: {
+            /** @description Total XP. */
+            xp: number;
+            /** @description Low to high. */
+            badges: components["schemas"]["Badge"][];
+            /** @description The next badge to earn, null when every badge is earned. */
+            nextBadge: {
+                /** @enum {string} */
+                id: "firstPage" | "bookworm" | "readingKnight" | "storyHunter" | "pageBoss" | "legend";
+                xp: number;
+            } | null;
+            /** @description XP per action. */
+            rewards: {
+                profile: number;
+                added: number;
+                addedFromAdvice: number;
+                read: number;
+                rated: number;
+            };
+        };
+        SourceCount: {
+            /** @description Titles on the reading lists. */
+            total: number;
+            /** @description Of which read. */
+            read: number;
+            /** @description Ratings given. */
+            rated: number;
+            /** @description Average stars. */
+            averageRating: number | null;
+        };
+        AdviceSourceStats: {
+            /** @description Titles Bo showed. */
+            shown: number;
+            /** @description Of which added from the advice page. */
+            added: number;
+            /** @description Of which read. */
+            read: number;
+            /** @description Ratings given. */
+            rated: number;
+            /** @description Average stars. */
+            averageRating: number | null;
+        };
+        /** @description Whether the advice helps, over the students a teacher follows. */
+        AdviceStats: {
+            students: number;
+            /** @description Different titles Bo showed. */
+            shown: number;
+            added: {
+                advice: components["schemas"]["SourceCount"];
+                catalog: components["schemas"]["SourceCount"];
+                teacher: components["schemas"]["SourceCount"];
+                unknown: components["schemas"]["SourceCount"];
+            };
+            /** @description Added from the catalog, while Bo had shown the title as well. */
+            catalogAlsoSuggested: number;
+            bySource: {
+                ai: components["schemas"]["AdviceSourceStats"];
+                rules: components["schemas"]["AdviceSourceStats"];
+            };
         };
         Health: {
             /** @description ok when the API runs. */
